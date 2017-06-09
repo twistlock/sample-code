@@ -1,0 +1,45 @@
+---
+- hosts: all
+  become: true
+  vars_prompt:
+
+    - name: CONSOLE
+      prompt: Please provide your console address
+      default: twistlock.yourcompany.com
+      private: no
+
+    - name: PORT
+      prompt: What port is your Console's API service on?
+      default: 8083
+      private: no
+
+    - name: USER
+      prompt: Please provide a username
+      default: admin
+      private: no
+
+    - name: PASSWORD
+      prompt: Please provide a password
+      private: yes
+      default: admin
+
+  tasks:
+    - name: Create Installation Directory
+      file: dest=/var/tmp/.twistlock state=directory
+
+    - name: "download file"
+      uri:
+        url: "https://{{ CONSOLE }}:{{ PORT }}/api/v1/scripts/defender.sh"
+        method: GET
+        user: "{{ USER }}"
+        password: "{{ PASSWORD }}"
+        force_basic_auth: yes
+        dest: /var/tmp/.twistlock/defender.sh
+        return_content: yes
+        validate_certs: false
+
+    - name: make that executable
+      file: dest=/var/tmp/.twistlock/defender.sh mode=0755 state=file
+
+    - name: run the script
+      command: /var/tmp/.twistlock/defender.sh -d "docker" -c "{{ CONSOLE }}"
