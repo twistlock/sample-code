@@ -1,0 +1,561 @@
+{
+  "_id": "compliance",
+  "policyType": "compliance",
+  "statement": [
+    {
+      "effect": "block",
+      "action": [],
+      "resource": [
+        "container:*",
+        "image:*",
+        "host:*",
+        "label:*"
+      ],
+      "condition": {
+        "vulnerabilities": [
+          {
+            "id": 21,
+            "block": true
+          },
+          {
+            "id": 41,
+            "block": true
+          },
+          {
+            "id": 59,
+            "block": true
+          },
+          {
+            "id": 599,
+            "block": true
+          }
+        ]
+      },
+      "principal": [],
+      "group": [
+        "*"
+      ],
+      "namespace": [
+        "*"
+      ],
+      "trust_group": [],
+      "last_modified": "2016-11-29T12:00:01.000Z",
+      "owner": "pci guide",
+      "name": "PCI compliance rules"
+    },
+    {
+      "owner": "system",
+      "effect": "alert",
+      "name": "Default - ignore Twistlock components",
+      "lastModified": "2016-11-29T10:42:39.000Z",
+      "namespace": [],
+      "group": [],
+      "principal": [],
+      "condition": {
+        "alertProfiles": [],
+        "syscalls": {
+          "filters": []
+        },
+        "processes": {
+          "blacklistProcesses": [],
+          "whitelistProcesses": []
+        },
+        "network": {
+          "excludedPorts": [],
+          "blacklist": []
+        },
+        "vulnerabilities": [
+          {
+            "id": 55
+          },
+          {
+            "id": 56
+          },
+          {
+            "id": 57
+          },
+          {
+            "id": 511
+          },
+          {
+            "id": 516
+          },
+          {
+            "id": 517
+          },
+          {
+            "id": 518
+          },
+          {
+            "id": 519
+          },
+          {
+            "id": 520
+          },
+          {
+            "id": 524
+          },
+          {
+            "id": 526
+          },
+          {
+            "id": 598
+          },
+          {
+            "id": 45
+          },
+          {
+            "id": 406
+          },
+          {
+            "id": 420
+          },
+          {
+            "id": 421
+          },
+          {
+            "id": 422
+          },
+          {
+            "id": 423
+          },
+          {
+            "id": 11
+          },
+          {
+            "id": 12
+          },
+          {
+            "id": 15
+          },
+          {
+            "id": 16
+          },
+          {
+            "id": 17
+          },
+          {
+            "id": 18
+          },
+          {
+            "id": 19
+          },
+          {
+            "id": 110
+          },
+          {
+            "id": 111
+          },
+          {
+            "id": 112
+          },
+          {
+            "id": 113
+          },
+          {
+            "id": 114
+          },
+          {
+            "id": 115
+          },
+          {
+            "id": 21
+          },
+          {
+            "id": 22
+          },
+          {
+            "id": 23
+          },
+          {
+            "id": 24
+          },
+          {
+            "id": 25
+          },
+          {
+            "id": 26
+          },
+          {
+            "id": 27
+          },
+          {
+            "id": 28
+          },
+          {
+            "id": 29
+          },
+          {
+            "id": 210
+          },
+          {
+            "id": 211
+          },
+          {
+            "id": 212
+          },
+          {
+            "id": 213
+          },
+          {
+            "id": 214
+          },
+          {
+            "id": 215
+          },
+          {
+            "id": 216
+          },
+          {
+            "id": 217
+          },
+          {
+            "id": 218
+          },
+          {
+            "id": 31
+          },
+          {
+            "id": 32
+          },
+          {
+            "id": 33
+          },
+          {
+            "id": 34
+          },
+          {
+            "id": 35
+          },
+          {
+            "id": 36
+          },
+          {
+            "id": 37
+          },
+          {
+            "id": 38
+          },
+          {
+            "id": 315
+          },
+          {
+            "id": 316
+          },
+          {
+            "id": 317
+          },
+          {
+            "id": 318
+          },
+          {
+            "id": 319
+          },
+          {
+            "id": 320
+          },
+          {
+            "id": 64
+          },
+          {
+            "id": 65
+          },
+          {
+            "id": 81
+          }
+        ]
+      },
+      "trustGroup": [],
+      "resource": [
+        "container:twistlock*",
+        "image:docker.io/twistlock*",
+        "host:*"
+      ],
+      "action": []
+    },
+    {
+      "owner": "system",
+      "effect": "alert",
+      "name": "Default - alert all components",
+      "lastModified": "2016-11-29T10:42:39.000Z",
+      "namespace": [],
+      "group": [],
+      "principal": [],
+      "condition": {
+        "alertProfiles": [],
+        "syscalls": {
+          "filters": []
+        },
+        "processes": {
+          "blacklistProcesses": [],
+          "whitelistProcesses": []
+        },
+        "network": {
+          "excludedPorts": [],
+          "blacklist": []
+        },
+        "vulnerabilities": [
+          {
+            "id": 51
+          },
+          {
+            "id": 52
+          },
+          {
+            "id": 53
+          },
+          {
+            "id": 54
+          },
+          {
+            "id": 55
+          },
+          {
+            "id": 56
+          },
+          {
+            "id": 57
+          },
+          {
+            "id": 58
+          },
+          {
+            "id": 59
+          },
+          {
+            "id": 510
+          },
+          {
+            "id": 511
+          },
+          {
+            "id": 512
+          },
+          {
+            "id": 513
+          },
+          {
+            "id": 514
+          },
+          {
+            "id": 515
+          },
+          {
+            "id": 516
+          },
+          {
+            "id": 517
+          },
+          {
+            "id": 518
+          },
+          {
+            "id": 519
+          },
+          {
+            "id": 520
+          },
+          {
+            "id": 521
+          },
+          {
+            "id": 524
+          },
+          {
+            "id": 525
+          },
+          {
+            "id": 526
+          },
+          {
+            "id": 528
+          },
+          {
+            "id": 530
+          },
+          {
+            "id": 531
+          },
+          {
+            "id": 599
+          },
+          {
+            "id": 598
+          },
+          {
+            "id": 41
+          },
+          {
+            "id": 45
+          },
+          {
+            "id": 406
+          },
+          {
+            "id": 420
+          },
+          {
+            "id": 421
+          },
+          {
+            "id": 422
+          },
+          {
+            "id": 423
+          },
+          {
+            "id": 11
+          },
+          {
+            "id": 12
+          },
+          {
+            "id": 15
+          },
+          {
+            "id": 16
+          },
+          {
+            "id": 17
+          },
+          {
+            "id": 18
+          },
+          {
+            "id": 19
+          },
+          {
+            "id": 110
+          },
+          {
+            "id": 111
+          },
+          {
+            "id": 112
+          },
+          {
+            "id": 113
+          },
+          {
+            "id": 114
+          },
+          {
+            "id": 115
+          },
+          {
+            "id": 21
+          },
+          {
+            "id": 22
+          },
+          {
+            "id": 23
+          },
+          {
+            "id": 24
+          },
+          {
+            "id": 25
+          },
+          {
+            "id": 26
+          },
+          {
+            "id": 27
+          },
+          {
+            "id": 28
+          },
+          {
+            "id": 29
+          },
+          {
+            "id": 210
+          },
+          {
+            "id": 211
+          },
+          {
+            "id": 212
+          },
+          {
+            "id": 213
+          },
+          {
+            "id": 214
+          },
+          {
+            "id": 215
+          },
+          {
+            "id": 216
+          },
+          {
+            "id": 217
+          },
+          {
+            "id": 218
+          },
+          {
+            "id": 31
+          },
+          {
+            "id": 32
+          },
+          {
+            "id": 33
+          },
+          {
+            "id": 34
+          },
+          {
+            "id": 35
+          },
+          {
+            "id": 36
+          },
+          {
+            "id": 37
+          },
+          {
+            "id": 38
+          },
+          {
+            "id": 315
+          },
+          {
+            "id": 316
+          },
+          {
+            "id": 317
+          },
+          {
+            "id": 318
+          },
+          {
+            "id": 319
+          },
+          {
+            "id": 320
+          },
+          {
+            "id": 64
+          },
+          {
+            "id": 65
+          },
+          {
+            "id": 81
+          }
+        ]
+      },
+      "trustGroup": [],
+      "resource": [
+        "container:*",
+        "image:*",
+        "host:*"
+      ],
+      "action": []
+    }
+  ]
+}
