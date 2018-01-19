@@ -7,3 +7,4 @@ Directory
 ---------
 
 * ```./ansible``` contains an Ansible playbook for installing our Twistlock Defender
+* ```./scap``` contains SCAP datastream examples
