@@ -4,7 +4,8 @@ The scripts extract vulnerability and compliance data from Twistlock's image hea
 ## Running it
 Download the powershell scripts on your host and replace the following value:
 
-* $request = Your Twistlock Console address with an image name in 'search'
+* $request = Your Twistlock Console address with an image name or search term in 'search'
+ * You can omit the entire '?search=<image>' clause if you want to return all images
 
 After making changes run:
 ```
