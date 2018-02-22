@@ -14,7 +14,9 @@ PowerShell .\compliances.ps1
 ```
 
 ## Prerequisite 
-* PowerShell version 3.0 or greater
+* PowerShell version 6.0 or greater
+  * Earlier versions of PowerShell don't support basic authentication with Invoke-WebRequest.
+  * To use an earlier version of PowerShell, you will have to [manually build the authentication header](https://pallabpain.wordpress.com/2016/09/14/rest-api-call-with-basic-authentication-in-powershell/).
 * Permissions to run locally-created scripts:
 For this, run Powershell as an Administrator, then run the following command:
 ```
