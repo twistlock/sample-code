@@ -1,0 +1,1 @@
+Sample field extraction rules for Sumo Logic

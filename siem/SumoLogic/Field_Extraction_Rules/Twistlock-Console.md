@@ -1,0 +1,17 @@
+parse "log-type=\"*\"" as log_type nodrop | 
+parse "id=\"*\"" as id nodrop | 
+parse "description=\"*\"" as description nodrop | 
+parse "cve=\"*\"" as cve nodrop | 
+parse "severity=\"*\"" as severity nodrop | 
+parse "package=\"*\"" as package nodrop  | 
+parse "host=\"*\"" as host nodrop | 
+parse "image=\"*\"" as image nodrop | 
+parse "tag=\"*\"" as tag nodrop | 
+parse "vulnerabilities=\"*\"" as vulnerability_count nodrop | 
+parse "compliance=\"*\"" as compliance_count nodrop | 
+parse "hostname=\"*\"" as hostname nodrop | 
+parse "source_ip=\"*\"" as source_ip nodrop | 
+parse "api=\"*\"" as api nodrop | 
+parse "changes=\"*\"" as changes nodrop | 
+parse "username=\"*\"" as username nodrop | 
+parse "status=\"*\"" as status nodrop
