@@ -1,4 +1,4 @@
-parse "log-type=\"*\"" as log_type nodrop | 
+parse "log_type=\"*\"" as log_type nodrop | 
 parse "id=\"*\"" as id nodrop | 
 parse "description=\"*\"" as description nodrop | 
 parse "cve=\"*\"" as cve nodrop | 
