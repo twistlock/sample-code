@@ -131,7 +131,7 @@ write-host "Images found: "$images.count
 # go through the array and find each image's association
 foreach($image in $images)
     {
-    # check the first layer, if they match do a full compair
+    # check the first layer, if they match do a full compare
     if($baseImageLayers[0] -eq $image.info.layers[0])
         {
         # assume match and prove otherwise
