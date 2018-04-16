@@ -1,6 +1,28 @@
+param ($arg1)
+
+if(!$arg1)
+    {
+    write-host "Scanning all images"
+    }
+else 
+    {
+    write-host "Scanning $arg1"
+    }
+
+# variables
+$console = pfox-ansible-console.lab.twistlock.com
+$port = 8083
+
 # We want to call the images API
 # The search parameter ("?search=<image_name>") is optional
-$request = "https://console:8083/api/v1/images?search=<image_name>"
+if(!$arg1)
+    {
+    $request = "https://pfox-ansible-console.lab.twistlock.com:8083/api/v1/images"
+    }
+else 
+    {
+    $request = "https://pfox-ansible-console.lab.twistlock.com:8083/api/v1/images?search$arg1"
+    }
 
 # We will need credentials to connect so we will ask the user
 $cred = Get-Credential
