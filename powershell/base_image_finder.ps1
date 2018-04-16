@@ -11,7 +11,7 @@
 #  Discalimer: Use of this script does not imply any rights to Twistlock products and/or services.
 # 
 #  Usage: ./base_image_finder.ps1 <name of image>
-#
+#  Modify line #54 for your Twistlock Console API
 
 param($arg1)
 
