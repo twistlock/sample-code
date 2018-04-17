@@ -6,12 +6,13 @@
 #  "child" - the image has more layers than the "master" image and the master's base layers match.
 #  "parent" - the image has less layers than the "master" image and the parent's base layers match.
 #  "no-association - the image's first layer does not match.
-#
+#  
+#  Requires: Twistlock v2.4
 #  Requires: powershell v6 https://blogs.msdn.microsoft.com/powershell/2018/01/10/powershell-core-6-0-generally-available-ga-and-supported/
 #  Discalimer: Use of this script does not imply any rights to Twistlock products and/or services.
 # 
 #  Usage: ./base_image_finder.ps1 <name of image>
-#  Modify line #54 for your Twistlock Console API
+#  Modify line #55 for your Twistlock Console API
 
 param($arg1)
 
