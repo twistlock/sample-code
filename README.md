@@ -12,3 +12,4 @@ Directory
 * ```./powershell``` contains example powershell scripts
 * ```./scap``` contains SCAP datastream examples
 * ```./siem``` contains samples related to SIEM integration
+* ```./openshift``` contains samples related to Twistlock deployment within an OpenShift cluster
