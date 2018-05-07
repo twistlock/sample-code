@@ -9,7 +9,7 @@
 ## Running it
 Download the bash script to your host and replace the following values:
 * TWISTLOCK_VERSION the version of Twistlock to deploy (e.g. TWISTLOCK_VERSION="2_4_95")
-* TWISTLOCK_RELEASE_URL path to Twistlock release (e.g. TWISTLOCK_RELEASE_URL="https://cdn.twistlock.com/releases/<release_cdn_id>/twistlock_2_4_95.tar.gz")
+* TWISTLOCK_RELEASE_URL path to Twistlock release (e.g. TWISTLOCK_RELEASE_URL="https://twistlock.example.com/releases/twistlock_2_4_95.tar.gz")
 
 After making changes run:
 ```
