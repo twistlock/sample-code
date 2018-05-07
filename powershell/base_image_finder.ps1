@@ -6,12 +6,12 @@
 #  "child" - the image has more layers than the "master" image and the master's base layers match.
 #  "parent" - the image has less layers than the "master" image and the parent's base layers match.
 #  "no-association - the image's first layer does not match.
-#
+#  
+#  Requires: Twistlock v2.4
 #  Requires: powershell v6 https://blogs.msdn.microsoft.com/powershell/2018/01/10/powershell-core-6-0-generally-available-ga-and-supported/
 #  Discalimer: Use of this script does not imply any rights to Twistlock products and/or services.
 # 
 #  Usage: ./base_image_finder.ps1 <name of image>
-#
 
 param($arg1)
 
@@ -131,7 +131,11 @@ write-host "Images found: "$images.count
 # go through the array and find each image's association
 foreach($image in $images)
     {
+<<<<<<< HEAD
     # check the first layer, if they match do a full compair
+=======
+    # check the first layer, if they match do a full compare
+>>>>>>> a96f69b11250db893c45f2e2d00ae679c37496a1
     if($baseImageLayers[0] -eq $image.info.layers[0])
         {
         # assume match and prove otherwise
