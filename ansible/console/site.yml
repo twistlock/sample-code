@@ -60,19 +60,6 @@
       retries: 60
       delay: 1 
 
-    - name: Let's put our license in place
-      uri:
-        url: https://localhost:8083/api/v1/settings/license
-        method: POST
-        user: admin
-        password: admin
-        body: "{{ lookup('file','license_file.json') }}"
-        force_basic_auth: yes
-        body_format: json
-        validate_certs: no
-        status_code: 200,400
-            # We are ignoring errors here as if the license is already there then this can error
-
     - name: generate a password
       command: curl http://www.sethcardoza.com/api/rest/tools/random_password_generator
       register: new_password
@@ -80,17 +67,29 @@
       delegate_to: 127.0.0.1
       become: false
 
-
-    - name: Let's update the admin password to something non-standard
+    - name: Add admin user if it doesn't exist already
       uri:
-          url: https://localhost:8083/api/v1/users/password
-          method: PUT
-          user: admin
-          password: admin
-          body: '{"oldPassword":"admin", "newPassword":"{{ new_password.stdout }}"}'
-          force_basic_auth: yes
+          url: https://localhost:8083/api/v1/signup
+          method: POST
+          body: '{"username": "admin", "password": "{{ new_password.stdout }}"}'
           body_format: json
           validate_certs: no
+          status_code: 200
+      register: signup_output
+      failed_when: signup_output.status != 200 and 'initialized' not in signup_output.content
+
+    - name: Let's put our license in place
+      uri:
+        url: https://localhost:8083/api/v1/settings/license
+        method: POST
+        user: admin
+        password: "{{ new_password.stdout }}"
+        body: "{{ lookup('file','license_file.json') }}"
+        force_basic_auth: yes
+        body_format: json
+        validate_certs: no
+        status_code: 200,400
+            # We are ignoring errors here as if the license is already there then this can error
 
     - name: Pull a bad image or two as well as something nice like alpine
       command: docker pull {{ item }}
