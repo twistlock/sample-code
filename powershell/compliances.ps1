@@ -10,18 +10,18 @@ else
     }
 
 # variables
-$console = pfox-ansible-console.lab.twistlock.com
+$console = twistlock.example.com
 $port = 8083
 
 # We want to call the images API
 # The search parameter ("?search=<image_name>") is optional
 if(!$arg1)
     {
-    $request = "https://pfox-ansible-console.lab.twistlock.com:8083/api/v1/images"
+    $request = "https://$console:$port/api/v1/images"
     }
 else 
     {
-    $request = "https://pfox-ansible-console.lab.twistlock.com:8083/api/v1/images?search$arg1"
+    $request = "https://$console:$port/api/v1/images?search$arg1"
     }
 
 # We will need credentials to connect so we will ask the user

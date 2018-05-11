@@ -7,7 +7,7 @@ Download the powershell scripts on your host and replace the following value:
 * Vulnerabilities.ps1 and compliances.ps1:
   * $request = Your Twistlock Console address with an image name or search term in 'search'
     * You can omit the entire '?search=<image>' clause if you want to return all images
-*Base_image_finder.ps1:
+* Base_image_finder.ps1:
   * Change the $tlconsole variable to your Twistlock Console's API URL
   * Provide the name of the image to be used as the base image when comparing against all images within Twistlock. For example localhost:5000/alpine:latest 
 
