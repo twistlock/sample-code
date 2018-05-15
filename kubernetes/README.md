@@ -14,7 +14,5 @@
 Example  ./installconsolek8s_tlregistry.sh LoadBalancer kvbeey2clpcutdfr8rggnzgxxxxxxxxxx
   ```
   You will be prompted for the following information:
-  * Twistlock Console Administrative Username
-  * Twistlock Console Administrative Password
   * Persistent Volume provisioning, 
     (depends on cloud provider)
