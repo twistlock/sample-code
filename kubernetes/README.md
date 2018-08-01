@@ -1,6 +1,7 @@
 # README
 * installconsolek8s_tlregistry.sh deploys Twistlock console in a kubernetes cluster as a LoadBalancer or NodePort
 * set for Linux, if running on macos, change 'linux' to 'osx' in script
+* pv.yaml can be used as a template to provision a persistent volume in gke for a Console install, you must create a persistent disk and format it appropriately  - please chane the YOURIDENTIFIER in the yaml to something that is consistent with your naming convention for resources in your environment
 
 ## Prerequisites 
 * kubectl setup to manage your kubernetes cluster
