@@ -2,8 +2,8 @@
 
 # Constants
 TWISTLOCK_PUBLIC_REGISTRY="registry.twistlock.com"
-TWISTLOCK_VERSION="2_4_95"
-TWISTLOCK_RELEASE_URL="https://twistlock.example.com/releases/twistlock_2_4_95.tar.gz"
+TWISTLOCK_VERSION="2_5_99"
+TWISTLOCK_RELEASE_URL="https://twistlock.example.com/releases/twistlock_2_5_99.tar.gz"
 
 # validate user is logged in with OC Client
 if ! oc version | grep Server > /dev/null; then
@@ -100,9 +100,9 @@ fi
 tar -xzf twistlock.tar.gz
 
 # Deploy the Twistlock console
-# let user give PV labels or select a storage class
+# let user provide PV labels or select a storage class
 echo "Select storage for Twistlock console"
-options=("Persistent Volume Labels" "Storage Class" "Quit")
+options=("Persistent Volume Labels" "Storage Class" "Dynamic")
 select opt in "${options[@]}"
 do
   case $opt in
@@ -111,19 +111,16 @@ do
       echo -n "Enter PV Labels: "
       read PV_LABELS
       [[ -z "${PV_LABELS}" ]] && PV_LABELS='" "'
-
-      # Deploy the Twistlock console
-      $machine/twistcli console install \
-      --namespace "$TWISTLOCK_NAMESPACE" \
-      --orchestration-type "openshift" \
-      --orchestration-cli "oc" \
-      --registry-address "$IMAGE_REGISTRY_ADDRESS" \
-      --registry-client "docker" \
-      --skip-push \
-      --persistent-volume-labels "$PV_LABELS" \
-      --verbose && break || echo "Error creating twistlock console" && exit 1
-      
-      ;;
+	
+      # Deploy Console: twistcli v2.5 changing to yaml deployment
+      echo "Generating Twistlock Console Deployment with PV label selector"
+        $machine/twistcli console export openshift \
+	      --namespace "$TWISTLOCK_NAMESPACE" \
+	      --persistent-volume-labels "$PV_LABELS" \
+        --image-name "$IMAGE_REGISTRY_ADDRESS" \
+        --orchestration-cli "oc" 
+        oc create -f twistlock_console.yaml 
+     break;;
     "Storage Class")
       echo "you chose storage class"
       echo "Select storage class"
@@ -142,22 +139,24 @@ do
               EXIT_SC=1
              fi
              [[ ! -z "${EXIT_SC}" ]] && \
-             $machine/twistcli console install \
-             --namespace "$TWISTLOCK_NAMESPACE" \
-             --orchestration-type "openshift" \
-             --orchestration-cli "oc" \
-             --registry-address "$IMAGE_REGISTRY_ADDRESS" \
-             --registry-client "docker" \
-             --skip-push \
-             --storage-class $sc \
-             --verbose && break || echo "Error creating twistlock console" && exit 1
+              $machine/twistcli console export openshift \
+	            --namespace "$TWISTLOCK_NAMESPACE" \
+	            --storage-class "$sc" \
+              --image-name "$IMAGE_REGISTRY_ADDRESS" \
+              --orchestration-cli "oc" 
+              oc create -f twistlock_console.yaml 
              ;; 
-        esac
+          esac
       done
       break;;
-    "Quit")
-      echo "exiting" 
-      exit 1;;
+    "Dynamic")
+      echo "Dynamic PVC provisioning" 
+      $machine/twistcli console export openshift \
+	    --namespace "$TWISTLOCK_NAMESPACE" \
+	    --image-name "$IMAGE_REGISTRY_ADDRESS" \
+      --orchestration-cli "oc" 
+      oc create -f twistlock_console.yaml
+    break;;
     * ) 
       echo "invalid option";;
   esac 
@@ -230,13 +229,12 @@ if ! curl -k \
 fi
 
 # deploy the defenders
-daemonset_file=$($machine/twistcli defender export daemonset \
+$machine/twistcli defender export openshift \
   --address https://$TWISTLOCK_EXTERNAL_ROUTE \
   --cluster-address $(oc get service twistlock-console -n $TWISTLOCK_NAMESPACE | awk '{print $2}' | tail -n +2) \
   --namespace $TWISTLOCK_NAMESPACE \
-  --orchestration-type openshift \
+  --image-name $IMAGE_REGISTRY_INTERNAL/$TWISTLOCK_NAMESPACE/private:defender_$TWISTLOCK_VERSION \
   --user $TWISTLOCK_CONSOLE_USER \
   --password $TWISTLOCK_CONSOLE_PASSWORD \
-  --registry-client $IMAGE_REGISTRY_INTERNAL | grep "Daemonset" | awk '{print $5}')
-  
-oc apply -f $daemonset_file
+echo "$daemonset_file"
+oc create -f daemonset.yaml
