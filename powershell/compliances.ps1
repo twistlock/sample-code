@@ -1,28 +1,6 @@
-param ($arg1)
-
-if(!$arg1)
-    {
-    write-host "Scanning all images"
-    }
-else 
-    {
-    write-host "Scanning $arg1"
-    }
-
-# variables
-$console = twistlock.example.com
-$port = 8083
-
 # We want to call the images API
 # The search parameter ("?search=<image_name>") is optional
-if(!$arg1)
-    {
-    $request = "https://$console:$port/api/v1/images"
-    }
-else 
-    {
-    $request = "https://$console:$port/api/v1/images?search$arg1"
-    }
+$request = "https://console:8083/api/v1/images?search=<image_name>"
 
 # We will need credentials to connect so we will ask the user
 $cred = Get-Credential
