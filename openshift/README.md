@@ -5,14 +5,14 @@
 ## Prerequisites 
 * Session is authenticated to the OpenShift cluster
 * Access to OpenShift Command Line Interface (oc)
-* Twistlock license
+* Twistlock v2.5 and license
 * For the tl-ose-registry-populator.ps1 script you will need Powersell v6 https://blogs.msdn.microsoft.com/powershell/2018/01/10/powershell-core-6-0-generally-available-ga-and-supported/
 
 ## Running it
 Twistlock_openshift_deploy.sh
 * Download the bash script to your host and replace the following values:
-  * TWISTLOCK_VERSION the version of Twistlock to deploy (e.g. TWISTLOCK_VERSION="2_4_95")
-  * TWISTLOCK_RELEASE_URL path to Twistlock release (e.g. TWISTLOCK_RELEASE_URL="https://twistlock.example.com/releases/twistlock_2_4_95.tar.gz")
+  * TWISTLOCK_VERSION the version of Twistlock to deploy (e.g. TWISTLOCK_VERSION="2_5_99")
+  * TWISTLOCK_RELEASE_URL path to Twistlock release (e.g. TWISTLOCK_RELEASE_URL="https://twistlock.example.com/releases/twistlock_2_5_99.tar.gz")
 
   After making changes run:
   ```

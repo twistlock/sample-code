@@ -1,0 +1,22 @@
+{
+        "kind": "PersistentVolume",
+         “spec”:
+storageClassName: standard
+"apiVersion": "v1",
+        "metadata": {
+                "name": "YOURIDENTIFIER-twistlock",
+                "labels": {
+                        "app-volume": "twistlock"
+                }
+        },
+        "spec": {
+                "capacity": {
+                        "storage": "100G"
+                },
+                "accessModes": ["ReadWriteOnce", "ReadOnlyMany"],
+                "gcePersistentDisk": {
+                        "pdName": "YOURIDENTIFIER-disk",
+                        "fsType": "ext4"
+                }
+        }
+}

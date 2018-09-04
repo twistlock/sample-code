@@ -18,7 +18,7 @@
 # Twistlock Service Account Password:
 # Twistlock creates a Service Account that has associated Docker Secrets to authenticate to the internal OSE registry
 # Put this password into the $TL_service_account_password variable 
-# 1) Give the Twistlock Service account the right to read the OpenShift registry: oc adm policy add-cluster-role-to-user system:image-auditor system:serviceaccount:twistlock:twistlock-service
+# 1) Give the Twistlock Service account the right to read the OpenShift registry: oc adm policy add-cluster-role-to-user system:image-puller system:serviceaccount:twistlock:twistlock-service
 # 2) oc describe sa twistlock-service -n twistlock 
 # 3) oc describe secret twistlock-service-dockercfg-<string> in the secret, note the username (serviceaccount) and the password (a very long string, ends before "email") copy the password string into the $TL_service_account_password variable 
 # 
@@ -78,7 +78,7 @@ $cred = Get-Credential
 if(!$defenders)
     {
     $request = "$twistlock_API/api/v1/defenders?limit=1"
-    $tmpDEF = Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication
+    $tmpDEF = Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck
     $defenders = $tmpDEF.hostname
     }
 
@@ -115,4 +115,4 @@ foreach($image in $internal_registry_images)
     # Call the API
     $request = "$twistlock_API/api/v1/settings/registry"
     $header = @{"Content-Type" = "application/json"}
-    Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -Method "Post" -Header $header -Body $json_payload 
+    Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck -Method "Post" -Header $header -Body $json_payload 
