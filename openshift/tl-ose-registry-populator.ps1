@@ -78,7 +78,7 @@ $cred = Get-Credential
 if(!$defenders)
     {
     $request = "$twistlock_API/api/v1/defenders?limit=1"
-    $tmpDEF = Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication
+    $tmpDEF = Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck
     $defenders = $tmpDEF.hostname
     }
 
@@ -115,4 +115,4 @@ foreach($image in $internal_registry_images)
     # Call the API
     $request = "$twistlock_API/api/v1/settings/registry"
     $header = @{"Content-Type" = "application/json"}
-    Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -Method "Post" -Header $header -Body $json_payload 
+    Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck -Method "Post" -Header $header -Body $json_payload 
