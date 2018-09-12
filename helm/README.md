@@ -2,8 +2,8 @@
 
 ## Downloading the charts
 
-Just clone this repository and install from the charts, we don't make Twistlock charts available from the Helm package repository
-as our product is private
+Just clone this repository and install from the charts, we don't make Twistlock charts 
+available from the Helm package repository as our product is commercial
 
 ## Prerequisites
 
