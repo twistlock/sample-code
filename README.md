@@ -9,6 +9,7 @@ Directory
 ---------
 
 * ```./ansible``` contains an Ansible playbook for installing our Twistlock Defender
+* ```./helm``` contains helm chart for deploying the Twistlock Console
 * ```./powershell``` contains example powershell scripts
 * ```./scap``` contains SCAP datastream examples
 * ```./siem``` contains samples related to SIEM integration
