@@ -29,6 +29,4 @@ Now run:
 
 The Helm chart installs the Twistlock console only.  Once installed, you will need to log into your console via a browser, create an admin account and install your license.
 
-You will also then to install the Twistlock defender daemonset on your cluster. Please see Twistlock docs for this - search for **defender daemonset kubernetes**.
-
-
+You will also then to install the Twistlock defender daemonset on your cluster. Please see Twistlock docs for this - search for **defender daemonset kubernetes**.  Or go directly to the support documentation [here.](https://docs.twistlock.com/docs/latest/install/install_kubernetes.html#_install_defender)
