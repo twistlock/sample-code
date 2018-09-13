@@ -19,12 +19,6 @@ You will need the access token that comes with your Twistlock subscription; look
 First copy twistlock/valuesTemplate.xml twistlock/values.xml 
 and fill in version, image tag, imageName, and  access token in twistlock/values.xml.
 
-NOTE: If you don't have pull access to our private registry and need to use your own private registry, follow these steps:
-1. download the latest Twistlock release
-2.  run **docker load < twistlock_console.tar.gz**
-3. tag and push the console image to your private repository
-4. set imageName in values.json appropriately.
-
 Now run:
 
 	$ helm install ./twistlock
