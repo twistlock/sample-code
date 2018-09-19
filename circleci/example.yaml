@@ -18,9 +18,21 @@ jobs:
 
     steps:
       - checkout
+      # Download twistcli from the configured Twistlock console
       - run: curl -k -u $TL_USER:$TL_PASS --output ~/app/twistcli $TL_CONSOLE_URL/api/v1/util/twistcli
+      # ...and ensure it's executable.
       - run: sudo chmod a+x ./twistcli
+      
+      # Build our project that is contained in the code
+      # checked out above.
       - run: docker build -t corp/helloworld:$CIRCLE_BRANCH .
+      
+      # Run the scan with twistcli, providing detailed results in CircleCI and
+      # pushing the results to the Twistlock console.
+      # --details returns all vulnerabilities & compliance issues rather than just summaries.
+      # -address points to our Twistlock console
+      # -u and -p provide credentials for the console.  These creds only need the CI User role.
+      # Finally, we provide the name of the image we built with 'docker build', above.
       - run: ./twistcli images scan --details -address $TL_CONSOLE_URL -u $TL_USER -p $TL_PASS corp/helloworld:$CIRCLE_BRANCH
       # Add --vulnerability-threshold and/or --compliance-threshold to this command to
       # fail builds based on the thresholds.
