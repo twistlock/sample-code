@@ -6,27 +6,23 @@ jobs:
   build:
     machine: true
     working_directory: ~/app
-    #docker:
-      # specify the version
-      # - image: circleci/golang:1.8
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
+    context: tl_scan_context
+    
+# In this example, we're using a CircleCI context (https://circleci.com/docs/2.0/contexts/)
+# to store the username & password of our Twistlock CI user account
+# and the URL to our console
 
-    #### TEMPLATE_NOTE: go expects specific checkout path representing url
-    #### expecting it in the form of
-    ####   /go/src/github.com/circleci/go-tool
-    ####   /go/src/bitbucket.org/circleci/go-tool
-    # working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+# TL_USER:  The Twistlock user with the CI User role
+# TL_PASS:  The password for this user account
+# TL_CONSOLE_URL:  The base URL for the console -- http://console.<my_company>.com:8083 -- without a trailing /
+
     steps:
       - checkout
-
-      # specify any bash command here prefixed with run: 
-      - run: echo "Hello World"
-      #- image: circleci/classic:latest
-      - run: curl https://location.of.twistcli.binary/twistcli
+      - run: curl -k -u $TL_USER:$TL_PASS --output ~/app/twistcli $TL_CONSOLE_URL/api/v1/util/twistcli
       - run: sudo chmod a+x ./twistcli
-      - run: docker pull ubuntu:latest
-      - run: sudo ./twistcli--tlsverify=false -c https://CONSOLE.IP.HERE:8083 -u admin -p PASSWORDHERE -i ubuntu:latest
+      - run: docker build -t corp/helloworld:$CIRCLE_BRANCH .
+      - run: ./twistcli images scan --details -address $TL_CONSOLE_URL -u $TL_USER -p $TL_PASS corp/helloworld:$CIRCLE_BRANCH
+      # Add --vulnerability-threshold and/or --compliance-threshold to this command to
+      # fail builds based on the thresholds.
+      # See twistcli documentation for more details.
+  # add any additional commands needed to test the image, push to a registry, etc.
