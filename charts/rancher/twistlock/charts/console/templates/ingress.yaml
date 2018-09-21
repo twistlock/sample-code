@@ -1,0 +1,30 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    {{- if .Values.ingress.target  }}
+    external-dns.alpha.kubernetes.io/target: "{{ .Values.ingress.target }}"
+    {{- end }}
+    external-dns.alpha.kubernetes.io/aws-zone-type: public
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  name: {{ .Chart.Name }}-ingress
+  labels:
+    app: {{ .Chart.Name }}-ingress
+    chart: {{ template "twistlock-console.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  rules:
+    - host: "{{ .Values.ingress.domain }}"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ .Chart.Name }}
+              servicePort: {{ .Values.httpPort }}
+  tls:
+  - hosts:
+    - "{{ .Values.ingress.domain }}"
+    secretName: "{{ .Values.ingress.domain }}-tls"
+{{- end }}
