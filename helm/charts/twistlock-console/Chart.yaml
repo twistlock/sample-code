@@ -1,7 +1,7 @@
 apiVersion: v1
 description: Cloud native security platform 
 name: twistlock 
-version: "{{ .Values..global.version }}" 
+version: 2.5 
 home: twistlock.com
 keywords:
 - twistlock
