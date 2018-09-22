@@ -1,4 +1,4 @@
-# Helm chart for installing Twistlock Console into Kubernetes 
+# Helm chart for installing Twistlock Console into Kubernetes with script for installing Twistlock defender daemonset 
 
 ## Downloading the charts
 
@@ -21,9 +21,12 @@ and fill in version, image tag, imageName, and  access token in twistlock/values
 
 Now run:
 
-	$ helm install ./twistlock
+	$ helm install ./twistlock-console -n twistlock-console --namespace=twistlock
+
 	
 ## Configure and setup your Twistlock Console
+
+NOTE: console https port defaults to 8083, if you changed it, use the https port you chose in console/values.xml
 
 You can see your console external IP address with:
 
@@ -35,4 +38,20 @@ Log into your console via a browser - https://<CONSOLE_EXTERNAL_IP>:8083, create
 
 The Helm chart installs the Twistlock console only.  
 
-To complete the Twistlock install, you will need to deploy the Twistlock Defender Daemonset. Please see Twistlock docs for this - search for **defender daemonset kubernetes**.  Or go directly to the support documentation [here.](https://docs.twistlock.com/docs/latest/install/install_kubernetes.html#_install_defender)
+Provided script install defender ds after console is up and runing and license installed
+
+	$ ./install_defender_ds.sh <8083>
+
+For more information see support documentation [here.](https://docs.twistlock.com/docs/latest/install/install_kubernetes.html#_install_defender)
+
+## Uninstalling Twistlock
+
+First remove defender daemonset by running
+
+	$ kubectl delete -f defender_ds.yaml
+
+Then remove Twistlock console and namespace:
+
+	$ helm delete twistlock-console
+	$ kubectl delete ns twistlock 
+ 

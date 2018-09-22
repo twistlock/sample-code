@@ -2,7 +2,6 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: twistlock-console
-  namespace: twistlock
 spec:
   accessModes:
     - ReadWriteOnce
