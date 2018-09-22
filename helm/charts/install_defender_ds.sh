@@ -3,16 +3,19 @@ if [ "$#" -eq 1 ]; then
    https_port=$1 
 fi
 
-while true; do
+for cnt in `seq 1 12`;
+do
   ip=$(kubectl get svc twistlock-console -n twistlock | grep -v TYPE | awk '{print $4}')
   # Use the below when you want the output not to contain some iping
   # Use the below when you want the output to contain some iping
   if [[ ! $ip =~ "pending" ]]; then
     break
   fi
+  echo "waiting for Twistlock console service to be up with LoadBalancer assigned"
   echo -n "."
   sleep 3 
 done
+
 echo "Twistlock console service up and available"
 
 consoleURL="https://$ip:$https_port"
