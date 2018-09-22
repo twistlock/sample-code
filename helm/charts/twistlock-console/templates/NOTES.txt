@@ -10,10 +10,7 @@ Once the service is up with an assigned external IP,
 navigate to https://<external-ip>:8083 to create an admin account and install your license
 
 Finally, you will need to install the Twistlock Defender daemonset on your cluster.
-Just navigate to Manage/Defenders/Deploy/Defender Daemonset in the console UI and use "COPY" button
-and then copy command to your cluster controller shell
+	$ ./install_defender_ds.sh <8083>
 
-To uninstall Twistlock console and Defender DS, simply type:
+Refer to README.md file for uninstall notes
 
-   kubectl delete ns twistlock
- 
