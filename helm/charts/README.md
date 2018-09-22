@@ -52,6 +52,5 @@ First remove defender daemonset by running
 
 Then remove Twistlock console and namespace:
 
-	$ helm delete twistlock-console
+	$ helm delete twistlock-console --purge
 	$ kubectl delete ns twistlock 
- 
