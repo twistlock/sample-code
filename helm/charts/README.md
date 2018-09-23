@@ -38,7 +38,7 @@ Log into your console via a browser - https://<CONSOLE_EXTERNAL_IP>:8083, create
 
 The Helm chart installs the Twistlock console only.  
 
-Provided script install defender ds after console is up and runing and license installed
+Provided script installs Defender daemonset after console is up and runing and license has been installed.  The httpsPort defaults to 8083 but it must match the httpsPort in twistlock-console/charts/console/values.json.
 
 	$ ./install_defender_ds.sh <8083>
 
@@ -52,5 +52,5 @@ First remove defender daemonset by running
 
 Then remove Twistlock console and namespace:
 
-	$ helm delete twistlock-console --purge
+	$ helm delete ./twistlock-console --purge
 	$ kubectl delete ns twistlock 
