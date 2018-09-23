@@ -31,5 +31,8 @@ curl -k -u "$user:$password" "$consoleURL/api/v1/defenders/daemonset.yaml?consol
 
 kubectl create -f defender_ds.yaml
 
+kubectl get pods -n twistlock
+
 echo "Twistlock Defender Daemonset installed, go to console UI and see connected defenders at:  Manage/Defenders/Manage"
+
 
