@@ -25,7 +25,7 @@ echo "Browser to $consoleURL  and create an admin account and install license"
 echo "Once that is completed, enter your admin user account name:"
 read user
 echo "Enter password:"
-read password
+read -s password
 
 curl -k -u "$user:$password" "$consoleURL/api/v1/defenders/daemonset.yaml?consoleaddr=$ip&namespace=twistlock&orchestration=kubernetes&ubuntu=true&selinux=false" > defender_ds.yaml
 
