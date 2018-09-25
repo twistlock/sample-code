@@ -1,3 +1,5 @@
+#!/bin/bash
+
 https_port="8083"
 if [ "$#" -eq 1 ]; then
    https_port=$1 
@@ -5,7 +7,12 @@ fi
 
 for cnt in `seq 1 12`;
 do
-  ip=$(kubectl get svc twistlock-console -n twistlock | grep -v TYPE | awk '{print $4}')
+  if [ $(uname) = "Darwin" ]; then   # macOS
+    ip=$(kubectl get svc twistlock-console -n twistlock | grep -v CLUSTER-IP | awk '{print $4}')
+  else                                 # Linux
+    ip=$(kubectl get svc twistlock-console -n twistlock | grep -v CLUSTER-IP | awk '{print $3}')
+  fi
+
   # Use the below when you want the output not to contain some iping
   # Use the below when you want the output to contain some iping
   if [[ ! $ip =~ "pending" ]]; then
@@ -20,7 +27,7 @@ echo "Twistlock console service up and available"
 
 consoleURL="https://$ip:$https_port"
 
-echo "Browser to $consoleURL  and create an admin account and install license"
+echo "Browse to $consoleURL  and create an admin account and install license"
 
 echo "Once that is completed, enter your admin user account name:"
 read user
