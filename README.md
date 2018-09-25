@@ -14,4 +14,4 @@ Directory
 * ```./scap``` contains SCAP datastream examples
 * ```./siem``` contains samples related to SIEM integration
 * ```./openshift``` contains samples related to Twistlock deployment within an OpenShift cluster
-* ```./circleci``` contains a sample yaml for integration with Circle CI's hosted CI system.
+* ```./CI``` contains samples for integrating Twistlock into various continuous integration platforms
