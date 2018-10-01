@@ -6,4 +6,4 @@ console:
   httpsPort: 8083
   commPort: 8084
   serviceType: LoadBalancer
-
+  dockerSocket: "/var/run/docker.sock"

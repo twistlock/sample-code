@@ -8,5 +8,4 @@ global:
   imagePullPolicy: IfNotPresent
   imageTag: <2_X_XXX>
   imageName: "registry-auth.twistlock.com/tw_<token>/twistlock/console:console_<imageTag>" 
-
  
