@@ -18,6 +18,7 @@ You will need the access token that comes with your Twistlock subscription; look
 
 First copy twistlock/valuesTemplate.xml twistlock/values.xml 
 and fill in version, image tag, imageName, and  access token in twistlock/values.xml.
+Be sure and use _ (underscores) for tag and image name and . (periods) for version.
 
 Now run:
 
