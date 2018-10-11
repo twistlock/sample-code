@@ -8,7 +8,7 @@ fi
 for cnt in `seq 1 12`;
 do
   if [ $(uname) = "Darwin" ]; then   # macOS
-    ip=$(kubectl get svc twistlock-console-1 -n twistlock | grep -v CLUSTER-IP | awk '{print $4}')
+    ip=$(kubectl get svc twistlock-console -n twistlock | grep -v CLUSTER-IP | awk '{print $4}')
   else                                 # Linux
     ip=$(kubectl get svc twistlock-console -n twistlock | grep -v CLUSTER-IP | awk '{print $3}')
   fi

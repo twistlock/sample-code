@@ -4,7 +4,9 @@ It may take a few minutes for the Twistlock Console UI to become available. You 
 
 Once the console is available you can get the address of the Twistlock Console UI with the following commands:
 
-   kubectl get svc twistlock-console -n twistlock
+   kubectl get svc twistlock-console -w -n twistlock
+
+and wait for external IP to be assigned, then ^C.
 
 Once the service is up with an assigned external IP,
 navigate to https://<external-ip>:8083 to create an admin account and install your license
