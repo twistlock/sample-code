@@ -16,7 +16,7 @@ You will need the access token that comes with your Twistlock subscription; look
 
 ## Installing the Helm chart
 
-First copy charts/twistlock-console/valuesTemplate.yaml charts/twistlock-console/values.yaml and fill in version, image tag, imageName, and  access token in twistlock/values.yaml.
+First copy **charts/twistlock-console/valuesTemplate.yaml** to **charts/twistlock-console/values.yaml** and fill in version, image tag, imageName, and  access token in values.yaml.
 
 :point_right: use _ (underscores) for tag and image name and . (periods) for version - i.e. **version: 2.5.127**, **tag: 2_5_127**.
 
