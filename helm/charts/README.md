@@ -21,7 +21,7 @@ and fill in version, image tag, imageName, and  access token in twistlock/values
 
 Now run:
 
-	$ helm install ./twistlock-console -n twistlock-console --namespace=twistlock
+	$ helm install twistlock-console -n twistlock-console --namespace=twistlock
 
 	
 ## Configure and setup your Twistlock Console
@@ -52,5 +52,5 @@ First remove defender daemonset by running
 
 Then remove Twistlock console and namespace:
 
-	$ helm delete ./twistlock-console --purge
+	$ helm delete twistlock-console --purge
 	$ kubectl delete ns twistlock 
