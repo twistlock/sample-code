@@ -20,6 +20,8 @@ First copy **charts/twistlock-console/valuesTemplate.yaml** to **charts/twistloc
 
 :point_right: use _ (underscores) for tag and image name and . (periods) for version - i.e. **version: 2.5.127**, **tag: 2_5_127**.
 
+Optionally edit **charts/twistlock-console/charts/console/values.yaml** if you want to change the service type or default ports for the Twistlock console. **serviceType** can be LoadBalancer or NodePort.  LoadBalancer is the approved way to deploy in kubernetes and is the only choice we tested with this helm chart.
+
 Now run:
 
 	$ helm install ./twistlock-console -n twistlock-console --namespace=twistlock
@@ -39,7 +41,7 @@ Log into your console via a browser - https://<CONSOLE_EXTERNAL_IP>:8083, create
 
 The Helm chart installs the Twistlock console only.  
 
-Provided script installs Defender daemonset after console is up and runing and license has been installed.  The httpsPort defaults to 8083 but it must match the httpsPort in twistlock-console/charts/console/values.json.
+Provided script installs Defender daemonset after console is up and runing and license has been installed.  The httpsPort defaults to 8083 but it must match the httpsPort in **charts/twistlock-console/charts/console/values.yaml**.
 
 	$ ./install_defender_ds.sh <8083>
 
