@@ -17,12 +17,13 @@ You will need the access token that comes with your Twistlock subscription; look
 
 ## Installing the Helm chart
 
-* First copy twistlock_console/valuesTemplate.xml twistlock_console/values.xml 
-and fill in version, image tag, imageName, and  access token in twistlock_console/values.yaml.
+* Copy **charts/twistlock-console/valuesTemplate.yaml** to **charts/twistlock-console/values.yaml** and fill in version, image tag, imageName, and  access token in values.yaml. Use _ (underscores) for tag and image name and . (periods) for version - i.e. **version: 2.5.127**, **tag: ```2_5_127```**.
 
-* Review settings in twistlock-console/charts/console/values.yaml - change as desired.  Persistent volume size of **50GB** is recommended for larger production environments, **10GB** is sufficient for a trial or smaller deployment (less than 10 defenders).
 
-Now run:
+* Review and optionally edit **charts/twistlock-console/charts/console/values.yaml** if you want to change the service type or default ports for the Twistlock console. **serviceType** can be **LoadBalancer** or **NodePort**.  LoadBalancer is the approved way to deploy in kubernetes and is the only choice we tested with this helm chart. Persistent volume size of **50GB** is recommended for larger production environments, **10GB** is sufficient for a trial or smaller deployment (less than 10 defenders).
+
+
+* Now run:
 
 	$ helm install twistlock-console -n twistlock-console --namespace=twistlock
 
@@ -41,7 +42,7 @@ Log into your console via a browser - https://<CONSOLE_EXTERNAL_IP>:8083, create
 
 The Helm chart installs the Twistlock console only.  
 
-Provided script installs Defender daemonset after console is up and runing and license has been installed.  The httpsPort defaults to 8083 but it must match the httpsPort in twistlock-console/charts/console/values.json.
+Provided script installs Defender daemonset after console is up and runing and license has been installed.  The httpsPort defaults to 8083 but it must match the httpsPort in **charts/twistlock-console/charts/console/values.yaml**.
 
 	$ ./install_defender_ds.sh <8083>
 
