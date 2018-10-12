@@ -1,4 +1,5 @@
-# Helm chart for installing Twistlock Console into Kubernetes with script for installing Twistlock defender daemonset 
+# Helm Chart for Twistlock Console 
+
 
 ## Downloading the charts
 
@@ -16,8 +17,10 @@ You will need the access token that comes with your Twistlock subscription; look
 
 ## Installing the Helm chart
 
-First copy twistlock/valuesTemplate.xml twistlock/values.xml 
-and fill in version, image tag, imageName, and  access token in twistlock/values.xml.
+* First copy twistlock_console/valuesTemplate.xml twistlock_console/values.xml 
+and fill in version, image tag, imageName, and  access token in twistlock_console/values.yaml.
+
+* Review settings in twistlock-console/charts/console/values.yaml - change as desired.  Persistent volume size of **50GB** is recommended for larger production environments, **10GB** is sufficient for a trial or smaller deployment (less than 10 defenders).
 
 Now run:
 
@@ -26,7 +29,7 @@ Now run:
 	
 ## Configure and setup your Twistlock Console
 
-NOTE: console https port defaults to 8083, if you changed it, use the https port you chose in console/values.xml
+NOTE: console https port defaults to 8083, if you changed it, use the https port you chose in twistlock-console/charts/console/values.yaml
 
 You can see your console external IP address with:
 
