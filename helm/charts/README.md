@@ -9,7 +9,10 @@ Just clone this repository and install from the charts, we don't make Twistlock 
 
 ### Helm 
 
-You will need [Helm](https://helm.sh/) installed (both the Helm client locally and the Tiller server component) on your Kubernetes cluster. 
+You will need [Helm](https://helm.sh/) installed (both the Helm client locally and the Tiller server component) on your Kubernetes cluster.
+
+### Firewall
+You will need to configure your kubenetes cluster firewall rules to allow ingress traffic on port 8081 for http and 8083 for https browser access.  Port 8084 is utilized for defender to console communications within your cluster (via TLS).
 
 ### Secrets
 
