@@ -1,4 +1,4 @@
-# Twistlock + Powershell
+# Twistlock API + Powershell
 This repository contains sample powershell scripts that query the Twistlock API to extract data.
 These scripts are intended to help with your understanding of how to use the Twistlock API to further its functionality and value.
 Pull requests are welcomed.
