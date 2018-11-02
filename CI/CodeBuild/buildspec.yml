@@ -1,0 +1,36 @@
+version: 0.2
+
+# In this example, we're using environment variables
+# to store the username & password of our Twistlock CI user account
+# and the URL to our console
+
+# TL_USER:  The Twistlock user with the CI User role
+# TL_PASS:  The password for this user account
+# TL_CONSOLE_URL:  The base URL for the console -- http://console.<my_company>.com:8083 -- without a trailing /
+
+phases:
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...          
+      - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Downloading twistcli
+      - curl -k -u $TL_USER:$TL_PASS --output ./twistcli $TL_CONSOLE_URL/api/v1/util/twistcli
+      - chmod +x ./twistcli
+      - echo Scanning with twistcli
+      
+      # Run the scan with twistcli, providing detailed results in CodeBuild and
+      # pushing the results to the Twistlock console.
+      # --details returns all vulnerabilities & compliance issues rather than just summaries.
+      # -address points to our Twistlock console
+      # -u and -p provide credentials for the console.  These creds only need the CI User role.
+      # Finally, we provide the name of the image we built with 'docker build', above.
+      
+      - ./twistcli images scan --details -address $TL_CONSOLE_URL -u $TL_USER -p $TL_PASS $IMAGE_REPO_NAME:$IMAGE_TAG
+
+      # Add --vulnerability-threshold and/or --compliance-threshold to this command to
+      # fail builds based on the thresholds.
+      # See twistcli documentation for more details.
