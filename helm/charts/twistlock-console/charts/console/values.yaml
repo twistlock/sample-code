@@ -7,4 +7,4 @@ console:
   commPort: 8084
   serviceType: LoadBalancer
   dockerSocket: "/var/run/docker.sock"
-  persistentVolumeSize: "50GB"
+  persistentVolumeSize: "50Gi"
