@@ -1,0 +1,51 @@
+# Sample Azure DevOps pipeline
+# Showcasing integration of twistcli scanning
+
+# This sample relies on environment variables for connectivity to Twistlock
+
+# TL_USER:  The Twistlock user with the CI User role
+# TL_PASS:  The password for this user account
+# TL_CONSOLE_URL:  The base URL for the console -- http://console.<my_company>.com:8083 -- without a trailing /
+
+# First, build our image
+# Use a Linux-based agent such as Ubuntu 16.04
+
+resources:
+- repo: self
+queue:
+  name: Hosted Ubuntu 1604
+steps:
+- task: Docker@0
+  displayName: 'Build an image'
+  inputs:
+    containerregistrytype: 'Container Registry'
+
+    dockerRegistryConnection: dockerhub
+
+# Use a script step to pull twistcli and scan the image that was built
+
+- script: |
+   
+   # Using our credentials, download twistcli from Console and make it executable
+   curl -k -u $TL_USER:$TL_PASS --output ./twistcli $TL_CONSOLE_URL/api/v1/util/twistcli
+   sudo chmod a+x ./twistcli
+   
+   # Run the scan with twistcli, providing detailed results in Azure DevOps and
+   # pushing the results to the Twistlock console.
+   # --details returns all vulnerabilities & compliance issues rather than just summaries.
+   # -address points to our Twistlock console
+   # -u and -p provide credentials for the console.  These creds only need the CI User role.
+   # Finally, we provide the name of the image we built with 'docker build', above.
+   ./twistcli images scan --details -address $TL_CONSOLE_URL -u $TL_USER -p $TL_PASS $(Build.Repository.Name):$(Build.BuildId)
+   
+   # Add --vulnerability-threshold and/or --compliance-threshold to this command to
+   # fail builds based on the thresholds.
+   # See twistcli documentation for more details.
+      
+  displayName: 'Scan image with Twistlock'
+
+
+- task: Docker@0
+  displayName: 'Push an image'
+  inputs:
+    action: 'Push an image'
