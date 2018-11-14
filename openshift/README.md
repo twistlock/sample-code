@@ -13,6 +13,7 @@ Twistlock_openshift_deploy.sh
 * Download the bash script to your host and replace the following values:
   * TWISTLOCK_VERSION the version of Twistlock to deploy (e.g. TWISTLOCK_VERSION="2_5_99")
   * TWISTLOCK_RELEASE_URL path to Twistlock release (e.g. TWISTLOCK_RELEASE_URL="https://twistlock.example.com/releases/twistlock_2_5_99.tar.gz")
+  * CUSTOMER_EMAIL your email address, required for `oc create secret docker-registry`
 
   After making changes run:
   ```

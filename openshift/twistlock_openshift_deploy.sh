@@ -2,8 +2,9 @@
 
 # Constants
 TWISTLOCK_PUBLIC_REGISTRY="registry.twistlock.com"
-TWISTLOCK_VERSION="2_5_99"
-TWISTLOCK_RELEASE_URL="https://twistlock.example.com/releases/twistlock_2_5_99.tar.gz"
+TWISTLOCK_VERSION="2_5_127"
+TWISTLOCK_RELEASE_URL="https://cdn.twistlock.com/releases/380f258e/twistlock_2_5_127.tar.gz"
+CUSTOMER_EMAIL="example@example.com"
 
 # validate user is logged in with OC Client
 if ! oc version | grep Server > /dev/null; then
@@ -60,7 +61,7 @@ fi
 
 IMAGE_REGISTRY_EXTERNAL=$(oc get route docker-registry -n default | awk '{print $2}' | tail -n +2)
 IMAGE_REGISTRY_INTERNAL="docker-registry.default.svc:5000"
-IMAGE_REGISTRY_ADDRESS="$IMAGE_REGISTRY_INTERNAL/twistlock/private:console_$TWISTLOCK_VERSION"
+IMAGE_REGISTRY_ADDRESS="$IMAGE_REGISTRY_INTERNAL/$TWISTLOCK_NAMESPACE/console:console_$TWISTLOCK_VERSION"
 
 # create twistlock namespace
 echo "Creating new project: $TWISTLOCK_NAMESPACE"
@@ -70,26 +71,12 @@ if ! oc adm new-project $TWISTLOCK_NAMESPACE --node-selector=''; then
   exit 1
 fi
 
+echo ACCESS_TOKEN=${ACCESS_TOKEN}
+
 # pull twistlock console image
-echo "Retrieving console image from: $TWISTLOCK_PUBLIC_REGISTRY/twistlock/console:console_$TWISTLOCK_VERSION"
-if ! docker login -u twistlock -p $(echo $ACCESS_TOKEN | tr '[:upper:]' '[:lower:]') $TWISTLOCK_PUBLIC_REGISTRY | grep "Login Succeeded"; then
-    echo "Error logging into the Twistlock Registry: $TWISTLOCK_PUBLIC_REGISTRY"
-    exit 1
-fi
-docker pull $TWISTLOCK_PUBLIC_REGISTRY/twistlock/console:console_$TWISTLOCK_VERSION
-docker pull $TWISTLOCK_PUBLIC_REGISTRY/twistlock/defender:defender_$TWISTLOCK_VERSION
-
-if ! docker login -u $(oc whoami) -p $(oc whoami -t) $IMAGE_REGISTRY_EXTERNAL | grep "Login Succeeded"; then
-  echo "Error logging into the OpenShift Registry"
-  exit 1
-fi
-echo "Pushing console image to: $IMAGE_REGISTRY_EXTERNAL/twistlock/private:console_$TWISTLOCK_VERSION"
-docker tag $TWISTLOCK_PUBLIC_REGISTRY/twistlock/console:console_$TWISTLOCK_VERSION $IMAGE_REGISTRY_EXTERNAL/twistlock/private:console_$TWISTLOCK_VERSION
-docker push $IMAGE_REGISTRY_EXTERNAL/twistlock/private:console_$TWISTLOCK_VERSION
-
-echo "Pushing defender image to $IMAGE_REGISTRY_EXTERNAL/$TWISTLOCK_NAMESPACE/private:defender_$TWISTLOCK_VERSION"
-docker tag $TWISTLOCK_PUBLIC_REGISTRY/twistlock/defender:defender_$TWISTLOCK_VERSION $IMAGE_REGISTRY_EXTERNAL/$TWISTLOCK_NAMESPACE/private:defender_$TWISTLOCK_VERSION
-docker push $IMAGE_REGISTRY_EXTERNAL/$TWISTLOCK_NAMESPACE/private:defender_$TWISTLOCK_VERSION
+oc create secret docker-registry twistlock-registry --docker-server=${TWISTLOCK_PUBLIC_REGISTRY} --docker-username=twistlock --docker-password=${ACCESS_TOKEN} --docker-email=${CUSTOMER_EMAIL}
+oc import-image twistlock/defender:defender_${TWISTLOCK_VERSION} --from=${TWISTLOCK_PUBLIC_REGISTRY}/twistlock/defender:defender_${TWISTLOCK_VERSION} --confirm
+oc import-image twistlock/console:console_${TWISTLOCK_VERSION} --from=${TWISTLOCK_PUBLIC_REGISTRY}/twistlock/console:console_${TWISTLOCK_VERSION} --confirm
 
 # Retrieve the Twistlock release
 echo "Retrieiving Twistlock Release.."
@@ -233,7 +220,7 @@ $machine/twistcli defender export openshift \
   --address https://$TWISTLOCK_EXTERNAL_ROUTE \
   --cluster-address $(oc get service twistlock-console -n $TWISTLOCK_NAMESPACE | awk '{print $2}' | tail -n +2) \
   --namespace $TWISTLOCK_NAMESPACE \
-  --image-name $IMAGE_REGISTRY_INTERNAL/$TWISTLOCK_NAMESPACE/private:defender_$TWISTLOCK_VERSION \
+  --image-name $IMAGE_REGISTRY_INTERNAL/$TWISTLOCK_NAMESPACE/defender:defender_$TWISTLOCK_VERSION \
   --user $TWISTLOCK_CONSOLE_USER \
   --password $TWISTLOCK_CONSOLE_PASSWORD \
 echo "$daemonset_file"
