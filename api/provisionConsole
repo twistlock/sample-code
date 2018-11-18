@@ -1,0 +1,24 @@
+echo "Provisioning Twistlock platform"
+echo "This script will do the following"
+echo "  1) download software "
+echo "  2) install console"
+echo "  3) create first user with name 'admin'"
+echo "  4) install license"
+echo "  5) optionally install defender DS into your kubernetes cluster"
+
+./downloadTwistlock
+
+./installConsole
+
+sleep 5
+
+./addFirstUser
+
+sleep 5
+
+./installLicense
+
+
+
+
+
