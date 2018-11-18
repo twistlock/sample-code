@@ -9,6 +9,7 @@ echo "  4) install license as setup in setupEnv"
 
 ./installConsole
 
+echo "We need to wait a while for console to come up fully before proceeding"
 sleep 10 
 
 ./addFirstUser
