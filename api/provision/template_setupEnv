@@ -1,7 +1,0 @@
-export TL_ADMIN_PW='changeme'
-export TL_CONSOLE_URL='yourserver.com'
-export TL_CONSOLE_HTTP="http://$TL_CONSOLE_URL:8081"
-export TL_CONSOLE_HTTPS="https://$TL_CONSOLE_URL:8083"
-export TL_RELEASE_URL='<from documentation for latest release>'
-export TL_LICENSE=''
-
