@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ ! -d "twistlock" ]; then
+  echo "Downloading twistlock release in subfolder 'twistlock'"
+  mkdir twistlock
+  cd twistlock
+  echo "Downloading latest Twistlock release"
+  wget $TL_RELEASE_URL
+  tar xzf twist*.tar.gz
+  cd ..
+  ls -al twistlock
+fi
+

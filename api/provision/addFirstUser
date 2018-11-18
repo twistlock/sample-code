@@ -1,6 +1,8 @@
 echo "creating first admin user"
 
-curl -v  -H 'Content-Type: application/json' POST -d "{'username': 'admin', 'password': $TL_ADMIN_PW}" "$TL_CONSOLE_HTTP/api/v1/signup" 
+curl -v -k  -H 'Content-Type: application/json' \
+POST -d '{"username": "admin", "password": "'"$TL_ADMIN_PW"'"}' \
+  "$TL_CONSOLE_HTTPS/api/v1/signup" 
 
 status=$?
 
