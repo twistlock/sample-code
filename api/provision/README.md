@@ -1,13 +1,11 @@
 To automatically provision Twistlock console: 
-1) copy template_setupEnv to setupEnv
-2) edit setupEnv with your server url and Twistlock license string.
-3) Then run:
-  # . setupEnv
-  # ./provisionConsole
+  - follow instructions in ../README.md to setup your environment
+  - run ./provisionConsole
 
 
-Note: for this to run without user input, you will need sudo privs without need for password;
-      otherwise run everything as root.
+Note: for this to run without user input, you will need sudo privs without 
+      need for password; otherwise run as root.
+
 
 
 
