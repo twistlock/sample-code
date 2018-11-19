@@ -20,7 +20,7 @@ curl -sku admin:$TL_ADMIN_PW -H 'Content-Type: application/json' \
 status=$?
 if [ $status -eq 0 ]
 then
-  echo "Model for image $1 set to active"
+  echo "Model for image $1 set to Active"
 else
   echo "Error: rerun curl command with -v flag instead of -s to see error"
 fi
