@@ -1,6 +1,6 @@
 # README
 The example in this directory provides a yaml that will allow you to integrate Twistlocks CI scanning capabilities with hosted CircleCI.  This sample is a stub illustrating only the steps needed to build a Docker image and scan with Twistlock.
-* ```/example.yaml``` includes details on how to use twistcli when using CircleCI's hosted continuous integration service
+* ```/example_config.yml``` includes details on how to use twistcli when using CircleCI's hosted continuous integration service
 
 
 ## Prerequisite 
