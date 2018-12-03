@@ -1,7 +1,7 @@
 # CircleCI sample file for Twistlock CI integration
 #
 
-version: 2
+version: 2.1
 jobs:
   build:
     machine: true
