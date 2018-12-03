@@ -1,22 +1,23 @@
 # CircleCI sample file for Twistlock CI integration
 #
 
-version: 1
+version: 2
 jobs:
   build:
     machine: true
     working_directory: ~/app
-    context: tl_scan_context
     
 # In this example, we're using a CircleCI context (https://circleci.com/docs/2.0/contexts/)
 # to store the username & password of our Twistlock CI user account
-# and the URL to our console
+# and the URL to our console. The context is named "tl_scan_context"
+# and contains the following variables:
 
 # TL_USER:  The Twistlock user with the CI User role
 # TL_PASS:  The password for this user account
 # TL_CONSOLE_URL:  The base URL for the console -- http://console.<my_company>.com:8083 -- without a trailing /
 
     steps:
+      # Run the built-in checkout script to checkout the code in this repo
       - checkout
       # Download twistcli from the configured Twistlock console
       - run: curl -k -u $TL_USER:$TL_PASS --output ~/app/twistcli $TL_CONSOLE_URL/api/v1/util/twistcli
@@ -38,3 +39,10 @@ jobs:
       # fail builds based on the thresholds.
       # See twistcli documentation for more details.
   # add any additional commands needed to test the image, push to a registry, etc.
+
+workflows:
+  version: 2
+  build_workflow:
+    jobs:
+      - build:
+         context: tl_scan_context
