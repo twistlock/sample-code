@@ -1,0 +1,3 @@
+curl -sku admin:$TL_ADMIN_PW -O twistcli \
+  "$TL_CONSOLE_HTTP/api/v1/util/twistcli" 
+
