@@ -35,7 +35,7 @@ Pull requests are welcomed.
       * _child_ - the image has more layers than the "master" image and the master's base layers match.
       * _parent_ - the image has less layers than the "master" image and the parent's base layers match. The image you supplied is based upon another image.
       * _no-association_ - the images' first layers does not match.
-    * Execute:
+  * Execute:
       * Provide the name of the image to be used as the base image when comparing against all images within Twistlock. For example _localhost:5000/alpine:latest_
     ```
     .\base_image_finder.ps1 localhost:5000/alpine:latest
@@ -55,6 +55,21 @@ Pull requests are welcomed.
     ```
     .\compliance_status.ps1 800-190
     ```
+
+* **rmf_ato.ps1** - this script generates a sample Authority to Operate report for an image showing the packages, vulnerabilities, compliance and running containers. You can expand upon the data you want to render in the resulting csv file.
+  * Modify:
+    * Change the $tlconsole variable to your Twistlock Console's API URL
+  * Output:
+    * Outputs an CSV file (_yyyyMMdd-HHmmss-<imageName>-ato.csv_).
+    * Generates a CSV that can be used to generate charts within excel, for example:
+
+        ![ATO report](../images/ato_report.png?raw=true "ato report")
+
+  * Execute:
+    * Provide the name of the image. For example _openebs/jiva:0.6.0_
+        ```
+        .\rmf_ato.ps1 openebs/jiva:0.6.0
+        ```
 
 ## Prerequisite
 * PowerShell version 6.0 or greater.
