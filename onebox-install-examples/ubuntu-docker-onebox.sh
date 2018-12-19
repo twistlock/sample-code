@@ -5,7 +5,6 @@
 
 
 TL_PROD_URL=https://XXXXXXX/XXXXXXXX/XXXXXXXXX/twistlock_XXXXX_XXXXX_XXXXX.tar.gz
-TL_TARBALL=$(echo $TL_PROD_URL | cut -d/ -f6)
 
 sudo apt-get update
 
@@ -24,5 +23,5 @@ echo ‘########################’
 echo "Installing Twistlock onebox"
 wget $TL_PROD_URL
 mkdir twistlock
-tar xvzf $TL_TARBALL -C twistlock
+tar xvzf twistlock*.tar.gz -C twistlock
 sudo twistlock/twistlock.sh -s onebox
