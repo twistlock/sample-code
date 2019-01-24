@@ -6,7 +6,7 @@ Just clone this repository and install from the charts, we don't make Twistlock 
 
 ## Prerequisites
 
-### Helm-
+### Helm
 
 You will need [Helm](https://helm.sh/) installed (both the Helm client locally and the Tiller server component) on your Kubernetes cluster.
 
