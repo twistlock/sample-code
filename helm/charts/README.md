@@ -1,4 +1,4 @@
- Helm Chart for Twistlock Console
+# Helm chart for installing Twistlock Console into Kubernetes with script for installing Twistlock Defender daemonset
 
 ## Downloading the charts
 
@@ -6,13 +6,13 @@ Just clone this repository and install from the charts, we don't make Twistlock 
 
 ## Prerequisites
 
-### Helm
+### Helm-
 
 You will need [Helm](https://helm.sh/) installed (both the Helm client locally and the Tiller server component) on your Kubernetes cluster.
 
 ### Firewall
 
-You will need to configure your kubenetes cluster firewall rules to allow ingress traffic on port 8081 for http and 8083 for https browser access.  Port 8084 is utilized for Defender to Console communications within your cluster (via WSS).
+You will need to configure your Kubenetes cluster firewall rules to allow ingress traffic on port 8081 for HTTP and 8083 for HTTPS browser access.  Port 8084 is utilized for Defender to Console WSS communications within your cluster.
 
 ### Secrets
 
@@ -20,7 +20,7 @@ You will need the access token that comes with your Twistlock subscription; look
 
 ### Kubernetes client tools
 
-You will need the `kubectl` command that has been configured for the management of the target Kubernetes cluster.
+You will need a local installation of the `kubectl` command that has been configured for the management of the target Kubernetes cluster.
 
 ## Installing the Helm chart
 
@@ -33,52 +33,57 @@ Next, edit `twistlock-console/values.yaml`, adding in the appropriate values for
 Note: the Twistlock release should be formatted with underscores for the _imageTag_ value (_2_5_127_) and periods for the _version_ value (_2.5.127_).
 
 There are several parameters in `charts/twistlock-console/charts/console/values.yaml` that should be reviewed for correctness in the target environment:
- * _serviceType_: can be one of _LoadBalancer_ or _NodePort_. (default: _LoadBalancer_)
- * _persistentVolumeSize_: should be _10Gi_ for a small POC deployment, _50Gi_ or more for a production environment (default: _50Gi_)
- * _httpPort_,_httpsPort_,_commPort_: these parameters define the Console service ports. They can be changed, although the defaults will suffice in the vast majority of cases. (default: 8081, 8083, and 8084)
+ * _serviceType_: can be one of _LoadBalancer_, _NodePort_, or _ClusterIP_. (default: _LoadBalancer_)
+ * _persistentVolumeSize_: a _10Gi_ PV will suffice for a very small POC deployment. For a deployment of any signifigance, a PV of _50Gi_ or higher should be used. (default: _50Gi_)
+ * _httpPort_, _httpsPort_, _commPort_: these parameters define the Console service ports. Although they can be changed, it is recommended to retain the defaults for operational simplicity. (default: 8081, 8083, and 8084)
 
 ### Execution
 
 Run the following _helm_ command to install the Console:
 
-   $ helm install twistlock-console -n twistlock-console --namespace=twistlock
+    $ helm install twistlock-console -n twistlock-console --namespace=twistlock
 
-* `-n twistlock-console`: set the release name to _twistlock-console_
-* `--namespace=twistlock`: install into the _twistlock_ namespace
+ * `-n twistlock-console`: set the release name to _twistlock-console_
+ * `--namespace=twistlock`: install into the _twistlock_ namespace
 
 ## Configure and setup your Twistlock Console
 
-Open a browser to _https://<CONSOLE_ADDRESS>:8083_, enter in a username and password to create an initial administrative account, then enter your license into the provided text box.
+### Determine your Console address
 
-Note: Port 8083 is the default HTTPS port for the Console. If you changed it in _values.yml_, please replace 8083 with the appropriate value.
-
-#### Determining the Console address
-
-The value of _<CONSOLE_ADDRESS>_ will vary based on the service type.
-
-For _LoadBalancer_ and _NodePort_ deployments, run the following command to display the external IP address:
+When using the _NodePort_ or _LoadBalancer_ service types, the Console address can be found in the `External IP` field in the output of the following command:
 
     $ kubectl get service -n twistlock
 
-For a _ClusterIP_ deployment, one might use _localhost_ in concert with a local port that has been forwarded to the remote service using an SSH tunnel or the `kubectl port-forward` command.
+When using _ClusterIP_, the Console will not be accessible from outside of the Kubernetes cluster. However, you can use the port forwarding capabilities of `kubectl` to route traffic sent to a local port to the Console service. In the next example, we use `kubectl` to forward port 8083 on the local host to port 8083 of the `twistlock-console` service:
 
+    $ kubectl port-forward service/twistlock-console 8083
+
+In this case, the Console will be accessed through the loopback address `127.0.0.1`, or `localhost`.
+
+Note: Port 8083 is the default HTTPS port for the Console. If you changed it in _values.yml_, please replace 8083 with the appropriate value.
+
+### Accessing the Console
+
+Open a browser to _https://<CONSOLE_ADDRESS>:8083_, enter in a username and password to create an initial administrator account, then enter your license into the provided text box.
+
+Note: Port 8083 is the default HTTPS port for the Console. If you changed it in _values.yml_, please replace 8083 with the appropriate value.
 
 ## Installing the Twistlock Defender DS
 
-Although the Helm chart installs the Twistlock Console only, we have provided a shell script to help automate the installation of the Defender daemonset.
+Although this Helm chart is limited to the installation of the Twistlock Console only, we have provided a shell script to help automate the installation of the Defender daemonset.
 
 The script `install_defender_ds.sh` should be executed after the Console is running and the license has been installed.
 
 The script accepts a single argument that should match the _httpsPort_ of the Console (default: 8083).
 
-    $ ./install_defender_ds.sh <8083>
+    $ ./install_defender_ds.sh 8083
 
 For more information, see the [documentation covering the installation of Defenders under Kubernetes.](https://docs.twistlock.com/docs/latest/install/install_kubernetes.html#_install_defender)
 
 
 ## Uninstalling Twistlock
 
-First, remove the Defender daemonset by running
+First, remove the Defender daemonset by running:
 
     $ kubectl delete -f defender_ds.yaml
 
@@ -98,3 +103,4 @@ New users can find details on getting started with some of Twistlock's key featu
  * [An overview of container runtime defense](https://docs.twistlock.com/docs/latest/runtime_defense/runtime_defense.html)
  * [Setting up a cloud native application firewall](https://docs.twistlock.com/docs/latest/firewalls/cnaf.html)
  * [Setting up a cloud native application firewall](https://docs.twistlock.com/docs/latest/firewalls/cnnf.html)
+
