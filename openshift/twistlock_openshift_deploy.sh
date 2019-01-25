@@ -2,9 +2,8 @@
 
 # Constants
 TWISTLOCK_PUBLIC_REGISTRY="registry.twistlock.com"
-TWISTLOCK_VERSION="2_5_121"
-TWISTLOCK_RELEASE_URL="https://twistlock.example.com/releases/twistlock_2_5_121.tar.gz"
-TWISTLOCK_RELEASE_URL="https://cdn.twistlock.com/releases/ab66e0a9/twistlock_2_5_121.tar.gz"
+TWISTLOCK_VERSION="2_5_99"
+TWISTLOCK_RELEASE_URL="https://twistlock.example.com/releases/twistlock_2_5_99.tar.gz"
 
 # validate user is logged in with OC Client
 if ! oc version | grep Server > /dev/null; then
