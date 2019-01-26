@@ -22,6 +22,10 @@ You will need the access token that comes with your Twistlock subscription; look
 
 You will need a local installation of the `kubectl` command that has been configured for the management of the target Kubernetes cluster.
 
+### Twistlock access token and license
+
+You will need the access token and the license that was provided to you by the Twistlock account team.
+
 ## Installing the Helm chart
 
 ### Configuration
@@ -33,7 +37,7 @@ Next, edit `twistlock-console/values.yaml`, adding in the appropriate values for
 Note: the Twistlock release should be formatted with underscores as the version separator in the _imageTag_ parameter (_2_5_127_), and periods for the _version_ parameter (_2.5.127_).
 
 There are several parameters in `charts/twistlock-console/charts/console/values.yaml` that should be reviewed for correctness in the target environment:
- * _serviceType_: can be one of _LoadBalancer_, _NodePort_, or _ClusterIP_. (default: _LoadBalancer_)
+ * _serviceType_: can be one of _LoadBalancer_, _or NodePort_. (default: _LoadBalancer_)
  * _persistentVolumeSize_: a _10Gi_ PV will suffice for a very small POC deployment. For a deployment of any signifigance, a PV of _50Gi_ or higher should be used. (default: _50Gi_)
  * _httpPort_, _httpsPort_, _commPort_: these parameters define the Console service ports. Although they can be changed, it is recommended to retain the defaults for operational simplicity. (default: 8081, 8083, and 8084)
 
@@ -48,19 +52,12 @@ Run the following _helm_ command to install the Console:
 
 ## Configure and setup your Twistlock Console
 
-### Determine your Console address
+### Determine the Console address
 
-When using the _NodePort_ or _LoadBalancer_ service types, the Console address can be found in the `External IP` field in the output of the following command:
+The Console address can be found in the `External IP` field in the output of the following command:
 
     $ kubectl get service -n twistlock
 
-When using _ClusterIP_, the Console will not be accessible from outside of the Kubernetes cluster. However, you can use the port forwarding capabilities of `kubectl` to route traffic sent to a local port to the Console service. In the next example, we use `kubectl` to forward port 8083 on the local host to port 8083 of the `twistlock-console` service:
-
-    $ kubectl port-forward service/twistlock-console 8083
-
-In this case, the Console will be accessed through the loopback address `127.0.0.1`, or `localhost`.
-
-Note: Port 8083 is the default HTTPS port for the Console. If you changed it in _values.yml_, please replace 8083 with the appropriate value.
 
 ### Accessing the Console
 
