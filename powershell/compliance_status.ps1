@@ -57,7 +57,7 @@ function findCompliance([array]$type, [array]$rules, [array]$objects, [int]$tota
                     $rule = $complianceChecks.([string]$rule)[0]
                     $rule = $rule.replace(',','')
                     }
-                $tmpOutputCSV = $tmpOutputCSV + "$rule,$y,$passing,$total" +$newline
+                $tmpOutputCSV = $tmpOutputCSV + "$strCheckId,$rule,$y,$passing,$total" +$newline
             } #if an object check
         } #end of foreach check
     # return CSV formated string
@@ -125,21 +125,21 @@ foreach($image in $images)
         }
     }
 
-$outputCSV = "ImageComplianceID,failing,passing,total"+$newline
+$outputCSV = "ImageComplianceID,Description,failing,passing,total"+$newline
 $outputCSV = $outputCSV + (findCompliance "image" $checks $uniqueImages $totalImages) + $newline
 
 # Process the hosts
 $request = "$tlconsole/api/v1/hosts"
 $hosts = Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck
 $totalHosts = $hosts.count
-$outputCSV = $outputCSV + "HostComplianceID,failing,passing,total"+$newline
+$outputCSV = $outputCSV + "HostComplianceID,Description,failing,passing,total"+$newline
 $outputCSV = $outputCSV + (findCompliance "host" $checks $hosts $totalHosts) + $newline
 
 # Process the containers
 $request = "$tlconsole/api/v1/containers"
 $containers = Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck
 $totalContainers = $containers.count
-$outputCSV = $outputCSV + "ContainerComplianceID,failing,passing,total"+$newline
+$outputCSV = $outputCSV + "ContainerComplianceID,Description,failing,passing,total"+$newline
 $outputCSV = $outputCSV + (findCompliance "container" $checks $containers $totalContainers) + $newline
 
 $outputFile = $time+"-"+$arg1+"-compliance-check.csv"
