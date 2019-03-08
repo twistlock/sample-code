@@ -2,7 +2,7 @@
 
 function usage()
 {
-    echo "Usage: 'setModelState {manualRelearning|manualLearning|manualActive} {<fileName>|<imageName>}'"
+    echo "Usage: 'changeState {manualRelearning|manualLearning|manualActive} {<fileName>|<imageName>}'"
     exit
 }
 

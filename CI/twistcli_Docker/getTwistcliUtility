@@ -1,1 +1,9 @@
-../../api/scans/getTwistcliUtility
+curl -sku $TL_CIUSER:$TL_CIUSER_PW -o twistcli \
+  "$TL_CONSOLE_HTTP/api/v1/util/twistcli" 
+
+chmod +x twistcli
+
+./twistcli -v
+
+
+
