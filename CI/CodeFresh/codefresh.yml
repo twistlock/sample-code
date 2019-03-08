@@ -29,7 +29,10 @@ steps:
     commands: 
       - curl -k -u $TL_USER:$TL_PASS --output ./twistcli $TL_CONSOLE_URL/api/v1/util/twistcli
       - chmod +x ./twistcli
-      - ./twistcli hosts scan --details -address $TL_CONSOLE_URL -u $TL_USER -p $TL_PASS --skip-docker   
+      - ./twistcli hosts scan --details -address $TL_CONSOLE_URL -u $TL_USER -p $TL_PASS --skip-docker --include-3rd-party  
+    
+    # --include-3rd-party is new in Twistlock 18.11.  Omit it if you're using an earlier version.
+    
     # Add --vulnerability-threshold and/or --compliance-threshold to this command to
     # fail builds based on the thresholds.
     # See twistcli documentation for more details.
