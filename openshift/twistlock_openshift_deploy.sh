@@ -70,26 +70,10 @@ if ! oc adm new-project $TWISTLOCK_NAMESPACE --node-selector=''; then
   exit 1
 fi
 
-# pull twistlock console image
-echo "Retrieving console image from: $TWISTLOCK_PUBLIC_REGISTRY/twistlock/console:console_$TWISTLOCK_VERSION"
-if ! docker login -u twistlock -p $(echo $ACCESS_TOKEN | tr '[:upper:]' '[:lower:]') $TWISTLOCK_PUBLIC_REGISTRY | grep "Login Succeeded"; then
-    echo "Error logging into the Twistlock Registry: $TWISTLOCK_PUBLIC_REGISTRY"
-    exit 1
-fi
-docker pull $TWISTLOCK_PUBLIC_REGISTRY/twistlock/console:console_$TWISTLOCK_VERSION
-docker pull $TWISTLOCK_PUBLIC_REGISTRY/twistlock/defender:defender_$TWISTLOCK_VERSION
-
-if ! docker login -u $(oc whoami) -p $(oc whoami -t) $IMAGE_REGISTRY_EXTERNAL | grep "Login Succeeded"; then
-  echo "Error logging into the OpenShift Registry"
-  exit 1
-fi
-echo "Pushing console image to: $IMAGE_REGISTRY_EXTERNAL/twistlock/private:console_$TWISTLOCK_VERSION"
-docker tag $TWISTLOCK_PUBLIC_REGISTRY/twistlock/console:console_$TWISTLOCK_VERSION $IMAGE_REGISTRY_EXTERNAL/twistlock/private:console_$TWISTLOCK_VERSION
-docker push $IMAGE_REGISTRY_EXTERNAL/twistlock/private:console_$TWISTLOCK_VERSION
-
-echo "Pushing defender image to $IMAGE_REGISTRY_EXTERNAL/$TWISTLOCK_NAMESPACE/private:defender_$TWISTLOCK_VERSION"
-docker tag $TWISTLOCK_PUBLIC_REGISTRY/twistlock/defender:defender_$TWISTLOCK_VERSION $IMAGE_REGISTRY_EXTERNAL/$TWISTLOCK_NAMESPACE/private:defender_$TWISTLOCK_VERSION
-docker push $IMAGE_REGISTRY_EXTERNAL/$TWISTLOCK_NAMESPACE/private:defender_$TWISTLOCK_VERSION
+## Set up ImageStream pass-thru to be able to pull the container image from TwistLock's registry
+oc create secret docker-registry twistlock-registry --docker-server=registry.twistlock.com --docker-username=twistlock --docker-password=${ACCESS_TOKEN} --docker-email=customer@example.com
+oc import-image twistlock/defender:defender_${TWISTLOCK_VERSION} --from=registry.twistlock.com/twistlock/defender:defender_${TWISTLOCK_VERSION} --confirm
+oc import-image twistlock/console:console_${TWISTLOCK_VERSION} --from=registry.twistlock.com/twistlock/console:console_${TWISTLOCK_VERSION} --confirm
 
 # Retrieve the Twistlock release
 echo "Retrieiving Twistlock Release.."
