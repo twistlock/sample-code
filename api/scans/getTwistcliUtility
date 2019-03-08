@@ -1,4 +1,4 @@
-curl -sku admin:$TL_ADMIN_PW -o twistcli \
+curl -sku $admin:$TL_ADMIN_PW -o twistcli \
   "$TL_CONSOLE_HTTP/api/v1/util/twistcli" 
 
 chmod +x twistcli
