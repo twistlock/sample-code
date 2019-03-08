@@ -154,11 +154,12 @@ Pull requests are welcomed.
       ./tl-rsop.ps1 neilcar/struts2_demo:latest
       ```
 
-  * **compliance_check.ps1** - this script takes the Twistlock ID of a compliance check as input and finds all failing images, containers or hosts' compliance to the individual compliance check.
-        * Modify:
-          * Change the $tlconsole variable to your Twistlock Console's API URL
-        * Output:
-          * Outputs to stdout
+* **compliance_check.ps1** - this script takes the Twistlock ID of a compliance check as input and finds all failing images, containers or hosts' compliance to the individual compliance check.
+    * Modify:
+      * Change the $tlconsole variable to your Twistlock Console's API URL
+    * Output:
+        * Outputs to stdout
+
           ```
           TwistlockCheck: 41
           Title: Image should be created with a non-root user
@@ -182,8 +183,9 @@ Pull requests are welcomed.
           Passing: 32
           ```
 
-        * Execute:
-          * Provide the name of the compliance policy check. For example _41_ will list all images that fail the check for non-root user.
+    * Execute:
+      * Provide the name of the compliance policy check. For example _41_ will list all images that fail the check for non-root user.
+
           ```
           .\compliance_check.ps1 41
           ```
