@@ -154,6 +154,40 @@ Pull requests are welcomed.
       ./tl-rsop.ps1 neilcar/struts2_demo:latest
       ```
 
+  * **compliance_check.ps1** - this script takes the Twistlock ID of a compliance check as input and finds all failing images, containers or hosts' compliance to the individual compliance check.
+        * Modify:
+          * Change the $tlconsole variable to your Twistlock Console's API URL
+        * Output:
+          * Outputs to stdout
+          ```
+          TwistlockCheck: 41
+          Title: Image should be created with a non-root user
+          Description: It is a good practice to run the container as a non-root user, if possible. Though user
+          namespace mapping is now available, if a user is already defined in the container image, the
+          container is run as that user by default and specific user namespace remapping is not
+          required
+                   1) microsoft/windowsservercore:1803
+                   2) microsoft/iis:20180911-windowsservercore-1803
+                   3) node:7-onbuild
+                   4) tl_demo/hellonode:latest
+                   5) weaveworksdemos/queue-master:0.3.1
+                   6) morello/httpd:latest
+                   7) tl_demo/struts2_demo:2.3.12_build
+                   8) morello/motools:latest
+          ...
+          ...
+                  66) 113505086193.dkr.ecr.us-east-2.amazonaws.com/node:latest
+                  67) 113505086193.dkr.ecr.us-west-1.amazonaws.com/bad-dockerfile:test
+          Failing: 67
+          Passing: 32
+          ```
+
+        * Execute:
+          * Provide the name of the compliance policy check. For example _41_ will list all images that fail the check for non-root user.
+          ```
+          .\compliance_check.ps1 41
+          ```
+
 ## Prerequisite
 * PowerShell version 6.0 or greater.
   * Earlier versions of PowerShell don't support basic authentication with Invoke-RestRequest.
