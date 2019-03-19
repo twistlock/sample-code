@@ -1,0 +1,99 @@
+categories:
+- Security
+questions:
+- variable: global.accessToken
+  default: ""
+  description: "The access token that comes with your Twistlock subscription; look for this in an e-mail from Twistlock support."
+  label: accessToken
+  type: string
+  required: true
+  group: "twistlock"
+- variable: global.imagePullPolicy
+  default: "IfNotPresent"
+  description: "Image Pull Policy"
+  type: enum
+  label: PullPolicy
+  options:
+    - "IfNotPresent"
+    - "Always"
+  group: "twistlock"
+- variable: twistlock-console.version
+  default: "2.5.121"
+  description: "Console version number"
+  label: Console Version
+  type: string
+  required: true
+  group: "twistlock-console"
+- variable: twistlock-console.persistence.accessMode
+  default: "ReadWriteOnce"
+  description: "Persistence Access Mode"
+  label: Access Mode
+  type: enum
+  group: "twistlock-console"
+  options:
+    - "ReadWriteOnce"
+    - "ReadOnlyMany"
+    - "ReadWriteMany"
+- variable: twistlock-console.persistence.size
+  default: "8Gi"
+  description: "Persistence Size"
+  label: Size
+  type: string
+  group: "twistlock-console"
+- variable: twistlock-console.persistence.storageClassName
+  default: "-"
+  description: "Persistence storageClassName"
+  label: storageClassName
+  type: string
+  group: "twistlock-console"
+- variable: twistlock-console.httpPort
+  default: "8081"
+  description: "httpPort"
+  label: httpPort
+  type: string
+  required: true
+  group: "twistlock-console"
+- variable: twistlock-console.httpsPort
+  default: "8083"
+  description: "httpsPort"
+  label: httpsPort
+  type: string
+  required: true
+  group: "twistlock-console"
+- variable: twistlock-console.commPort
+  default: "8084"
+  description: "commPort"
+  label: commPort
+  type: string
+  required: true
+  group: "twistlock-console"
+- variable: twistlock-console.serviceType
+  default: "LoadBalancer"
+  description: "serviceType"
+  label: serviceType
+  type: enum
+  required: true
+  group: "twistlock-console"
+  options:
+    - "LoadBalancer"
+    - "NodePort"
+    - "ClusterIP"
+- variable: twistlock-console.ingress.enabled
+  default: "false"
+  description: "Enable Ingress"
+  label: Ingress?
+  type: boolean
+  group: "twistlock-console"
+  show_subquestion_if: true
+  subquestions:
+    - variable: twistlock-console.ingress.domain
+      default: "twistlock.example.com"
+      description: "Ingress Host Domain Name"
+      label: Ingress Host
+      type: string
+      required: true
+    - variable: twistlock-console.ingress.target
+      default: ""
+      description: "Ingress Target. e.g. aws elastic loadbalancer twistlock.elb.ap-southeast-2.amazonaws.com "
+      label: Ingress Target
+      type: string

@@ -1,0 +1,9 @@
+# console is the Twistlock administrative web container used to set policies and aggregate
+# data recieved from the Twistlock defender daemonset
+# you can change the port number here before installing the Twistlock chart
+console:
+  httpPort: 8081
+  httpsPort: 8083
+  commPort: 8084
+  serviceType: LoadBalancer
+

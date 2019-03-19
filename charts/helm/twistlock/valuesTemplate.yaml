@@ -1,0 +1,12 @@
+# Default values for twistlock.
+# version specifies the version number for all the Twistlock components
+# imageTag must be same in imageName, same for token
+
+global:
+  version: <2.X.XXX>
+  accessToken:  <token>
+  imagePullPolicy: IfNotPresent
+  imageTag: <2_X_XXX>
+  imageName: "registry-auth.twistlock.com/tw_<token>/twistlock/console:console_<imageTag>" 
+
+ 

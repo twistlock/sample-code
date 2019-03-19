@@ -1,0 +1,17 @@
+# console is the Twistlock administrative web container used to set policies and aggregate
+# data recieved from the Twistlock defender daemonset
+# you can change the port number here before installing the Twistlock chart
+
+version: 2.5.121
+httpPort: 8081
+httpsPort: 8083
+commPort: 8084
+serviceType: LoadBalancer
+ingress:
+    enabled: false
+    domain: twistlock.example.com
+    target: twistlock.elb.ap-southeast-2.amazonaws.com
+persistence:
+    accessMode: ReadWriteOnce
+    size: 8Gi
+    storageClassName: "-"

@@ -1,0 +1,19 @@
+It may take a few minutes for the Twistlock Console UI to become available. You can watch its status by running:
+
+  kubectl get svc -w twistlock-console -n twistlock
+
+Once the console is available you can get the address of the Twistlock Console UI with the following commands:
+
+   kubectl get svc twistlock-console -n twistlock
+
+Once the service is up with an assigned external IP,
+navigate to https://<external-ip>:8083 to create an admin account and install your license
+
+Finally, you will need to install the Twistlock Defender daemonset on your cluster.
+Just navigate to Manage/Defenders/Deploy/Defender Daemonset in the console UI and use "COPY" button
+and then copy command to your cluster controller shell
+
+To uninstall Twistlock console and Defender DS, simply type:
+
+   kubectl delete ns twistlock
+ 
