@@ -34,7 +34,7 @@ First, copy the file `twistlock-console/valuesTemplate.yaml` to `twistlock-conso
 
 Next, edit `twistlock-console/values.yaml`, adding in the appropriate values for the _version_, _imageTag_, _imageName_, and  _accessToken_ parameters.
 
-Note: the Twistlock release should be formatted with underscores as the version separator in the _imageTag_ parameter (_2_5_127_), and periods for the _version_ parameter (_2.5.127_).
+Note: the Twistlock release should be formatted with underscores as the version separator in the _imageTag_ parameter (_19_03_307_), and periods for the _version_ parameter (_19_03_307_).
 
 There are several parameters in `charts/twistlock-console/charts/console/values.yaml` that should be reviewed for correctness in the target environment:
  * _serviceType_: can be one of _LoadBalancer_, _or NodePort_. (default: _LoadBalancer_)
