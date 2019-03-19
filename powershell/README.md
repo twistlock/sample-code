@@ -1,29 +1,203 @@
-# README
-* Vulnerabilities.ps1 and compliances.ps1 scripts extract vulnerability and compliance data from Twistlock's image health scan API call **/api/v1/images.**
-* Base_image_finder.ps1 determines all images' assocation to the image provided as an input argument.
+# Twistlock API + Powershell
+This repository contains sample powershell scripts that query the Twistlock API to extract data.
+These scripts are intended to help with your understanding of how to use the Twistlock API to further its functionality and value.
+Pull requests are welcomed.
 
-## Running it
-Download the powershell scripts on your host and replace the following value:
-* Vulnerabilities.ps1 and compliances.ps1:
-  * $request = Your Twistlock Console address with an image name or search term in 'search'
+## Scripts
+
+* **vulnerabilities.ps1** - simple powershell example that queries the Twistlock API for an image and returns the vulnerabilities found.
+  * Modify:
+    * _$request_ = Your Twistlock Console address with an image name or search term in 'search'
     * You can omit the entire '?search=<image>' clause if you want to return all images
-* Base_image_finder.ps1:
-  * Change the $tlconsole variable to your Twistlock Console's API URL
-  * Provide the name of the image to be used as the base image when comparing against all images within Twistlock. For example localhost:5000/alpine:latest 
+  * Output:
+    * results to standard out
+  * Execute:
+  ```
+    .\vulnerabilities.ps1
+  ```
 
-After making changes run:
-```
-PowerShell .\vulnerabilities.ps1
-PowerShell .\compliances.ps1
-PowerShell .\base_image_finder.ps1 localhost:5000/alpine:latest
-```
+* **compliances.ps1** - simple powershell example that queries the Twistlock API for an image and returns the compliance failures found.
+  * Modify:
+    * _$request_ = Your Twistlock Console address with an image name or search term in 'search'
+    * You can omit the entire '?search=<image>' clause if you want to return all images
+  * Output:
+    * results to standard out
+  * Execute:
+  ```
+    .\compliance.ps1
+  ```
 
-## Prerequisite 
-* PowerShell version 6.0 or greater
-  * Earlier versions of PowerShell don't support basic authentication with Invoke-WebRequest.
+* **base_image_finder.ps1** - this script will compare all the images to a base image. Supply the name of the image that is your base image used as the foundation for other images within your environment.
+  * Modify:
+    * Change the _$tlconsole_ variable to your Twistlock Console's API URL
+  * Output:
+    * The results will be returned within a CSV (_yyyyMMdd-HHmmss-base-image-search.csv_) with the following associations:
+      * _child_ - the image has more layers than the "master" image and the master's base layers match.
+      * _parent_ - the image has less layers than the "master" image and the parent's base layers match. The image you supplied is based upon another image.
+      * _no-association_ - the images' first layers does not match.
+  * Execute:
+      * Provide the name of the image to be used as the base image when comparing against all images within Twistlock. For example _localhost:5000/alpine:latest_
+    ```
+    .\base_image_finder.ps1 localhost:5000/alpine:latest
+    ```
+
+* **compliance_status.ps1** - this script takes the name of a compliance policy rule as input and finds all images, containers and hosts' compliance status to the rule.
+  * Modify:
+    * Change the $tlconsole variable to your Twistlock Console's API URL
+  * Output:
+    * Outputs an CSV file (_yyyyMMdd-HHmmss-<ruleName>-compliance-check.csv_).
+    * Generates a CSV that can be used to generate charts within excel, for example:
+
+    ![Compliance Status Image](../images/compliance_status.png?raw=true "compliance status results")
+
+  * Execute:
+    * Provide the name of the compliance policy rule. For example _800-190_
+    ```
+    .\compliance_status.ps1 800-190
+    ```
+
+* **rmf_ato.ps1** - this script generates a sample Authority to Operate report for an image showing the packages, vulnerabilities, compliance and running containers. You can expand upon the data you want to render in the resulting csv file.
+  * Modify:
+    * Change the $tlconsole variable to your Twistlock Console's API URL
+  * Output:
+    * Outputs an CSV file (_yyyyMMdd-HHmmss-<imageName>-ato.csv_).
+    * Generates a CSV that can be used to generate charts within excel, for example:
+
+        ![ATO report](../images/ato_report.png?raw=true "ato report")
+
+  * Execute:
+    * Provide the name of the image. For example _openebs/jiva:0.6.0_
+        ```
+        .\rmf_ato.ps1 openebs/jiva:0.6.0
+        ```
+
+* **tl-rsop.ps1** - Queries Twistlock API to determine the vulnerability and compliance rules applied to an image. Basically a Resultant Set of Policies (RSOP).
+  * Logic:
+    * Finds the Vulnerability Policy (Defend > Vulnerabilities > Policy) that applies to the image.
+    * Compares the images vulnerabilities to the settings within the policy.
+      * Does the image have a higher vulnerability than defined in the Severity of the policy.
+      * Is the policy configured to “block” for the package type.
+    * Finds the Compliance Policy (Defend > Compliance > Policy) that applies to the image.
+    * Compare the image's failed compliance findings to the applied rule and the Action defined.
+  * Modify:
+    * Change the $tlconsole variable to your Twistlock Console's API URL
+
+  * Output:
+    * Outputs to stdout
+
+    ```
+    $ ./tl-rsop.ps1 neilcar/struts2_demo:latest
+    Checking vulnerablity and compliance policy for: neilcar/struts2_demo:latest
+    PowerShell credential request
+    Enter your credentials.
+    User: pfox
+    Password for user pfox: *********
+    Found image found on a docker host
+
+    Found: neilcar/struts2_demo:latest
+    ImageID: sha256:a1b269ad8edb447e3179911a4b6a0db011e692db6b68829a3d828315a865b4b6
+
+    Vulnerabilities:
+            Critical:  16
+            High:  56
+            Medium:  115
+            Low:  41
+
+    Matching Vulnerability Policy: Twistlock RSOP Vulnerability Rule
+
+    Package           Block Severity Highest Vulnerability Found
+    -------           ----- -------- ---------------------------
+    Python            False Low      0
+    Binaries          False Medium   0
+    Custom Components False High     0
+    0-day             False Critical 0
+    OS Packages       False Low      9.8
+    Java              True  Medium   10
+    Ruby Gems         False High     0
+    Node.js           False Critical 0
+
+    Matching Compliance Policy: Twistlock RSOP Compliance Rule
+
+    Rule                                                                        Block   Image will be blocked
+    ----                                                                        -----   ---------------------
+
+    1) Add HEALTHCHECK instruction to the container image One of the important
+    security triads is availability. Adding HEALTHCHECK instruction to your
+    container image ensures that the docker engine periodically checks the
+    running container instances against that instruction to ensure that the
+    instances are still working                                                 False   False
+
+    2) Image should be created with a non-root user It is a good practice to
+    run the container as a non-root user if possible. Though user namespace
+    mapping is now available if a user is already defined in the container
+    image the container is run as that user by default and specific user
+    namespace remapping is not required                                         False   False
+
+    3) Image is not trusted                                                     False   False
+
+    4) etc passwd 644                                                           False   False
+
+    *** Twistlock will block this image from running as a container on nodes running the Twistlock Defender ***
+    ```
+
+    If any matching vulnerability or compliance rule that is set to "block" the script will output *** Twistlock will block this image from running as a container on nodes running the Twistlock Defender *** and set exit(1). The exit status can be determined with the command $LASTEXITCODE
+
+    ```
+    $LASTEXITCODE
+    1
+    ```
+
+  * Execute:
+    * Provide the name of the image. For example  _neilcar/struts2_demo:latest_
+
+      ```
+      ./tl-rsop.ps1 neilcar/struts2_demo:latest
+      ```
+
+* **compliance_check.ps1** - this script takes the Twistlock ID of a compliance check as input and finds all failing images, containers or hosts' compliance to the individual compliance check.
+    * Modify:
+      * Change the $tlconsole variable to your Twistlock Console's API URL
+    * Output:
+        * Outputs to stdout
+
+          ```
+          TwistlockCheck: 41
+          Title: Image should be created with a non-root user
+          Description: It is a good practice to run the container as a non-root user, if possible. Though user
+          namespace mapping is now available, if a user is already defined in the container image, the
+          container is run as that user by default and specific user namespace remapping is not
+          required
+                   1) microsoft/windowsservercore:1803
+                   2) microsoft/iis:20180911-windowsservercore-1803
+                   3) node:7-onbuild
+                   4) tl_demo/hellonode:latest
+                   5) weaveworksdemos/queue-master:0.3.1
+                   6) morello/httpd:latest
+                   7) tl_demo/struts2_demo:2.3.12_build
+                   8) morello/motools:latest
+          ...
+          ...
+                  66) 113505086193.dkr.ecr.us-east-2.amazonaws.com/node:latest
+                  67) 113505086193.dkr.ecr.us-west-1.amazonaws.com/bad-dockerfile:test
+          Failing: 67
+          Passing: 32
+          ```
+
+    * Execute:
+      * Provide the name of the compliance policy check. For example _41_ will list all images that fail the check for non-root user.
+
+          ```
+          .\compliance_check.ps1 41
+          ```
+
+## Prerequisite
+* PowerShell version 6.0 or greater.
+  * Earlier versions of PowerShell don't support basic authentication with Invoke-RestRequest.
   * To use an earlier version of PowerShell, you will have to [manually build the authentication header](https://pallabpain.wordpress.com/2016/09/14/rest-api-call-with-basic-authentication-in-powershell/).
 * Permissions to run locally-created scripts:
 For this, run Powershell as an Administrator, then run the following command:
-```
-Set-ExecutionPolicy RemoteSigned
-```
+
+  ```
+  Set-ExecutionPolicy RemoteSigned
+  ```
+* Why powershell? Why not.

@@ -1,7 +1,7 @@
 # README
 ## Caveats!
 * Twistlock has been installed with SCAP enabled via the twistlock.cfg or the twistlock_console.yaml file.
-* Only supported for the scanning of centos, fedora and readhat based images.
+* Only supported for the scanning of centos, fedora and redhat based images.
 * Only failed test results will be reported (passed tests and test results scheduled for the v2.5 release).
 
 ## Running it

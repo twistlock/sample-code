@@ -1,0 +1,5 @@
+#!/bin/bash
+docker run -t --rm twistlock/twistcli:18.11.128 twistcli images scan --help
+ 
+ 
+

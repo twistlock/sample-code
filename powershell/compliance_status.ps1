@@ -1,11 +1,11 @@
-#  
+#
 #  Queries Twistlock API to determine the image, container and host adherence to a compliance rule.
 #  Outputs an CSV file yyyyMMdd-HHmmss-<ruleName>-compliance-check.csv
 #  Generates a CSV that can be used to generate charts within excel
 #
 #  Requires: powershell v6 https://blogs.msdn.microsoft.com/powershell/2018/01/10/powershell-core-6-0-generally-available-ga-and-supported/
 #  Discalimer: Use of this script does not imply any rights to Twistlock products and/or services.
-# 
+#
 #  Usage: ./compliance_status.ps1 <name of complaince rule>
 #
 
@@ -16,7 +16,7 @@ if(!$arg1)
     write-host "Please provide a Compliance rule name"
     exit
     }
-else 
+else
     {
     write-host "Checking compliance: $arg1"
     }
@@ -26,6 +26,7 @@ $tlconsole = "https://twistlock.example.com:8083"
 $global:imageChecks = [string] @(4,9)
 $global:hostChecks = [string] @(1,2,3,6,8)
 $global:containerChecks = [string] @(5)
+$global:complianceChecks = @{}
 $global:newline = [environment]::newline
 $time = Get-Date -f "yyyyMMdd-HHmmss"
 
@@ -50,7 +51,13 @@ function findCompliance([array]$type, [array]$rules, [array]$objects, [int]$tota
                 if($object.info.complianceVulnerabilities.id -eq $rule){$y++}
                 }
                 $passing = $total - $y
-                $tmpOutputCSV = $tmpOutputCSV + "$rule,$y,$passing,$total" +$newline
+                # Grab the rule title from the hash table
+                if($complianceChecks.ContainsKey([string]$rule))
+                    {
+                    $rule = $complianceChecks.([string]$rule)[0]
+                    $rule = $rule.replace(',','')
+                    }
+                $tmpOutputCSV = $tmpOutputCSV + "$strCheckId,$rule,$y,$passing,$total" +$newline
             } #if an object check
         } #end of foreach check
     # return CSV formated string
@@ -62,6 +69,16 @@ function findCompliance([array]$type, [array]$rules, [array]$objects, [int]$tota
 # We will need credentials to connect so we will ask the user
 $cred = Get-Credential
 
+# Create a hash table of all the compliance checks
+$request = "$tlconsole/api/v1/static/vulnerabilities"
+$return = Invoke-RestMethod $request -Authentication Basic -Credential $cred -SkipCertificateCheck
+
+# Iterate through all the checks and build out the hash table
+foreach($compliance in $return.complianceVulnerabilities)
+{
+    $complianceChecks += @{[string]$compliance.id = $compliance.title,$compliance.description}
+}
+
 # Query the complaince /policies/compliance API and pull out the rule #s into an array
 $request = "$tlconsole/api/v1/policies/compliance"
 $compliances = Invoke-RestMethod $request -Authentication Basic -Credential $cred -SkipCertificateCheck
@@ -71,8 +88,8 @@ while ($i -lt $compliances.rules.count)
     {
     if($compliances.rules[$i].name -eq $arg1)
         {
-        #Pull out the vulnerabilities/compliance check    
-        $checks = $compliances.rules[$i].condition.vulnerabilities.id   
+        #Pull out the vulnerabilities/compliance check
+        $checks = $compliances.rules[$i].condition.vulnerabilities.id
         }
     $i++
     }
@@ -103,26 +120,26 @@ foreach($image in $images)
     if(!$tmparray.Contains($image.info.id))
         {
         $totalImages++
-        $tmparray += $image.info.id 
+        $tmparray += $image.info.id
         $uniqueImages += $image
         }
     }
 
-$outputCSV = "ImageComplianceID,failing,passing,total"+$newline
+$outputCSV = "ImageComplianceID,Description,failing,passing,total"+$newline
 $outputCSV = $outputCSV + (findCompliance "image" $checks $uniqueImages $totalImages) + $newline
 
 # Process the hosts
 $request = "$tlconsole/api/v1/hosts"
 $hosts = Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck
 $totalHosts = $hosts.count
-$outputCSV = $outputCSV + "HostComplianceID,failing,passing,total"+$newline
+$outputCSV = $outputCSV + "HostComplianceID,Description,failing,passing,total"+$newline
 $outputCSV = $outputCSV + (findCompliance "host" $checks $hosts $totalHosts) + $newline
 
 # Process the containers
 $request = "$tlconsole/api/v1/containers"
 $containers = Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck
 $totalContainers = $containers.count
-$outputCSV = $outputCSV + "ContainerComplianceID,failing,passing,total"+$newline
+$outputCSV = $outputCSV + "ContainerComplianceID,Description,failing,passing,total"+$newline
 $outputCSV = $outputCSV + (findCompliance "container" $checks $containers $totalContainers) + $newline
 
 $outputFile = $time+"-"+$arg1+"-compliance-check.csv"

@@ -1,0 +1,34 @@
+language: bash
+
+services:
+  - docker
+
+env:
+  global:
+    # TL_USER:  The Twistlock user with the CI User role
+    # TL_PASS:  The password for this user account
+    # TL_CONSOLE_URL:  The base URL for the console -- http://console.<my_company>.com:8083 -- without a trailing /
+    - TL_USER=<user>
+    - TL_PASS=<password>
+    - TL_CONSOLE_URL="<url>"
+
+script:
+    # Download twistcli from the configured Twistlock console
+    - curl -k -u ${TL_USER}:${TL_PASS} --output /tmp/twistcli ${TL_CONSOLE_URL}/api/v1/util/twistcli
+    # ...and ensure it's executable.
+    - sudo chmod a+x /tmp/twistcli
+    
+    # Build our from Dockerfile in current dir
+    - docker build -t corp/helloworld:${TRAVIS_BRANCH} .
+      
+    # Run the scan with twistcli, providing detailed results in TravisCI and
+    # pushing the results to the Twistlock console.
+    # --details returns all vulnerabilities & compliance issues rather than just summaries.
+    # -address points to our Twistlock console
+    # -u and -p provide credentials for the console.  These creds only need the CI User role.
+    # Finally, we provide the name of the image we built with 'docker build', above.
+    - /tmp/twistcli images scan --details -address ${TL_CONSOLE_URL} -u ${TL_USER} -p ${TL_PASS} corp/helloworld:${TRAVIS_BRANCH}
+    # Add --vulnerability-threshold and/or --compliance-threshold to this command to
+    # fail builds based on the thresholds.
+    # See twistcli documentation for more details.
+    # add any additional commands needed to test the image, push to a registry, etc.

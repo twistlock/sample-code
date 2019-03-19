@@ -1,0 +1,2 @@
+twistcli images scan --vulnerability-threshold high --compliance-threshold high -u ci -p ci mysql
+
