@@ -1,0 +1,10 @@
+#!/bin/bash
+docker run -t --rm -v /var/run/docker.sock:/var/run/docker.sock \
+  twistlock/twistcli:18.11.128 twistcli images scan --address $TL_CONSOLE_HTTPS \
+  --vulnerability-threshold high --compliance-threshold critical \
+  -u $TL_CIUSER -p $TL_CIUSER_PW $IMAGE
+ 
+ 
+ 
+ 
+

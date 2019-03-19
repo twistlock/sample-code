@@ -1,0 +1,9 @@
+if [ ! -d "twistlock" ]; then
+   echo "You must first run 'downloadTwistlock'"
+else
+  cd twistlock
+  sudo ./twistlock.sh -ys console
+  cd ..
+fi
+
+

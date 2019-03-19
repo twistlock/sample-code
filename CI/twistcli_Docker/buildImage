@@ -1,0 +1,8 @@
+#!/bin/bash
+
+source setupEnv
+./getTwistcliUtility
+chmod +x twistcli
+docker build -t $IMAGE --build-arg="$TL_VERSION" .
+
+
