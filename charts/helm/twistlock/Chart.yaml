@@ -1,0 +1,17 @@
+apiVersion: v1
+description: Cloud native security platform 
+name: twistlock 
+version: "{{ .Values..global.version }}" 
+home: twistlock.com
+keywords:
+- twistlock
+- devsecops
+- cloud native
+- docker
+- container
+- security
+- least privilege
+maintainers:
+- email: matthew@twistlock.com 
+  name: Matthew Barker
+ 

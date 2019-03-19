@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for deploying the Twistlock console to Kubernetes
+name: twistlock-console
+version:  "1.0"

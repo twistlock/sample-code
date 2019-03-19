@@ -1,0 +1,23 @@
+# Default values for twistlock.
+# version specifies the version number for all the Twistlock components
+# imageTag must be same in imageName, same for token
+# moved imageName into console helper incase this parent chart ever adds more subcharts
+
+global:
+  accessToken: <token>
+  imagePullPolicy: IfNotPresent
+
+twistlock-console:
+  version: 2.5.121
+  httpPort: 8081
+  httpsPort: 8083
+  commPort: 8084
+  serviceType: LoadBalancer
+  ingress:
+    enabled: false
+    domain: twistlock.example.com
+    target: twistlock.elb.ap-southeast-2.amazonaws.com
+  persistence:
+      accessMode: ReadWriteOnce
+      size: 8Gi
+      storageClassName: "-"
