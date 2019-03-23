@@ -8,7 +8,7 @@ export TL_VERSION='<current twistlock version in dot format>'
 # example 18.11.128
 
 # leave these alone unless you want to change default ports!
-exportTL_CONSOLE_HTTP="http://$TL_CONSOLE_URL:8081"
+export TL_CONSOLE_HTTP="http://$TL_CONSOLE_URL:8081"
 export TL_CONSOLE_HTTPS="https://$TL_CONSOLE_URL:8083"
 export IMAGE="$MY_ORG/twistcli:$TL_VERSION"
 
