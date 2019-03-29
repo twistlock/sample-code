@@ -1,0 +1,85 @@
+{
+    "id": "15c38a9a-54d3-421a-a6b8-e24e7cd496f7",
+    "name": "twistcli-scan",
+    "friendlyName": "Twistcli scan",
+    "description": "Task to scan container images using twistcli within Azure DevOps Build & Release pipelines",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Mario Weigel",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 15
+    },
+    "instanceNameFormat": "Twistcli",
+    "inputs": [
+        {
+            "name": "twistlockService",
+            "type": "connectedService:twistlockConsole",
+            "label": "Twistlock service/server end point",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Twistlock end point to use. If needed, click on 'manage', and add a new service endpoint of type 'Twistlock server connection'"
+        },
+        {
+            "name": "vulnerabilityThreshold",
+            "type": "pickList",
+            "label": "Vulnerability Threshold",
+            "defaultValue": "high",
+            "required": true,
+            "options": {
+                "critical": "critical",
+                "high": "high",
+                "medium": "medium",
+                "low": "low"
+            },
+            "helpMarkDown": "Select minimum vulnerability threshold for failing the build on vulnerability checks"
+        },
+        {
+            "name": "onlyFixed",
+            "type": "boolean",
+            "label": "Only Fixed",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "Include only vulnerabilities with a fix"
+        },
+        {
+            "name": "gracePeriod",
+            "type": "number",
+            "label": "Grace Period",
+            "defaultValue": 0,
+            "required": true,
+            "helpMarkDown": "Grace period specifies the timeframe for which a vulnerability should be ignored (measured in days from first vendor publish)"
+        },
+        {
+            "name": "complianceThreshold",
+            "type": "pickList",
+            "label": "Compliance Threshold",
+            "defaultValue": "high",
+            "required": true,
+            "options": {
+                "critical": "critical",
+                "high": "high",
+                "medium": "medium",
+                "low": "low"
+            },
+            "helpMarkDown": "Select minimum compliance threshold for failing the build on compliance checks"
+        },
+        {
+            "name": "image",
+            "type": "string",
+            "label": "Image",
+            "required": true,
+            "helpMarkDown": "The ID or name of the image to scan"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "task.js"
+        }
+    }
+}
