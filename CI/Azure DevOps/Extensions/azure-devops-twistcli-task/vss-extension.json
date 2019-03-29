@@ -72,7 +72,7 @@
                         ]
                     }
                 ],
-                "helpMarkDown": "<a href=\"https://github.com/mweigel/azure-devops-twistcli-task\" target=\"_blank\"><b>Learn More</b></a>"
+                "helpMarkDown": "<a href=\"https://github.com/twistlock/sample-code/tree/master/CI/Azure%20DevOps/Extensions/azure-devops-twistcli-task\" target=\"_blank\"><b>Learn More</b></a>"
             }
         },
         {
