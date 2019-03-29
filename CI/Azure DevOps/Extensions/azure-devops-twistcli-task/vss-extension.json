@@ -1,0 +1,89 @@
+{
+    "manifestVersion": 1,
+    "id": "twistcli-build-release-task",
+    "name": "Twistcli Build and Release Task - 0.0.15",
+    "version": "0.0.15",
+    "publisher": "mweigel",
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ],
+    "description": "Task to scan container images using twistcli during Azure DevOps Build & Release pipelines",
+    "categories": [
+        "Azure Pipelines"
+    ],
+    "icons": {
+        "default": "images/extension-icon.png"
+    },
+    "files": [
+        {
+            "path": "tasks/twistcli-scan"
+        }
+    ],
+    "contributions": [
+        {
+            "id": "twistlock-console-endpoint-type",
+            "description": "Service endpoint type for Twistlock API communications",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "twistlockConsole",
+                "displayName": "Twistlock console",
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Twistlock console username",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Twistlock console password",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "tlscacert",
+                                "name": "CA Certificate",
+                                "description": "CA Certificate used to verify Twistlock console",
+                                "inputMode": "textarea",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://github.com/mweigel/azure-devops-twistcli-task\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "custom-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/twistcli-scan"
+            }
+        }
+    ]
+}
