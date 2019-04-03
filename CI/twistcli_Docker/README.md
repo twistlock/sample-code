@@ -9,7 +9,7 @@ other images with the twistcli images scan utility.
 
 ## NOTES:
 
-To see usage of container with twistcli images scan usage, run testUssage
+To see usage of container with twistcli images scan usage, run testUsage
 To see an example of how to run the container, see testScan
 
 testRun script shows how to run the container to do an actual scan of an image using
