@@ -10,9 +10,11 @@
 # Therefore all repositories need to be added into Twistlock to scan the images within the OpenShift Internal Registry.
 # RedHat will be adding the catalog API call in v3.11 https://trello.com/c/AZINw5qI
 #
+# Update 20190410 - modified for the new Twistlock v18_11+ API call for the Twistlock Credential Store and the use of the credential in the Defend > Vulnerabilities > Registry entry
+# 
 # Requirements:
-#  - Twistlock v2.4
-#  - OpenShift v3.3+, authenticated to cluster and OSE CLI (oc) access 
+#  - Twistlock v18_11+
+#  - OpenShift v3.6+, authenticated to cluster and OSE CLI (oc) access 
 #  - Powershell v6 https://blogs.msdn.microsoft.com/powershell/2018/01/10/powershell-core-6-0-generally-available-ga-and-supported/ runs on MacOS and Linux!
 # 
 # Twistlock Service Account Password:
@@ -35,6 +37,8 @@ $TL_service_account_password = "<follow the instructions above on how to obtain 
 $ose_internal_registry = "docker-registry.default.svc:5000"
 # specify a defender that is used for scanning. if null the script will pick the first defender returned by the API
 $defenders = "" 
+# Name of the Twistlock Credential created
+$TL_Credential = "OSE-Internal-Registry-Scanner" 
 
 # Make sure we can see the OSE cluster, check the default docker-registry route
 if (!(oc get route docker-registry -n default))
@@ -83,6 +87,26 @@ if(!$defenders)
     $defenders = $tmpDEF.hostname
     }
 
+# Create the Twistlock Credential for the ServiceAccount
+# build the json payload for the API call            
+$credentialStore = @{
+ "accountID" = "serviceaccount"
+ "secret" = @{"plain" = $TL_service_account_password}
+  "type" = "basic"
+  "_id" = $TL_Credential
+}
+
+# convert to json
+$json_payload += $credentialStore| ConvertTo-Json -Depth 4 
+
+# Call the API
+$request = "$twistlock_API/api/v1/credentials"
+$header = @{"Content-Type" = "application/json"}
+Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck -Method "Post" -Header $header -Body $json_payload
+
+#status output
+write-host "Created credential: $TL_Credential"
+
 # For each image build the json for the registry scanning entry
 $subbody = @()
 foreach($image in $internal_registry_images)
@@ -90,18 +114,16 @@ foreach($image in $internal_registry_images)
     # build the json payload for the API call            
     $tmp = @{
         "version" = "redhat"
+        "registry" = $ose_internal_registry
+        "credential" = @{"_id" = $TL_Credential}
         "useAWSRole" = $false
-        "username" = "serviceaccount"
-        "password" = @{"plain" = $TL_service_account_password}
         "os" = "linux"
         "cap" = 5
         # trim the "/" from the begining of the namesapce/repository, don't know why it doesnt trim properly in the earlier trim
-        "repository" = $image.TrimStart("/")
-        "registry" = $ose_internal_registry
         "hostname" = $defenders
-        "tags" = ""
+        "repository" = $image.TrimStart("/")
         }
-    $subbody += $tmp     
+    $subbody += $tmp 
     } # end building payload of the input json
     
     # now build the specification json structure
@@ -110,10 +132,14 @@ foreach($image in $internal_registry_images)
         $subbody
         )
         } 
-    # convert to json
-    $json_payload += $body | ConvertTo-Json -Depth 4 
+# convert to json
+$json_payload = $null
+$json_payload += $body | ConvertTo-Json -Depth 4 
 
-    # Call the API
-    $request = "$twistlock_API/api/v1/settings/registry"
-    $header = @{"Content-Type" = "application/json"}
-    Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck -Method "Post" -Header $header -Body $json_payload 
+# Call the API
+$request = "$twistlock_API/api/v1/settings/registry"
+$header = @{"Content-Type" = "application/json"}
+Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck -Method "Post" -Header $header -Body $json_payload 
+
+#status output
+write-host "Created" $subbody.count "registry entries"
