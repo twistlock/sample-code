@@ -103,6 +103,7 @@ do
 	      --persistent-volume-labels "$PV_LABELS" \
         --image-name "$IMAGE_REGISTRY_ADDRESS" \
         --orchestration-cli "oc" 
+        --service-type "ClusterIP"
         oc create -f twistlock_console.yaml 
      break;;
     "Storage Class")
@@ -128,6 +129,7 @@ do
 	            --storage-class "$sc" \
               --image-name "$IMAGE_REGISTRY_ADDRESS" \
               --orchestration-cli "oc" 
+              --service-type "ClusterIP"
               oc create -f twistlock_console.yaml 
              ;; 
           esac
@@ -139,6 +141,7 @@ do
 	    --namespace "$TWISTLOCK_NAMESPACE" \
 	    --image-name "$IMAGE_REGISTRY_ADDRESS" \
       --orchestration-cli "oc" 
+      --service-type "ClusterIP"
       oc create -f twistlock_console.yaml
     break;;
     * ) 
