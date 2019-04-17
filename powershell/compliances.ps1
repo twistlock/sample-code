@@ -7,7 +7,7 @@ $cred = Get-Credential
 
 # Get the JSON data back from Twistlock and turn it
 # into a PowerShell object.
-$images = Invoke-RestMethod $request -Authentication Basic -Credential $cred
+$images = Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck
 
 # Iterate through all the images returned 
 foreach($image in $images)
