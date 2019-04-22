@@ -1,4 +1,6 @@
-# Helm chart for installing Twistlock Console into Kubernetes with script for installing Twistlock Defender daemonset
+# Twistlock now includes Helm chart support in version 19.03+, this repository remains available to assist customers who may wish to work with an older version of Twistlock or create their own charts.
+
+## Helm chart for installing Twistlock Console into Kubernetes with script for installing Twistlock Defender daemonset
 
 ## Downloading the charts
 
