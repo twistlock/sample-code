@@ -17,7 +17,11 @@ async function run() {
         // Construct twistcli command line.
         let twistcliPath: string = tl.which('twistcli', true);
         let twistcli = tl.tool(twistcliPath);
-        twistcli.arg("images");
+        if (tl.getInput('scanType', true) === "serverless") {
+          twistcli.arg("serverless");
+        } else {
+          twistcli.arg("images");
+        }
         twistcli.arg("scan");
 
         // Set console address.
@@ -39,7 +43,11 @@ async function run() {
 
         // Set vulnerability configuration.
         twistcli.arg(['--vulnerability-threshold', tl.getInput('vulnerabilityThreshold', true)]);
-        twistcli.arg(['--grace-period', tl.getInput('gracePeriod', true)]);
+        // --grace-period is only for container images
+        if (tl.getInput('scanType', true) === "images") {
+          twistcli.arg(['--grace-period', tl.getInput('gracePeriod', true)]);
+        }
+
         if (tl.getBoolInput('onlyFixed', true)) {
             twistcli.arg('--only-fixed');
         }
@@ -54,8 +62,8 @@ async function run() {
         // Show detailed vulnerability and compliance information.
         twistcli.arg('--details');
 
-        // Set the image to be scanned.
-        twistcli.arg(tl.getInput('image', true));
+        // Set the image or functions zip to be scanned.
+        twistcli.arg(tl.getInput('artifact', true));
 
         // Execute twistcli.
         let exitCode: number = await twistcli.exec(<tr.IExecOptions>{
@@ -72,7 +80,7 @@ async function run() {
         if (exitCode == 0) {
             tl.setResult(tl.TaskResult.Succeeded, '');
         } else {
-            tl.setResult(tl.TaskResult.Failed, 'Scanning of the image either failed or the scan results are unacceptable. Check the logs for details.');
+            tl.setResult(tl.TaskResult.Failed, 'Either scanning failed or the scan results do not satisfy policy. Check the logs for details.');
         }
     }
     catch (err) {
