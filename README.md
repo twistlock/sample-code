@@ -1,17 +1,7 @@
-Sample-Code
-===========
+This pulls the images data from a Twistlock console and formats it as an HTML vulnerability report per image.
 
-Welcome to the Twistlock sample code repository.  Here we share publicly some of the scripts or coding we've done that we think someone out there might be interested in.  Please feel free to use and improve.  We'd love your feedback.
+It expects environment variables for Twistlock config:
 
-All code in this repo is provided without support or warranty from Twistlock.  Please review code used from this repo prior to use in your environment.
-
-Directory
----------
-
-* ```./ansible``` contains an Ansible playbook for installing our Twistlock Defender
-* ```./helm``` Twistlock now supports Helm charts through twistcli (19.03+), this repository is deprecated 
-* ```./powershell``` contains example powershell scripts
-* ```./scap``` contains SCAP datastream examples
-* ```./siem``` contains samples related to SIEM integration
-* ```./openshift``` contains samples related to Twistlock deployment within an OpenShift cluster
-* ```./CI``` contains samples for integrating Twistlock into various continuous integration platforms
+* TL_CONSOLE:  URL of the console (`https://twistlock.contoso.com:8083`)
+* TL_USER:  Username to use for generating the report.  Must have the Auditor role or higher
+* TL_PASS:  Password for TL_USER

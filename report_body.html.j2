@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<HEAD>
+<TITLE>Twistlock Images Report</TITLE>
+<STYLE>
+main {
+  max-width: 120ch;
+  padding: 2ch;
+  margin: auto;
+}
+h1 {
+  text-align: center;
+}
+table, th, td {
+  border: 1px solid black;
+  padding: 0;
+}
+table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+}
+td {
+  vertical-align: top;
+}
+td, th {
+  padding: 5px;
+}
+thead th:nth-child(1) {
+  width: 15%;
+}
+thead th:nth-child(2) {
+  width: 65%;
+}
+thead th:nth-child(3) {
+  width: 10%;
+}
+thead th:nth-child(4) {
+  width: 10%;
+} 
+</STYLE>
+</HEAD>
+<FONT FACE="Arial" COLOR="Black">
+<BODY>
+<MAIN>
+<H1>Twistlock Images Report</H1> 
+{% for image in images -%}
+{% if image.info.cveVulnerabilitiesCnt > 0-%}
+<H2>image: {{ image.info.tags[0].repo }}:{{ image.info.tags[0].tag }}</H2>
+<TABLE>
+ <THEAD>
+  <TR>
+    <TH>CVE</TH>
+    <TH>Description</TH>
+    <TH>Severity</TH>
+    <TH>Status</TH>
+  </TR>
+ </THEAD>
+ <TBODY>
+{% for vuln in image.info.cveVulnerabilities -%}
+   <TR>
+    <TD>{{ vuln.cve }}</TD>
+    <TD>{{ vuln.description }}</TD>
+    <TD>{{ vuln.severity }}</TD>
+    <TD>{{ vuln.status }}</TD>
+  </TR>
+{% endfor -%}
+{% endif -%}
+ </TBODY>
+</TABLE>
+{% endfor -%}
+</MAIN>
+</BODY>
+</HTML>
