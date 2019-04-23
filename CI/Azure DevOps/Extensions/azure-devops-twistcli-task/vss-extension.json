@@ -1,15 +1,21 @@
 {
     "manifestVersion": 1,
     "id": "twistcli-build-release-task",
-    "name": "Twistcli Build and Release Task - 0.0.15",
-    "version": "0.0.15",
-    "publisher": "mweigel",
+    "name": "Twistcli Build and Release Task - 1.0.2",
+    "version": "1.0.2",
+    "publisher": "Twistlock",
+    "public": true,
+    "content": {
+        "details": {
+            "path": "overview.md"
+        }
+    },
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
         }
     ],
-    "description": "Task to scan container images using twistcli during Azure DevOps Build & Release pipelines",
+    "description": "Task to scan container images or serverless functions using twistcli during Azure DevOps Build & Release pipelines",
     "categories": [
         "Azure Pipelines"
     ],
