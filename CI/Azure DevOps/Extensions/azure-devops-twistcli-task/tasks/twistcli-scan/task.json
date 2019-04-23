@@ -1,7 +1,7 @@
 {
-    "id": "15c38a9a-54d3-421a-a6b8-e24e7cd496f7",
+    "id": "e5fe14b0-6962-514d-9e5d-ea5d2023bf12",
     "name": "twistcli-scan",
-    "friendlyName": "Twistcli scan",
+	"friendlyName": "Twistlock twistcli scan",
     "description": "Task to scan container images using twistcli within Azure DevOps Build & Release pipelines",
     "helpMarkDown": "",
     "category": "Utility",
@@ -9,14 +9,26 @@
         "Build",
         "Release"
     ],
-    "author": "Mario Weigel",
+    "author": "Twistlock (created by Mario Weigel)",
     "version": {
-        "Major": 0,
+        "Major": 1,
         "Minor": 0,
-        "Patch": 15
+        "Patch": 2
     },
-    "instanceNameFormat": "Twistcli",
+    "instanceNameFormat": "Twistlock twistcli scan",
     "inputs": [
+        {
+            "name": "scanType",
+            "type": "picklist",
+            "label": "Scan type",
+            "defaultValue": "images",
+            "required": true,
+            "options": {
+                "images": "images",
+                "serverless": "serverless"
+            },
+            "helpMarkDown": "Select the type of twistcli scan: container images or serverless functions"
+        },
         {
             "name": "twistlockService",
             "type": "connectedService:twistlockConsole",
@@ -50,7 +62,7 @@
         {
             "name": "gracePeriod",
             "type": "number",
-            "label": "Grace Period",
+            "label": "Grace Period (images only)",
             "defaultValue": 0,
             "required": true,
             "helpMarkDown": "Grace period specifies the timeframe for which a vulnerability should be ignored (measured in days from first vendor publish)"
@@ -70,11 +82,11 @@
             "helpMarkDown": "Select minimum compliance threshold for failing the build on compliance checks"
         },
         {
-            "name": "image",
+            "name": "artifact",
             "type": "string",
-            "label": "Image",
+            "label": "Image/Function zip",
             "required": true,
-            "helpMarkDown": "The ID or name of the image to scan"
+            "helpMarkDown": "The ID or name of the container image to scan or filename of the serverless functions zip file"
         }
     ],
     "execution": {
