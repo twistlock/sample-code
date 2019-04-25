@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+data:
+  twistlock.cfg: {{ .Values.twistlock_cfg }}
+metadata:
+  name: twistlock-console
+  namespace: {{ .Values.namespace }}

@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Twistlock Console Helm Chart
+name: twistlock-console
+version: 19.03.317
