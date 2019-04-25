@@ -48,3 +48,7 @@ file, then you're ready to apply it as the last step.
 ```sh
 consoleImageName: registry-auth.twistlock.com/tw_<REPLACE_TWISTLOCK_TOKEN>/twistlock/console:console_19_03_317
 ``` 
+
+### Special Thanks
+
+Thanks to the folks who put together https://github.com/operator-framework/operator-sdk/blob/master/doc/helm/user-guide.md and the other Operator Framework and Operator SDK docs and example. What an amazing resource. I borrowed from it liberally.
