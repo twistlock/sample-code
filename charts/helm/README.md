@@ -1,4 +1,6 @@
-# Helm chart for installing Twistlock Console into Kubernetes 
+# This repository is deprecrated - Twistlock supports helm natively as of the 19.03 release - please refer to Twistlock support for guidance on helm.  
+
+This repo is maintained for historical reference only.
 
 ## Downloading the charts
 
