@@ -49,6 +49,10 @@ file, then you're ready to apply it as the last step.
 consoleImageName: registry-auth.twistlock.com/tw_<REPLACE_TWISTLOCK_TOKEN>/twistlock/console:console_19_03_317
 ``` 
 
+### Next steps
+
+`kubectl get all -n twistlock` should get you your Console pod, replication controller, and most importantly, the twistlock-console service and the LoadBalancer IP you'll use to connect to the Console. Typically you'll connect at `https://<external_lb_ip>:8083` where you'll be prompted to create an admin user and to provide your full license key. After that, navigate to **Manage > Defenders > Deploy Daemon Set** or **Manage > Defenders > Deploy** to get Defenders installed wherever you need them.
+
 ### Special Thanks
 
 Thanks to the folks who put together https://github.com/operator-framework/operator-sdk/blob/master/doc/helm/user-guide.md and the other Operator Framework and Operator SDK docs and example. What an amazing resource. I borrowed from it liberally.
