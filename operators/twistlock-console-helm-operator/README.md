@@ -42,7 +42,8 @@ file.
 
 Overriding these defaults is as simple as setting the desired values in the CR
 spec. In our case we just have to override this value by replacing the string
-`<REPLACE_TWISTLOCK_TOKEN>` with your token. Save the file, we'll come back to it at the end.
+`<REPLACE_TWISTLOCK_TOKEN>` with your token. Save the deploy/0_6_crds/6_charts_v1alpha1_twistlockconsole_cr.yaml
+file, then you're ready to apply it as the last step.
 
 ```sh
 consoleImageName: registry-auth.twistlock.com/tw_<REPLACE_TWISTLOCK_TOKEN>/twistlock/console:console_19_03_317
