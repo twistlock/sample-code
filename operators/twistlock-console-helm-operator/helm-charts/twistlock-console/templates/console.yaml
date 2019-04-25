@@ -1,0 +1,120 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: twistlock-console
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    name: twistlock-console
+  template:
+    metadata:
+      name: twistlock-console
+      namespace: {{ .Values.namespace }}
+      labels:
+        name: twistlock-console
+    spec:
+      {{- if .Values.imagePullSecretsName }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecretsName }}
+      {{- end}}
+      restartPolicy: Always
+      serviceAccountName: twistlock-console
+      containers:
+      - name: twistlock-console
+        image: {{ .Values.consoleImageName }}
+        ports:
+        - name: mgmt-https
+          containerPort: {{ .Values.MANAGEMENT_PORT_HTTPS }}
+        - name: communication
+          containerPort: {{ .Values.COMMUNICATION_PORT }}
+        {{- if .Values.MANAGEMENT_PORT_HTTP }}
+        - name: mgmt-http
+          containerPort: {{ .Values.MANAGEMENT_PORT_HTTP }}
+        {{- else }}
+        {{- end}}
+        env:
+        - name: CONSOLE_CN
+          value: "{{ .Values.CONSOLE_CN }}"
+        {{- if .Values.CONSOLE_SAN }}
+        - name: CONSOLE_SAN
+          value: "{{ .Values.CONSOLE_SAN }}"
+        {{- end}}
+        - name: HIGH_AVAILABILITY_ENABLED
+          value: "false"
+        - name: CONFIG_PATH
+          value: /data/config/twistlock.cfg
+        - name: LOG_PROD
+          value: "true"
+        - name: DATA_RECOVERY_ENABLED
+          value: "{{ .Values.DATA_RECOVERY_ENABLED }}"
+        - name: COMMUNICATION_PORT
+          value: "{{ .Values.COMMUNICATION_PORT }}"
+        - name: MANAGEMENT_PORT_HTTPS
+          value: "{{ .Values.MANAGEMENT_PORT_HTTPS }}"
+        - name: MANAGEMENT_PORT_HTTP
+          value: "{{ .Values.MANAGEMENT_PORT_HTTP }}"
+        - name: SCAP_ENABLED
+          value: "{{ .Values.SCAP_ENABLED }}"
+        {{- if .Values.CONSOLE_PORTAL_SERVER_KEY }}
+        - name: CONSOLE_PORTAL_SERVER_CERT
+          value: "/var/lib/twistlock/secrets/console-cert.pem"
+        - name: CONSOLE_PORTAL_SERVER_KEY
+          value: "/var/lib/twistlock/secrets/console-key.pem"
+        {{- end}}
+        securityContext:
+          {{- if .Values.consoleUser }}
+          runAsUser: {{ .Values.consoleUser }}
+          {{- end}}
+          readOnlyRootFilesystem: true
+          {{- if .Values.privileged }}
+          privileged: true
+          {{- end}}
+          {{- if .Values.selinux_type }}
+          seLinuxOptions:
+            type: {{ .Values.selinux_type }}
+          {{- end}}
+        volumeMounts:
+        - name: twistlock-config-volume
+          mountPath: "/data/config/"
+        - name: console-persistent-volume
+          mountPath: "/var/lib/twistlock"
+          subPath: "{{ .Values.persistentVolumeDataFolder }}"
+        {{- if .Values.DATA_RECOVERY_ENABLED }}
+        - name: console-persistent-volume
+          mountPath: "/var/lib/twistlock-backup"
+          subPath: "{{ .Values.persistentVolumeDataRecoveryFolder }}"
+        {{- end}}
+        {{- if .Values.secrets }}
+        - name: portal-secrets-volume
+          mountPath: /var/lib/twistlock/secrets/
+          readOnly: true
+        {{- end}}
+        - name: syslog-socket
+          mountPath: "/dev/log"
+      {{- if .Values.nodeLabels }}
+      nodeSelector:
+          {{range $i := .Values.nodeLabels}}{{ $i }}
+          {{end}}
+      {{- end}}
+      volumes:
+      - name: console-persistent-volume
+        {{- if .Values.host }}
+        hostPath:
+          path: "/"
+        {{- else}}
+        persistentVolumeClaim:
+          claimName: twistlock-console
+        {{- end }}
+      - name: syslog-socket
+        hostPath:
+          path: "/dev/log"
+      - name: twistlock-config-volume
+        configMap:
+          name: twistlock-console
+      {{- if .Values.secrets }}
+      - name: portal-secrets-volume
+        secret:
+          secretName: twistlock-console
+          defaultMode: 256
+      {{- end}}

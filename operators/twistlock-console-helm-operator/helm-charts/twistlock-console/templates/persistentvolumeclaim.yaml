@@ -1,0 +1,20 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: twistlock-console
+  namespace: {{ .Values.namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.persistentVolumeStorage }}
+  {{- if .Values.storageClassName }}
+  storageClassName: {{ .Values.storageClassName }}
+  {{- end}}
+  {{- if .Values.persistentVolumeLabels }}
+  selector:
+    matchLabels:
+      {{range $i := .Values.persistentVolumeLabels}}{{ $i }}
+      {{end}}
+  {{- end}}
