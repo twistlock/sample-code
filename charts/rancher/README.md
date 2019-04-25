@@ -1,4 +1,7 @@
-# Rancher Helm chart for installing Twistlock Console into Kubernetes
+# As of the 19.03 release, Twistlock includes native support for Helm.  Please refer to Twistlock support for additional information.  This repository will remain available for reference purposes only.
+
+# Rancher Helm chart for installing Twistlock Console into Kubernetes 
+
 
 ## adding the charts to rancher 2.0
 
