@@ -1,0 +1,16 @@
+{
+  "scan": {
+    "scanRunningImages": false,
+    "imagesScanPeriodMs": 86400000,
+    "containersScanPeriodMs": 86400000,
+    "systemScanPeriodMs": 86400000,
+    "registryScanPeriodMs": 3600000,
+    "pcfDropletsScanPeriodMs": 86400000,
+    "serverlessScanPeriodMs": 86400000,
+    "cloudPlatformsScanPeriodMs": 86400000,
+    "extractArchive": true,
+    "showNegligibleVulnerabilities": true,
+    "showInfraContainers": true,
+    "includeJsDependencies": true
+  }
+}

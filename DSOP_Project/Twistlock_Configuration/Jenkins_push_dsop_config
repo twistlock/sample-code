@@ -1,0 +1,66 @@
+node {
+   
+    stage('Clean') {
+	sh 'mkdir config -p'
+        sh 'rm config/*.* || true'
+	sh 'git config --global user.email "automation@example.local"'
+	sh 'git config --global user.name "Automation"'
+
+    }
+
+    stage('Clone repository') {
+        /* Let's make sure we have the repository cloned to our workspace */
+        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "https://${env.git_url}.git"]]])
+    }
+
+   stage('Push Manage > Authentication settings') {
+        withCredentials([usernamePassword(credentialsId: 'twistlock_creds', passwordVariable: 'TL_PASS', usernameVariable: 'TL_USER')]) {
+        	/* Set Manage > Authentication > Logon : Require strong passwords for local accounts" */
+			sh 'curl -s -k -u $TL_USER:$TL_PASS https://$TL_CONSOLE/api/v1/settings/logon -X POST -H "Content-Type:application/json" --data-binary "@${WORKSPACE}/config/logon.json"'
+			/* Set Manage > Authentication > system Certificates : Enable certificate revocation checking */
+        	sh 'curl -s -k -u $TL_USER:$TL_PASS https://$TL_CONSOLE/api/v1/settings/trusted-certificates -X POST -H "Content-Type:application/json" --data-binary "@${WORKSPACE}/config/crl_checking.json"'  
+		    /* Once we have all the CaC issuingCA certs re-enabled this call */
+        	/* sh 'curl -s -k -u $TL_USER:$TL_PASS https://$TL_CONSOLE/api/v1/settings/console-certificate -X POST -H "Content-Type:application/json" --data-binary "@${WORKSPACE}/config/trusted_certificate.json"' */
+		}
+	}
+
+    stage('Push Manage > System settings') {
+        withCredentials([usernamePassword(credentialsId: 'twistlock_creds', passwordVariable: 'TL_PASS', usernameVariable: 'TL_USER')]) {
+        	/* Set Manage > System > Scan : Only scan images with running containers */
+			sh 'curl -s -k -u $TL_USER:$TL_PASS https://$TL_CONSOLE/api/v1/settings/scan -X POST -H "Content-Type:application/json" --data-binary "@${WORKSPACE}/config/system.json"'
+        	/* Set Manage > System > Logging > Syslog and STDOUT with detailed vulnerability and compliance output */
+			sh 'curl -s -k -u $TL_USER:$TL_PASS https://$TL_CONSOLE/api/v1/settings/logging -X POST -H "Content-Type:application/json" --data-binary "@${WORKSPACE}/config/logging.json"'
+        	
+		}
+    }
+
+    stage('Push Defend > CNNF config') {
+        withCredentials([usernamePassword(credentialsId: 'twistlock_creds', passwordVariable: 'TL_PASS', usernameVariable: 'TL_USER')]) {
+        	/* Set Defend > Firewall > Cloud Native Network Firewall : enabled */
+			sh 'curl -s -k -u $TL_USER:$TL_PASS https://$TL_CONSOLE/api/v1/policies/firewall/network/container -X PUT -H "Content-Type:application/json" --data-binary "@${WORKSPACE}/config/container_cnnf.json"'
+        	/* Set Defend > Firewall > Host Firewall : enabled */
+			sh 'curl -s -k -u $TL_USER:$TL_PASS https://$TL_CONSOLE/api/v1/policies/firewall/network/host -X PUT -H "Content-Type:application/json" --data-binary "@${WORKSPACE}/config/host_cnnf.json"'
+       		}
+    }
+
+    stage('Push Defend > Runtime > Container Policy > Default config') {
+        withCredentials([usernamePassword(credentialsId: 'twistlock_creds', passwordVariable: 'TL_PASS', usernameVariable: 'TL_USER')]) {
+			/* Update Defend > Runtime > Container Policy : Default */
+			sh 'curl -s -k -u $TL_USER:$TL_PASS https://$TL_CONSOLE/api/v1/policies/runtime/container -X PUT -H "Content-Type:application/json" --data-binary "@${WORKSPACE}/config/policy_runtime_container.json"'
+		} 
+	}
+
+    stage('Push Defend > Runtime > Host Policy > Default config') {
+        withCredentials([usernamePassword(credentialsId: 'twistlock_creds', passwordVariable: 'TL_PASS', usernameVariable: 'TL_USER')]) {
+			/* Update Defend > Runtime > Host Policy > Default */
+        	sh 'curl -s -k -u $TL_USER:$TL_PASS https://$TL_CONSOLE/api/v1/policies/runtime/host -X PUT -H "Content-Type:application/json" --data-binary "@${WORKSPACE}/config/policy_runtime_host.json"'
+		} 
+    }
+
+	stage('Push Manage > System > Custom Feeds > Malware example') {
+        withCredentials([usernamePassword(credentialsId: 'twistlock_creds', passwordVariable: 'TL_PASS', usernameVariable: 'TL_USER')]) {
+			/* Push Manage > System > Custom Feeds > Malware with sample malware https://cdn.twistlock.com/john/evil */
+        	sh 'curl -s -k -u $TL_USER:$TL_PASS https://$TL_CONSOLE/api/v1/feeds/custom/malware -X PUT -H "Content-Type:application/json" --data-binary "@${WORKSPACE}/config/malware.json"'
+		} 
+    }
+}
