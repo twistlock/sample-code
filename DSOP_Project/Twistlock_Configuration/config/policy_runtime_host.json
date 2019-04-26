@@ -1,0 +1,64 @@
+{
+  "_id": "hostRuntime",
+  "owner": "system",
+  "rules": [
+    {
+      "modified": "2019-03-28T15:58:20.712Z",
+      "owner": "system",
+      "name": "Default - alert on suspicious runtime behavior",
+      "previousName": "",
+      "advancedProtection": "alert",
+      "staticProfiles": true,
+      "resources": {
+        "hosts": [
+          "*"
+        ]
+      },
+      "forensic": {
+        "sshdEnabled": true,
+        "sudoEnabled": true,
+        "serviceActivitiesEnabled": false,
+        "dockerEnabled": true,
+        "readonlyDockerEnabled": false
+      },
+      "capabilities": {
+        "DOCKER": "alert",
+        "DOCKER_SOCKET": "alert",
+        "GCLOUD": "alert",
+        "HOSTS_CONFIG": "alert",
+        "INSTALLER": "alert",
+        "KUBERNETES": "alert",
+        "NET": "alert",
+        "OPENSHIFT": "alert",
+        "PRIVILEGED_PROCESSES": "alert",
+        "SECRETS_MANAGER": "alert",
+        "SERVICE_OPERATOR": "alert",
+        "SHELL": "alert",
+        "SSH": "alert",
+        "SYSTEM_LOGS": "alert",
+        "USERS_ADMIN": "alert"
+      },
+      "blacklist": {},
+      "whitelist": {},
+      "network": {
+        "effect": "alert",
+        "blacklistIPs": [],
+        "blacklistListeningPorts": [],
+        "whitelistListeningPorts": [],
+        "blacklistOutboundPorts": [],
+        "whitelistOutboundPorts": [],
+        "whitelistIPs": [],
+        "detectPortScan": true
+      },
+      "dns": {
+        "effect": "alert",
+        "whitelist": [],
+        "blacklist": []
+      },
+      "anomalousAppDetection": {
+        "enabled": true
+      }
+    }
+  ],
+  "learningDisabled": false
+}

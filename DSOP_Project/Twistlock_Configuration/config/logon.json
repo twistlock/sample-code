@@ -1,0 +1,7 @@
+{
+  "strongPassword": true,
+  "sessionTimeoutSec": 86400,
+  "useSupportCredentials": true,
+  "basicAuthDisabled": false,
+  "includeTLS": false
+}
