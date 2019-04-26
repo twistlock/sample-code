@@ -1,0 +1,66 @@
+{
+  "_id": "containerRuntime",
+  "rules": [
+{
+      "modified": "2019-04-24T16:54:29.84Z",
+      "owner": "system",
+      "name": "Default - alert on suspicious runtime behavior",
+      "previousName": "",
+      "resources": {
+        "hosts": [
+          "*"
+        ],
+        "images": [
+          "*"
+        ],
+        "labels": [
+          "*"
+        ],
+        "containers": [
+          "*"
+        ]
+      },
+      "advancedProtection": true,
+      "processes": {
+        "effect": "alert",
+        "blacklist": [],
+        "whitelist": [],
+        "checkCryptoMiners": true,
+        "checkLateralMovement": true,
+        "checkParentChild": true
+      },
+      "syscalls": {
+        "effect": "alert",
+        "staticProfiles": false,
+        "whitelist": [],
+        "blacklist": []
+      },
+      "network": {
+        "effect": "alert",
+        "blacklistIPs": [],
+        "blacklistListeningPorts": [],
+        "whitelistListeningPorts": [],
+        "blacklistOutboundPorts": [],
+        "whitelistOutboundPorts": [],
+        "whitelistIPs": [],
+        "detectPortScan": true
+      },
+      "dns": {
+        "effect": "alert",
+        "whitelist": [],
+        "blacklist": []
+      },
+      "filesystem": {
+        "effect": "alert",
+        "blacklist": [],
+        "whitelist": [],
+        "checkNewFiles": true,
+        "backdoorFiles": true
+      },
+      "kubernetes": {
+        "enabled": true
+      }
+    }
+  ],
+  "learningDisabled": false
+}
