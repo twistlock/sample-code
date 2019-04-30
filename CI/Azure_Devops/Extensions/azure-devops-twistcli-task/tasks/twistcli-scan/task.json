@@ -1,0 +1,97 @@
+{
+    "id": "e5fe14b0-6962-514d-9e5d-ea5d2023bf12",
+    "name": "twistcli-scan",
+	"friendlyName": "Twistlock twistcli scan",
+    "description": "Task to scan container images using twistcli within Azure DevOps Build & Release pipelines",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Twistlock (created by Mario Weigel)",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 2
+    },
+    "instanceNameFormat": "Twistlock twistcli scan",
+    "inputs": [
+        {
+            "name": "scanType",
+            "type": "picklist",
+            "label": "Scan type",
+            "defaultValue": "images",
+            "required": true,
+            "options": {
+                "images": "images",
+                "serverless": "serverless"
+            },
+            "helpMarkDown": "Select the type of twistcli scan: container images or serverless functions"
+        },
+        {
+            "name": "twistlockService",
+            "type": "connectedService:twistlockConsole",
+            "label": "Twistlock service/server end point",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Twistlock end point to use. If needed, click on 'manage', and add a new service endpoint of type 'Twistlock server connection'"
+        },
+        {
+            "name": "vulnerabilityThreshold",
+            "type": "pickList",
+            "label": "Vulnerability Threshold",
+            "defaultValue": "high",
+            "required": true,
+            "options": {
+                "critical": "critical",
+                "high": "high",
+                "medium": "medium",
+                "low": "low"
+            },
+            "helpMarkDown": "Select minimum vulnerability threshold for failing the build on vulnerability checks"
+        },
+        {
+            "name": "onlyFixed",
+            "type": "boolean",
+            "label": "Only Fixed",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "Include only vulnerabilities with a fix"
+        },
+        {
+            "name": "gracePeriod",
+            "type": "number",
+            "label": "Grace Period (images only)",
+            "defaultValue": 0,
+            "required": true,
+            "helpMarkDown": "Grace period specifies the timeframe for which a vulnerability should be ignored (measured in days from first vendor publish)"
+        },
+        {
+            "name": "complianceThreshold",
+            "type": "pickList",
+            "label": "Compliance Threshold",
+            "defaultValue": "high",
+            "required": true,
+            "options": {
+                "critical": "critical",
+                "high": "high",
+                "medium": "medium",
+                "low": "low"
+            },
+            "helpMarkDown": "Select minimum compliance threshold for failing the build on compliance checks"
+        },
+        {
+            "name": "artifact",
+            "type": "string",
+            "label": "Image/Function zip",
+            "required": true,
+            "helpMarkDown": "The ID or name of the container image to scan or filename of the serverless functions zip file"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "task.js"
+        }
+    }
+}
