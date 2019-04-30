@@ -39,6 +39,8 @@ $ose_internal_registry = "docker-registry.default.svc:5000"
 $defenders = "" 
 # Name of the Twistlock Credential created
 $TL_Credential = "OSE-Internal-Registry-Scanner" 
+# Set to $true to remove all registry entries in 
+$TL_flush_registry_settings = [bool]$false
 
 # Make sure we can see the OSE cluster, check the default docker-registry route
 if (!(oc get route docker-registry -n default))
@@ -127,11 +129,22 @@ foreach($image in $internal_registry_images)
     } # end building payload of the input json
     
     # now build the specification json structure
-    $body = @{
-        "specifications" = @(
-        $subbody
-        )
+    if(!$TL_flush_registry_settings)
+        {
+        $body = @{
+            "specifications" = @(
+            $subbody
+            )
+            }
+        }
+    else
+        {
+        # flushing registry entries
+        $body = @{
+            "specifications" = @()
+            }
         } 
+
 # convert to json
 $json_payload = $null
 $json_payload += $body | ConvertTo-Json -Depth 4 
@@ -142,4 +155,11 @@ $header = @{"Content-Type" = "application/json"}
 Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck -Method "Post" -Header $header -Body $json_payload 
 
 #status output
-write-host "Created" $subbody.count "registry entries"
+if(!$TL_flush_registry_settings)
+    {
+    write-host "Created" $subbody.count "registry entries"
+    }
+else
+    {
+    write-host "All registry entries in Defend > Vulnerabilities > Registry have been removed."    
+    }

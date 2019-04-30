@@ -40,30 +40,32 @@ This Go program will do the following:
 ```
 ```
 Usage of tl_ose_internal_registry_populator_macos:
-  -TLAuthPwd string
-        Twistlock Authentication, password
-  -TLAuthToken string
-        Twistlock Authentication, bearer token
-  -TLAuthUser string
-        Twistlock Authentication, username
-  -TLConsole string
-        URL to the Twistlock Console (default "https://localhost:8083")
-  -TLCredential string
-        Name of the OpenShift Twistlock ServiceAccount entry created within Twistlock (default "OSE-Internal-Registry-Scanner")
-  -TLDefender string
-        Twistlock Defender to be used for scanning. If blank the first Defender will be used.
-  -ose string
-        URL to the OpenShift Management Console (default "https://localhost:8443")
-  -osePWD string
-        OpenShift Management Console password
-  -oseProject string
-        Twistlock Project in OpenShift (default "twistlock")
-  -oseRegistry string
-        OpenShift internal registry (default "docker-registry.default.svc:5000")
-  -oseToken string
-        OpenShift Management Console token
-  -oseUser string
-        OpenShift Management Console username
+-TLAuthPwd string
+    Twistlock Authentication, password
+-TLAuthToken string
+    Twistlock Authentication, bearer token
+-TLAuthUser string
+    Twistlock Authentication, username
+-TLConsole string
+    URL to the Twistlock Console (default "https://localhost:8083")
+-TLCredential string
+    Name of the OpenShift Twistlock ServiceAccount entry created within Twistlock (default "OSE-Internal-Registry-Scanner")
+-TLDefender string
+    Twistlock Defender to be used for scanning. If blank the first Defender will be used.
+-TLFlushRegistrySettings
+    true = remove all registry entries in Twistlock Console's Defend > Vulnerabilities > Registry
+-ose string
+    URL to the OpenShift Management Console (default "https://localhost:8443")
+-osePWD string
+    OpenShift Management Console password
+-oseProject string
+    Twistlock Project in OpenShift (default "twistlock")
+-oseRegistry string
+    OpenShift internal registry, for http based connections http://docker-registry.default.svc:<http_endpoint> (default "docker-registry.default.svc:5000")
+-oseToken string
+    OpenShift Management Console token
+-oseUser string
+    OpenShift Management Console username
   ```
 
 ### Example
@@ -169,7 +171,7 @@ Post registry settings via API response: 200 OK
 ### Modify the following script variables for your environment
 * $twistlock_API - endpoint of the Twistlock API
 * $TL_service_account_password - Twistlock Service Account password. See notes within the script on how to get the password
-
+* $TL_flush_registry_settings = [bool]$true will remove all registry entries in Defend > Vulnerabilities > Registry 
 
 ### Execute
 
