@@ -1,0 +1,5 @@
+.DS_Store
+twistcli
+node_modules
+task.js
+*.vsix
