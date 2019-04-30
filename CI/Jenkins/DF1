@@ -1,0 +1,7 @@
+FROM alpine:3.8
+LABEL maintainer="Matthew Barker, I hope this is secure"
+
+# install node
+RUN apk add --update nodejs npm
+RUN npm install -g tough-cookie
+
