@@ -22,7 +22,7 @@
 # Put this password into the $TL_service_account_password variable 
 # 1) Give the Twistlock Service account the right to read the OpenShift registry: oc adm policy add-cluster-role-to-user system:image-puller system:serviceaccount:twistlock:twistlock-service
 # 2) oc describe sa twistlock-service -n twistlock 
-# 3) oc describe secret twistlock-service-dockercfg-<string> in the secret, note the username (serviceaccount) and the password (a very long string, ends before "email") copy the password string into the $TL_service_account_password variable 
+# 3) oc describe secret twistlock-service in the secret, note the username (serviceaccount) and the password (a very long string, ends before "email") copy the password string into the $TL_service_account_password variable 
 # Note: Some versions of OpenShift will not return the whole password. Use the OSE Console to pull the password Twistlock_Project -> Resources -> Secrets -> twistlock-service-dockercfg-<string> -> Show Annotations -> openshift.io/token-secret.value -> See All
 # 
 #
