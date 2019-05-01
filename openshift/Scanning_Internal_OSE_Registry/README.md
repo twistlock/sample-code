@@ -25,8 +25,8 @@ This Go program will do the following:
 
 - The program needs access to OpenShift Command Line Interface (oc)
 - Give the Twistlock Service account the system:image-puller right in OpenShift  
- OpenShift v3.6: ```oc adm policy add-cluster-role-to-user system:image-puller system:serviceaccount:<twistlock_project>:twistlock-service-dockercfg-<variable>```  
- OpenShift v3.10: ```oc policy add-role-to-user system:image-puller system:serviceaccount:<twistlock_project>:twistlock-service-dockercfg-<variable>```  
+ OpenShift v3.6: ```oc adm policy add-cluster-role-to-user system:image-puller system:serviceaccount:<twistlock_project>:twistlock-service```  
+ OpenShift v3.10: ```oc policy add-role-to-user system:image-puller system:serviceaccount:<twistlock_project>:twistlock-service```  
  Check your OpenShift version's documentation. Otherwise Twistlock Registry scanning will error with 401 unauthorized.
 
 ### Executables
