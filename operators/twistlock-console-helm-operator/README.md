@@ -49,6 +49,13 @@ file, then you're ready to apply it as the last step.
 consoleImageName: registry-auth.twistlock.com/tw_<REPLACE_TWISTLOCK_TOKEN>/twistlock/console:console_19_03_317
 ``` 
 
+The other option to choose is whether we're on OpenShift, since Kubernetes is the default. If on OpenShift, be sure to add these lines to your CR spec as well:
+
+```sh
+openshift: true
+serviceType: NodePort
+```
+
 ### Next steps
 
 `kubectl get all -n twistlock` should get you your Console pod, replication controller, and most importantly, the twistlock-console service and the LoadBalancer IP you'll use to connect to the Console. Typically you'll connect at `https://<external_lb_ip>:8083` where you'll be prompted to create an admin user and to provide your full license key. After that, navigate to **Manage > Defenders > Deploy Daemon Set** or **Manage > Defenders > Deploy** to get Defenders installed wherever you need them.
