@@ -2,7 +2,7 @@
     "id": "03928031-4eac-41a3-9fd1-86ebd2c2a46e",
     "name": "twistcli-rasp",
     "friendlyName": "Twistlock embed RASP",
-    "description": "Task to build the rasp defender into a container image using twistcli within Azure DevOps Build & Release pipelines",
+    "description": "Task to update a Dockerfile so that the RASP defender is embedded into the image when built",
     "helpMarkDown": "",
     "category": "Utility",
     "visibility": [
