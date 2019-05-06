@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "github.com/twistlock/sample-code/tree/master/CI/Azure%20DevOps/Extensions/azure-devops-twistcli-task"
+    "url": "github.com/twistlock/sample-code/tree/master/CI/Azure%20DevOps/Extensions/azure-devops-twistcli-tasks/tasks/twistcli-scan"
   },
   "author": "Twistlock (created by Mario Weigel)",
   "license": "ISC",
