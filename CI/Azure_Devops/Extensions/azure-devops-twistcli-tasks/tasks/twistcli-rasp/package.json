@@ -1,7 +1,7 @@
 {
-  "name": "twistcli-scan",
-  "version": "1.0.2",
-  "description": "Task to scan container images using twistcli during Azure DevOps Build & Release pipelines",
+  "name": "twistcli-rasp",
+  "version": "1.1.0",
+  "description": "Task to build the RASP defender into a container image",
   "main": "task.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,7 +1,18 @@
-import fs = require("fs")
-import path = require("path")
+import fs = require("fs");
+import path = require("path");
 import tl = require('azure-pipelines-task-lib/task');
 import tr = require('azure-pipelines-task-lib/toolrunner');
+
+// Write the CA certificate received from the DevOps service connection configuration to a temporary file.
+function writeCACertificate(caCertData: string): string {
+    let tempDirectory = tl.getVariable('agent.tempDirectory');
+    tl.checkPath(tempDirectory, `${tempDirectory} (agent.tempDirectory)`);
+
+    let caCertPath = path.join(tempDirectory, 'ca-cert.pem');
+    fs.writeFileSync(caCertPath, caCertData);
+
+    return caCertPath;
+}
 
 // Simple wrapper around Twistlock's twistcli tool.
 async function run() {
@@ -18,9 +29,9 @@ async function run() {
         let twistcliPath: string = tl.which('twistcli', true);
         let twistcli = tl.tool(twistcliPath);
         if (tl.getInput('scanType', true) === "serverless") {
-          twistcli.arg("serverless");
+            twistcli.arg("serverless");
         } else {
-          twistcli.arg("images");
+            twistcli.arg("images");
         }
         twistcli.arg("scan");
 
@@ -45,7 +56,7 @@ async function run() {
         twistcli.arg(['--vulnerability-threshold', tl.getInput('vulnerabilityThreshold', true)]);
         // --grace-period is only for container images
         if (tl.getInput('scanType', true) === "images") {
-          twistcli.arg(['--grace-period', tl.getInput('gracePeriod', true)]);
+            twistcli.arg(['--grace-period', tl.getInput('gracePeriod', true)]);
         }
 
         if (tl.getBoolInput('onlyFixed', true)) {
@@ -86,18 +97,6 @@ async function run() {
     catch (err) {
         tl.setResult(tl.TaskResult.Failed, err);
     }
-}
-
-// Write the CA certificate received from the DevOps service connection configuration
-// to a temporary file.
-function writeCACertificate(caCertData: string): string {
-    let tempDirectory = tl.getVariable('agent.tempDirectory');
-    tl.checkPath(tempDirectory, `${tempDirectory} (agent.tempDirectory)`);
-
-    let caCertPath = path.join(tempDirectory, 'ca-cert.pem');
-    fs.writeFileSync(caCertPath, caCertData);
-
-    return caCertPath;
 }
 
 run();
