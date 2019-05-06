@@ -1,7 +1,7 @@
 {
     "id": "03928031-4eac-41a3-9fd1-86ebd2c2a46e",
     "name": "twistcli-rasp",
-    "friendlyName": "Twistlock rasp build",
+    "friendlyName": "Twistlock embed RASP",
     "description": "Task to build the rasp defender into a container image using twistcli within Azure DevOps Build & Release pipelines",
     "helpMarkDown": "",
     "category": "Utility",
@@ -15,7 +15,7 @@
         "Minor": 1,
         "Patch": 0
     },
-    "instanceNameFormat": "Twistlock rasp build",
+    "instanceNameFormat": "Twistlock embed RASP",
     "inputs": [
         {
             "name": "twistlockService",
