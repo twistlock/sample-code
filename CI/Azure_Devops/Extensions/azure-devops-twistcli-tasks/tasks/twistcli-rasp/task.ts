@@ -4,7 +4,7 @@ import tl = require('azure-pipelines-task-lib/task');
 import tr = require('azure-pipelines-task-lib/toolrunner');
 
 // Write the CA certificate received from the DevOps service connection configuration to a temporary file.
-export function writeCACertificate(caCertData: string): string {
+function writeCACertificate(caCertData: string): string {
     let tempDirectory = tl.getVariable('agent.tempDirectory');
     tl.checkPath(tempDirectory, `${tempDirectory} (agent.tempDirectory)`);
 
@@ -15,7 +15,7 @@ export function writeCACertificate(caCertData: string): string {
 }
 
 // Taken from https://github.com/Microsoft/azure-pipelines-tasks/blob/master/Tasks/Common/docker-common/fileutils.ts
-export function findDockerFile(dockerfilepath: string): string {
+function findDockerFile(dockerfilepath: string): string {
     if (dockerfilepath.indexOf('*') >= 0 || dockerfilepath.indexOf('?') >= 0) {
         tl.debug('ContainerPatternFound');
         let workingDirectory = tl.getVariable('System.DefaultWorkingDirectory');
