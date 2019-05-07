@@ -38,8 +38,9 @@ pipeline {
                             tag: "${BUILD_TAG}",
                             image: "${TARGET_CONTAINER}:${BUILD_TAG}"
                     }
-                    catch (exc) {
-                        echo 'Scan failed!'
+                    catch (err) {
+                        echo "Exception thrown:\n ${err}"
+                        echo 'Scan failed with error ' + err.toString()
                         currentBuild.result = 'UNSTABLE'
                     }
                 }
