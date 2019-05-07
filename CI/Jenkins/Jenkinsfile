@@ -1,3 +1,6 @@
+import jenkins.model.*
+import hudson.AbortException
+
 pipeline {
     agent any
     environment {
@@ -38,9 +41,12 @@ pipeline {
                             tag: "${BUILD_TAG}",
                             image: "${TARGET_CONTAINER}:${BUILD_TAG}"
                     }
-                    catch (err) {
-                        echo "Exception thrown:\n ${err}"
-                        echo 'Scan failed with error ' + err.toString()
+                    catch(hudson.AbortException e) {
+                        echo "abort exception caught:\n ${e}"
+                        currentBuild.result = 'UNSTABLE'
+                    }
+                    catch(e) {
+                        echo "exception caught:\n ${e}"
                         currentBuild.result = 'UNSTABLE'
                     }
                 }
