@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: twistlock-console-helm-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: twistlock-console-helm-operator
+  template:
+    metadata:
+      labels:
+        name: twistlock-console-helm-operator
+    spec:
+      serviceAccountName: twistlock-console-helm-operator
+      containers:
+        - name: twistlock-console-helm-operator
+          # Replace this with the built image name
+          image: twistlock/console-operator:0.0.9
+          imagePullPolicy: Always
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "twistlock-console-helm-operator"
