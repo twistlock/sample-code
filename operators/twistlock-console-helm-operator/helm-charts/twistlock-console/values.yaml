@@ -17,7 +17,7 @@ RUN_CONSOLE_AS_ROOT: ""
 SCAP_ENABLED: ""
 SELINUX_LABEL: disable
 SYSTEMD_ENABLED: ""
-consoleImageName: registry-auth.twistlock.com/tw_<replace_twistlock_token>/twistlock/console:console_19_03_317
+consoleImageName: registry-auth.twistlock.com/tw_<REPLACE_TWISTLOCK_TOKEN>/twistlock/console:console_19_03_317
 namespace: twistlock
 openshift: false
 persistentVolumeDataFolder: var/lib/twistlock
