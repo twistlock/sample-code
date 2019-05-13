@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 1.
 
-Put this file's parent directory in $SPLUNK_HOME/etc/apps/.
+Put this file's parent directory in $SPLUNK_HOME/etc/apps/ and restart Splunk.
 
 --------------------------------------------------------------------------------
 2.
