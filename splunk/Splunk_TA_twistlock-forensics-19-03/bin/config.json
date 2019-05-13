@@ -1,0 +1,11 @@
+{
+  "credentials": {
+    "username": "",
+    "password": ""
+  },
+  "setup": {
+    "console_fqdn": "",
+    "incidents_endpoint": "/api/v1/audits/incidents",
+    "forensics_endpoint": "/api/v1/profiles/"
+  }
+}
