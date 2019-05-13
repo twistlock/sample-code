@@ -1,4 +1,9 @@
 --------------------------------------------------------------------------------
+0.
+
+Populate the empty fields in bin/config.json (username, password, and console_fqdn).
+
+--------------------------------------------------------------------------------
 1.
 
 Put this file's parent directory in $SPLUNK_HOME/etc/apps/ and restart Splunk.
