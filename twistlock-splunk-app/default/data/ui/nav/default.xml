@@ -1,4 +1,0 @@
-<nav search_view="search">
-  <view name="twistlock_incidents" default='true' />
-  <view name="search" />
-</nav>
