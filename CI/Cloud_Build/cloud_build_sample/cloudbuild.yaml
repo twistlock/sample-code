@@ -1,0 +1,39 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/cloud-build-test', '.' ]
+
+# Scanning is encapsulated in the cloud-build-twistcli image.
+# This must be built prior to running this build
+
+# twistcli.sh takes a single parameter -- the image name to scan
+# User credentials and the console URL are passed as environment variables
+- name: 'gcr.io/$PROJECT_ID/cloud-build-twistcli'
+  args: ['/twistcli.sh','gcr.io/$PROJECT_ID/cloud-build-test:latest']
+  env:
+  - 'TL_CONSOLE_URL=$_TWISTLOCK_URL'
+  - 'TL_USER=$_TWISTLOCK_USER'
+  secretEnv:  
+  - 'TL_PASS'
+
+substitutions:
+# Plaintext Twistlock config parameters 
+
+# Replace {{ Twistlock Console URL }} with the http: or https: URL for the console with no trailing /
+# Example: `https://sample.lab.twistlock.com:8083`
+
+# Replace {{ Twistlock CI User }} with a username that has the CI User role
+# More details: https://docs.twistlock.com/docs/latest/access_control/user_roles.html
+    _TWISTLOCK_URL: '{{ Twistlock Console URL }}'
+    _TWISTLOCK_USER: '{{ Twistlock CI User }}'
+
+images:
+- 'gcr.io/$PROJECT_ID/cloud-build-test'
+
+secrets:
+# Using Cloud KMS to store and access an encrypted password is covered here:
+# https://cloud.google.com/cloud-build/docs/securing-builds/use-encrypted-secrets-credentials
+
+# Replace {{ Base64 Encrypted Secret }} with the base64 encoded output from `gcloud kms encrypt`
+- kmsKeyName: projects/$PROJECT_ID/locations/global/keyRings/{{ keyRing name }}/cryptoKeys/TWISTLOCK_PASS
+  secretEnv:
+    TL_PASS: {{ Base64 Encrypted Secret }}
