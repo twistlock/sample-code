@@ -1,0 +1,64 @@
+{
+    "id": "03928031-4eac-41a3-9fd1-86ebd2c2a46e",
+    "name": "twistcli-rasp",
+    "friendlyName": "Twistlock embed RASP",
+    "description": "Task to update a Dockerfile so that the RASP defender is embedded into the image when built",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Twistlock (created by Mario Weigel)",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 4
+    },
+    "instanceNameFormat": "Twistlock embed RASP",
+    "inputs": [
+        {
+            "name": "twistlockService",
+            "type": "connectedService:twistlockConsole",
+            "label": "Twistlock service/server end point",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Twistlock end point to use. If needed, click on 'manage', and add a new service endpoint of type 'Twistlock server connection'"
+        },
+        {
+            "name": "appID",
+            "type": "string",
+            "label": "Application ID",
+            "required": true,
+            "helpMarkDown": "Unique identifier for the RASP Defender. For example, my-app."
+        },
+        {
+            "name": "consoleHost",
+            "type": "string",
+            "label": "Console host",
+            "required": true,
+            "helpMarkDown": "DNS name or IP address of the Twistlock console"
+        },
+        {
+            "name": "dataFolder",
+            "type": "string",
+            "label": "Data folder",
+            "defaultValue": "/twistlock",
+            "required": true,
+            "helpMarkDown": "Readable and writable directory in the container’s filesystem. For example, /twistlock/."
+        },
+        {
+            "name": "dockerfile",
+            "type": "string",
+            "label": "Dockerfile path",
+            "defaultValue": "**/Dockerfile",
+            "required": true,
+            "helpMarkDown": "Path to Docker file"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "task.js"
+        }
+    }
+}

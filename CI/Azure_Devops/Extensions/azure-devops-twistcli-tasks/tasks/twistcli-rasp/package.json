@@ -1,0 +1,18 @@
+{
+  "name": "twistcli-rasp",
+  "version": "1.1.4",
+  "description": "Task to build the RASP defender into a container image",
+  "main": "task.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/twistlock/sample-code/tree/master/CI/Azure_DevOps/Extensions/azure-devops-twistcli-tasks/tasks/twistcli-rasp"
+  },
+  "author": "Twistlock (created by Mario Weigel)",
+  "license": "ISC",
+  "dependencies": {
+    "azure-pipelines-task-lib": "^2.8.0"
+  }
+}
