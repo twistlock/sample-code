@@ -1,10 +1,10 @@
 {
     "manifestVersion": 1,
     "id": "twistcli-build-release-task",
-    "name": "Twistcli Build and Release Task - 1.0.2",
-    "version": "1.0.2",
-    "publisher": "Twistlock",
-    "public": true,
+    "name": "Twistcli Build and Release Task",
+    "version": "1.1.4",
+    "publisher": "mweigel",
+    "public": false,
     "content": {
         "details": {
             "path": "overview.md"
@@ -25,6 +25,9 @@
     "files": [
         {
             "path": "tasks/twistcli-scan"
+        },
+        {
+            "path": "tasks/twistcli-rasp"
         }
     ],
     "contributions": [
@@ -78,7 +81,7 @@
                         ]
                     }
                 ],
-                "helpMarkDown": "<a href=\"https://github.com/twistlock/sample-code/tree/master/CI/Azure%20DevOps/Extensions/azure-devops-twistcli-task\" target=\"_blank\"><b>Learn More</b></a>"
+                "helpMarkDown": "<a href=\"https://github.com/twistlock/sample-code/tree/master/CI/Azure%20DevOps/Extensions/azure-devops-twistcli-tasks\" target=\"_blank\"><b>Learn More</b></a>"
             }
         },
         {
@@ -89,6 +92,16 @@
             ],
             "properties": {
                 "name": "tasks/twistcli-scan"
+            }
+        },
+        {
+            "id": "rasp-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/twistcli-rasp"
             }
         }
     ]
