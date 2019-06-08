@@ -3,8 +3,8 @@
     "id": "twistcli-build-release-task",
     "name": "Twistcli Build and Release Task",
     "version": "1.1.4",
-    "publisher": "mweigel",
-    "public": false,
+    "publisher": "Twistlock",
+    "public": true,
     "content": {
         "details": {
             "path": "overview.md"
