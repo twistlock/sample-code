@@ -1,6 +1,8 @@
 Twistlock Splunk App
 ====================
 
+Author: Wyatt Gill
+
 The Twistlock Splunk App adds two main components to your Splunk deployment: two scripted data inputs for Twistlock Incidents and Forensics and a Splunk dashboard that samples the utility of that data.
 
 The app makes use of your Twistlock Console’s API to pull data into Splunk and apply a couple of field extractions to make the information more useful.
