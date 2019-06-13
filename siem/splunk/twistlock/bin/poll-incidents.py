@@ -35,9 +35,11 @@ if (os.path.isfile(checkpoint_file)):
         last_serialNum_indexed = int(file.readline())
 
 field_extracts = []
+highest_serialNum = 0
 for element in json_response:
+    current_serialNum = element["serialNum"]
     # Print new incidents for indexing in Splunk
-    if (element["serialNum"] > last_serialNum_indexed):
+    if (current_serialNum > last_serialNum_indexed):
         print(json.dumps(element))
 
         # Determine whether the incident is from a host or container and write to file for processing
@@ -48,8 +50,11 @@ for element in json_response:
         if element_values not in field_extracts:
             field_extracts.append(element_values)
 
-if (json_response[0]["serialNum"] > last_serialNum_indexed):
+        if (current_serialNum > highest_serialNum):
+            highest_serialNum = current_serialNum
+
+if (highest_serialNum > last_serialNum_indexed):
     with open(checkpoint_file, 'w') as file:
-        print(json_response[0]["serialNum"], file=file)
+        print(highest_serialNum, file=file)
 
 json.dump(field_extracts, open(forensics_file, 'w'))
