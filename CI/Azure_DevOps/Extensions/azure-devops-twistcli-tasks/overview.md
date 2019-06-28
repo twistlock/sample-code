@@ -27,7 +27,7 @@ Azure DevOps
 
 ## Get the source
 
-The [source](https://github.com/twistlock/sample-code/tree/master/CI/Azure%20DevOps/Extensions/azure-devops-twistcli-tasks) for this extension is on GitHub.
+The [source](https://github.com/twistlock/sample-code/tree/master/CI/Azure_DevOps/Extensions/azure-devops-twistcli-tasks) for this extension is on GitHub.
 
 ## Contribute
 

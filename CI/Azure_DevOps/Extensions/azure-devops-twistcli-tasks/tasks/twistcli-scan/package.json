@@ -1,6 +1,6 @@
 {
   "name": "twistcli-scan",
-  "version": "1.0.2",
+  "version": "1.1.6",
   "description": "Task to scan container images using twistcli during Azure DevOps Build & Release pipelines",
   "main": "task.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "github.com/twistlock/sample-code/tree/master/CI/Azure%20DevOps/Extensions/azure-devops-twistcli-tasks/tasks/twistcli-scan"
+    "url": "github.com/twistlock/sample-code/tree/master/CI/Azure_DevOps/Extensions/azure-devops-twistcli-tasks/tasks/twistcli-scan"
   },
   "author": "Twistlock (created by Mario Weigel)",
   "license": "ISC",
