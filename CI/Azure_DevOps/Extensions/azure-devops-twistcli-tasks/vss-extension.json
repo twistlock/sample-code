@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "twistcli-build-release-task",
     "name": "Twistcli Build and Release Task",
-    "version": "1.1.4",
+    "version": "1.1.6",
     "publisher": "Twistlock",
     "public": true,
     "content": {
@@ -81,7 +81,7 @@
                         ]
                     }
                 ],
-                "helpMarkDown": "<a href=\"https://github.com/twistlock/sample-code/tree/master/CI/Azure%20DevOps/Extensions/azure-devops-twistcli-tasks\" target=\"_blank\"><b>Learn More</b></a>"
+                "helpMarkDown": "<a href=\"https://github.com/twistlock/sample-code/tree/master/CI/Azure_DevOps/Extensions/azure-devops-twistcli-tasks\" target=\"_blank\"><b>Learn More</b></a>"
             }
         },
         {

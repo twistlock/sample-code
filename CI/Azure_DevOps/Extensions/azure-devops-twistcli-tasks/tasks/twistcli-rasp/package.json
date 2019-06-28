@@ -1,6 +1,6 @@
 {
   "name": "twistcli-rasp",
-  "version": "1.1.4",
+  "version": "1.1.6",
   "description": "Task to build the RASP defender into a container image",
   "main": "task.js",
   "scripts": {
