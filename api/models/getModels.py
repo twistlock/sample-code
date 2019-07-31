@@ -4,7 +4,7 @@ from requests.auth import HTTPBasicAuth
 import os, sys
 import simplejson as json
 
-url = os.environ['TL_CONSOLE_HTTP']
+url = os.environ['TL_CONSOLE_HTTPS']
 api = url + '/api/v1/authenticate'
 pw = os.environ['TL_ADMIN_PW']
 data = {'username': 'admin', 'password': pw}
