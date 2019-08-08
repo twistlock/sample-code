@@ -10,10 +10,11 @@
 # Therefore all repositories need to be added into Twistlock to scan the images within the OpenShift Internal Registry.
 # RedHat will be adding the catalog API call in v3.11 https://trello.com/c/AZINw5qI
 #
+# Update 20190410 - modified for the New Twistlock v19_07+ API settings/registry call and multiple Defender scanners
 # Update 20190410 - modified for the new Twistlock v18_11+ API call for the Twistlock Credential Store and the use of the credential in the Defend > Vulnerabilities > Registry entry
 # 
 # Requirements:
-#  - Twistlock v18_11+
+#  - Twistlock v19_07+
 #  - OpenShift v3.6+, authenticated to cluster and OSE CLI (oc) access 
 #  - Powershell v6 https://blogs.msdn.microsoft.com/powershell/2018/01/10/powershell-core-6-0-generally-available-ga-and-supported/ runs on MacOS and Linux!
 # 
@@ -81,14 +82,6 @@ $internal_registry_images
 # We will need credentials to connect so we will ask the user
 $cred = Get-Credential
 
-# If $defenders has not been defined, pick the first defender that comes back from the API
-if(!$defenders)
-    {
-    $request = "$twistlock_API/api/v1/defenders?limit=1"
-    $tmpDEF = Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck
-    $defenders = $tmpDEF.hostname
-    }
-
 # Create the Twistlock Credential for the ServiceAccount
 # build the json payload for the API call            
 $credentialStore = @{
@@ -122,7 +115,6 @@ foreach($image in $internal_registry_images)
         "os" = "linux"
         "cap" = 5
         # trim the "/" from the begining of the namesapce/repository, don't know why it doesnt trim properly in the earlier trim
-        "hostname" = $defenders
         "repository" = $image.TrimStart("/")
         }
     $subbody += $tmp 
@@ -152,7 +144,7 @@ $json_payload += $body | ConvertTo-Json -Depth 4
 # Call the API
 $request = "$twistlock_API/api/v1/settings/registry"
 $header = @{"Content-Type" = "application/json"}
-Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck -Method "Post" -Header $header -Body $json_payload 
+Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck -Method "Put" -Header $header -Body $json_payload 
 
 #status output
 if(!$TL_flush_registry_settings)
