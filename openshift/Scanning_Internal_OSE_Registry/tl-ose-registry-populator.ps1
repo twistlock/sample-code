@@ -152,7 +152,7 @@ $json_payload += $body | ConvertTo-Json -Depth 4
 # Call the API
 $request = "$twistlock_API/api/v1/settings/registry"
 $header = @{"Content-Type" = "application/json"}
-Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck -Method "Post" -Header $header -Body $json_payload 
+Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck -Method "Put" -Header $header -Body $json_payload 
 
 #status output
 if(!$TL_flush_registry_settings)
