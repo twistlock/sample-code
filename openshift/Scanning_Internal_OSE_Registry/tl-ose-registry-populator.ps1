@@ -10,7 +10,7 @@
 # Therefore all repositories need to be added into Twistlock to scan the images within the OpenShift Internal Registry.
 # RedHat will be adding the catalog API call in v3.11 https://trello.com/c/AZINw5qI
 #
-# Update 20190410 - modified for the New Twistlock v19_07+ API settings/registry call and multiple Defender scanners
+# Update 20190808 - modified for the New Twistlock v19_07+ API settings/registry call and multiple Defender scanners
 # Update 20190410 - modified for the new Twistlock v18_11+ API call for the Twistlock Credential Store and the use of the credential in the Defend > Vulnerabilities > Registry entry
 # 
 # Requirements:
