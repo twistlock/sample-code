@@ -11,6 +11,10 @@ Background:
 The OpenShift Internal Registry currently does not support the Docker v2 Registry catalog API call.
 Therefore all repositories need to be added into Twistlock to scan the images within the OpenShift Internal Registry.
 
+## Releases
+
+2019-08-08: Updated the Go binaries to support the API call with the new 19.07.353 release (changed the API call from POST to PUT and removed the definition of a defender so it gets auto selected).
+
 ## GoLang
 
 This Go program will do the following:
@@ -171,7 +175,7 @@ Post registry settings via API response: 200 OK
 ### Modify the following script variables for your environment
 * $twistlock_API - endpoint of the Twistlock API
 * $TL_service_account_password - Twistlock Service Account password. See notes within the script on how to get the password
-* $TL_flush_registry_settings = [bool]$true will remove all registry entries in Defend > Vulnerabilities > Registry 
+* $TL_flush_registry_settings = [bool]$true will remove all registry entries in Defend > Vulnerabilities > Registry
 
 ### Execute
 
