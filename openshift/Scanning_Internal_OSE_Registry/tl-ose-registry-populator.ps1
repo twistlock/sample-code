@@ -36,8 +36,6 @@ $twistlock_API = "https://twistlock.example.com"
 $TL_service_account_password = "<follow the instructions above on how to obtain the Twistlock service account's password>"
 # registry address of the internal openshift registry, leave the "/" off the end of the string
 $ose_internal_registry = "docker-registry.default.svc:5000"
-# specify a defender that is used for scanning. if null the script will pick the first defender returned by the API
-$defenders = "" 
 # Name of the Twistlock Credential created
 $TL_Credential = "OSE-Internal-Registry-Scanner" 
 # Set to $true to remove all registry entries in 
@@ -116,6 +114,7 @@ foreach($image in $internal_registry_images)
         "cap" = 5
         # trim the "/" from the begining of the namesapce/repository, don't know why it doesnt trim properly in the earlier trim
         "repository" = $image.TrimStart("/")
+        "scanners" = 2
         }
     $subbody += $tmp 
     } # end building payload of the input json
