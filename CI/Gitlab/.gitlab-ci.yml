@@ -14,7 +14,7 @@ job 1:
 job 2:
   stage: twistlock
   script:
-   - curl -u $username:$password --output ./twistcli $address/api/v1/util/twistcli
+   - curl -k -u $username:$password --output ./twistcli $address/api/v1/util/twistcli
    - chmod +x ./twistcli
    - ./twistcli --version
    - IMAGEID=`docker images securethecloud/my_tweet_app:latest --format "{{.ID}}"`
