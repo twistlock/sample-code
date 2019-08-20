@@ -1,0 +1,25 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: docker
+    tag: stable-dind
+
+inputs:
+- name: twistlock-repo
+
+outputs:
+
+params:
+  TL_IMAGE:
+  TL_USER:
+  TL_PASS:
+  TL_CONSOLE_URL:
+  TL_VULN_THRESH:
+  TL_COMP_THRESH:
+  TL_ONLY_FIXED:
+
+run:
+  path: twistlock-repo/twistcli-scan.sh
