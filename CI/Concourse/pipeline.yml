@@ -1,0 +1,35 @@
+resources:
+- name: twistlock-repo
+  type: git
+  source:
+    # Your repo with copy of this code in it.
+    #uri: "git@github.com:jpadams/concourse-test.git"
+    uri: "https://github.com/jpadams/concourse-test.git"
+    skip_ssl_verification: true
+    branch: "master"
+    #private_key: |
+    #  -----BEGIN RSA PRIVATE KEY-----
+    #  XXXXXXX YOUR PRIV KEY XXXXXXXX
+    #  -----END RSA PRIVATE KEY-----
+
+jobs:
+- name: twistcli-scan
+  plan:
+  - get: twistlock-repo
+    trigger: true
+  - task: scan
+    privileged: true
+    file: twistlock-repo/twistcli-scan.yml
+    params:
+      # Name of the container image to scan. Use name:tag as in a pull command. 
+      TL_IMAGE: "ubuntu:18.04"
+      # Credentials of a ciuser role user in the Twistlock Console.
+      TL_USER: concourse
+      TL_PASS: concourse
+      TL_CONSOLE_URL: "https://<your_twistlock_console_url>:8083"
+      # Valid threshold values for vulnerabilites or compliance issues are: low, medium, high, critical
+      # IF you don't want one or both thresholds, then comment that line.
+      # Fail only if fixed defaults to false.
+      TL_VULN_THRESH: critical
+      TL_COMP_THRESH: critical
+      TL_ONLY_FIXED: false
