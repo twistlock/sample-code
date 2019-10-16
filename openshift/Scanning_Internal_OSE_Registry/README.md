@@ -15,7 +15,7 @@ Therefore all repositories need to be added into Twistlock to scan the images wi
 
 2019-08-08: Updated the Go binaries to support the API call with the new 19.07.353 release (changed the API call from POST to PUT and removed the definition of a defender so it gets auto selected).
 
-2019-10-15: Updated guidance for using the twistlock-service account to authenticate to the OpenShift Cluster, enumerate the projects and associated image streams.
+2019-10-15: Updated guidance for using a least privileged account to authenticate to the OpenShift Cluster, enumerate the projects, associated image streams and obtain the twistlock-service account's password.
 
 ## GoLang
 
