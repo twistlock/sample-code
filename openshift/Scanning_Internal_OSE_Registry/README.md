@@ -11,9 +11,11 @@ Background:
 The OpenShift Internal Registry currently does not support the Docker v2 Registry catalog API call.
 Therefore all repositories need to be added into Twistlock to scan the images within the OpenShift Internal Registry.
 
-## Releases
+## Releases / Updates
 
 2019-08-08: Updated the Go binaries to support the API call with the new 19.07.353 release (changed the API call from POST to PUT and removed the definition of a defender so it gets auto selected).
+
+2019-10-15: Updated guidance for using the twistlock-service account to authenticate to the OpenShift Cluster, enumerate the projects and associated image streams.
 
 ## GoLang
 
@@ -33,16 +35,25 @@ This Go program will do the following:
  OpenShift v3.10: ```oc policy add-role-to-user system:image-puller system:serviceaccount:<twistlock_project>:twistlock-service```  
  Check your OpenShift version's documentation. Otherwise Twistlock Registry scanning will error with 401 unauthorized.
 
+### Using an OpenShift Least Privileged Account for Authentication
+This program will authentication to the OpenShift Cluster (-ose) using the username (-oseUser) and password (-osePWD).
+It is ideal to use a least privileged account to perform this task.
+For example:
+- Create an OpenShift account ```pierre```
+- Assign the clusterrole ```view``` which allows the account to list all projects and the imageStreams within each project ```oc adm policy add-cluster-role-to-user view pierre```
+- Create a role within the Twistlock project in which the account can "get" serviceaccounts within the project ```oc create role tl-get-sa --verb=get --resource=sa -n twistlock```
+- Assign the account the role ```oc adm policy add-role-to-user tl-get-sa pierre --role-namespace=twistlock -n twistlock```
+- Create a role within the Twistlock project in which the account can "get" the serviceaccount's password within the project ```oc create role tl-get-sa-pwd --verb=get --resource=secret -n twistlock```
+- Assign the account the role ```oc adm policy add-role-to-user tl-get-sa-pwd pierre --role-namespace=twistlock -n twistlock```
+
 ### Executables
   - Linux ```tl_ose_internal_registry_populator_linux```
   - Mac OSX ```tl_ose_internal_registry_populator_macos```
   - Windows ```tl_ose_internal_registry_populator_windows.exe```
 
-- Command line arguments
+  - Command line arguments
 ```
 ./tl_ose_internal_registry_populator_macos --help
-```
-```
 Usage of tl_ose_internal_registry_populator_macos:
 -TLAuthPwd string
     Twistlock Authentication, password
@@ -72,18 +83,18 @@ Usage of tl_ose_internal_registry_populator_macos:
 
 ### Example
 
-Authenticate to Twistlock using the user's Twistlock API bearer token and an OpenShift token.
-The Twistlock-Console is running within the "aqsa" OpenShift Project.
+Authenticate to Twistlock using the user's Twistlock API bearer token and an OpenShift ServiceAccount (e.g. pierre).
+The Twistlock-Console is running within the "twistlock" OpenShift Project.
 
 - Command:
 
 ```
 ./tl_ose_internal_registry_populator_macos -ose https://master.openshift.example.com:8443 \
- -oseUser pfox \
- -oseToken <openshift_user_token> \
+ -oseUser pierre \
+ -osePWD <pierre_password> \
  -TLConsole https://tl-console.apps.openshift.example.com \
  -TLAuthToken <Twistlock_user_API_token> \
- -oseProject aqsa
+ -oseProject twistlock
 ```
 
 
@@ -92,12 +103,12 @@ The Twistlock-Console is running within the "aqsa" OpenShift Project.
 ```
 OpenShift Console: https://master.openshift.example.com:8443
 OpenShift internal registry: docker-registry.default.svc:5000
-OpenShift Twistlock Project name: aqsa
+OpenShift Twistlock Project name: twistlock
 Twistlock Console: https://tl-console.apps.openshift.example.com
 Twistlock Credential Name: OSE-Internal-Registry-Scanner
 Removing all registry settings in Defend > Vulnerabilities > Registry: false
 
-2019/08/09 13:37:10 Attempting to connect to OpenShift via username/token...
+2019/08/09 13:37:10 Attempting to connect to OpenShift via username/password...
 2019/08/09 13:37:12 Connected to: https://master.openshift.example.com:8443
 Connected to OpenShift cluster, https://master.openshift.example.com:8443
 Number of projects: 23
@@ -143,8 +154,8 @@ openshift-web-console
 	No images found
 pfox-apb-test
 	Images: [pfox-apb-test/pfox-test-apb pfox-apb-test/pfox-test-apb1 pfox-apb-test/pfox-test2-apb pfox-apb-test/pfox-test3-apb]
-twistlock-pfox
-	Images: [twistlock-pfox/nginx-example]
+twistlock
+	Images: [twistlock/nginx-example]
 Total # of images found: 79
 Service Account: twistlock-service-dockercfg-xxxx
 Twistlock Service Account's Secret: eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJhcXNhIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6InR3aXN0bG9jay1zZXJ2aWNlLXRva2VuLTdsZzlwIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6InR3aXN0bG9jay1zZXJ2aWNlIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiYmQxNTVjMjYtMTUxOC0xMWU5LWExOGItMDI3RWE3Y2MxODEyIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmFxc2E6dHdpc3Rsb2NrLXNlcnZpY2UifQ.B_Ym6eTZCjG3zrRdxEMh-37HoNCbj0e2RQU6RXGO2mNVKsq13CMOpJ2qufMQcnnng3GwDfU_w1wg3eblkJBkfVf2aZc3_lfdxJ0JTKrrijvGsq3z1Jn3eXTlKXetBRo4DbWUn4j4PiO2ngI4rDQWpNahSLsKILvUbu66HwrmeOKoNDYRM1UWd1X3Bn0xAIEoZyFgYQ3OYv-h_VH0eKlgcGgA0O9LmufUCPif7BjSrmjSxbVyVXsbK7amHzR1L7jqsgUX--YrJQxiiTVPdjzHEdLueVE4Twl2itvR22atFP0XCUb1f7nkUNPqbXEzqJNEwmjWfA4EDJSbBVCKBkdzXg
@@ -152,8 +163,8 @@ Twistlock Service Account's Secret: eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJ
 
 **NOTE**:
 Give the Twistlock Service account the right to read the OpenShift registry, for example:
-	OpenShift v3.6: oc adm policy add-cluster-role-to-user system:image-puller system:serviceaccount:aqsa:twistlock-service
-	OpenShift v3.10: oc policy add-role-to-user system:image-puller system:serviceaccount:aqsa:twistlock-service
+	OpenShift v3.6: oc adm policy add-cluster-role-to-user system:image-puller system:serviceaccount:twistlock:twistlock-service
+	OpenShift v3.10: oc policy add-role-to-user system:image-puller system:serviceaccount:twistlock:twistlock-service
 Check your OpenShift version's documentation. Otherwise Twistlock Registry scanning will error with 401 unauthorized.
 
 Post Credential via API response: 200 OK
