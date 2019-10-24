@@ -1,3 +1,35 @@
+# Important OpenShift v3.11 Customers
+RedHat has now incorporated the Docker v2 */api/_catalog* call to the [OpenShift v3.11 internal registry](https://bugzilla.redhat.com/show_bug.cgi?id=1509084).
+You do not have to use the tl_ose_internal_registry_populator program to populate your Twistlock Console with OpenShift ImageStream entries.
+To configure Twistlock scanning of the OpenShift v3.11 internal registry perform the following steps:
+- Give the cluster role permission of [registry-viewer](https://docs.openshift.com/container-platform/3.11/install_config/registry/accessing_registry.html#access) to the twistlock-service account ```oc adm policy add-cluster-role-to-user registry-viewer system:serviceaccount:<twistlock_project>:twistlock-service```
+
+- Obtain the password for the *twistlock-service* account
+  - ```oc describe sa twistlock-service -n <twistlock_project>```
+  - Use the *Image pull secrets* value in the following command, for example ```oc get secret twistlock-service-dockercfg-64jtt -n twistlock --output=json|grep openshift.io/token-secret.value```
+  - Copy the returned *openshift.io/token-secret.value*
+
+
+- In the Twistlock Console go to Manage > Authentication > Credential Store : click **Add credential**
+  - Name: **OSE-Internal-Registry-Scanner**
+  - Type: **Basic Credential**  
+  - Username: **serviceaccount**
+  - Password: _twistlock-service account password obtained in last step_
+- Click **Save**
+
+- In the Twistlock Console go to Defend > Vulnerabilities > Registry : click **Add registry**
+    - Version: **Red Hat OpenShift**
+    - Registry: **docker-registry.default.svc:5000**
+    - Credential: **OSE-Internal-Registry-Scanner**
+    - OS Type: **Linux**
+    - Scanner: **Automatic**
+    - Number of scanners: **2**
+    - Cap: **5**
+- Click **Save**
+
+Twistlock will now begin the scanning of all the images via the internal OpenShift docker-registry service endpoint.
+
+
 # README
 This directory contains both compiled GoLang applications and a powershell script for the populating of images within the OpenShift internal registry into the Twistlock Console's Defend > Vulnerabilities > Registry settings.
 The GoLang application has been compiled for the Linux, OSX and Windows operating systems.
