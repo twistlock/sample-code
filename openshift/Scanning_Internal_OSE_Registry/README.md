@@ -6,7 +6,7 @@ To configure Twistlock scanning of the OpenShift v3.11 internal registry perform
 
 - Obtain the password for the *twistlock-service* account
   - ```oc describe sa twistlock-service -n <twistlock_project>```
-  - Use the *Image pull secrets* value in the following command, for example ```oc get secret twistlock-service-dockercfg-64jtt -n twistlock --output=json|grep openshift.io/token-secret.value```
+  - Use the *Image pull secrets* value (e.g. twistlock-service-dockercfg-64jtt) in the following command, for example ```oc get secret twistlock-service-dockercfg-64jtt -n twistlock --output=json|grep openshift.io/token-secret.value```
   - Copy the returned *openshift.io/token-secret.value*
 
 
