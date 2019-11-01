@@ -6,19 +6,22 @@
 #  Requires: powershell v6 https://blogs.msdn.microsoft.com/powershell/2018/01/10/powershell-core-6-0-generally-available-ga-and-supported/
 #  Discalimer: Use of this script does not imply any rights to Twistlock products and/or services.
 #
-#  Usage: ./compliance_status.ps1 <name of complaince rule>
+# Update: 20191101 - updated for the v19.07 API 
+#
+#  Usage: ./compliance_status.ps1 <name of image complaince rule> <name of host compliance rule>
 #
 
-param ($arg1)
+param ($arg1, $arg2)
 
-if(!$arg1)
+if(!$arg1 -or !$arg2)
     {
-    write-host "Please provide a Compliance rule name"
+    write-host "Please provide a Compliance rule names"
+    write-host "./compliance_status.ps1 <name of image complaince rule> <name of host compliance rule>"
     exit
     }
 else
     {
-    write-host "Checking compliance: $arg1"
+    write-host "Checking compliance: $arg1 $arg2"
     }
 
 # variables
@@ -79,8 +82,8 @@ foreach($compliance in $return.complianceVulnerabilities)
     $complianceChecks += @{[string]$compliance.id = $compliance.title,$compliance.description}
 }
 
-# Query the complaince /policies/compliance API and pull out the rule #s into an array
-$request = "$tlconsole/api/v1/policies/compliance"
+# Query the complaince /policies/compliance/container API and pull out the rule #s into an array
+$request = "$tlconsole/api/v1/policies/compliance/container"
 $compliances = Invoke-RestMethod $request -Authentication Basic -Credential $cred -SkipCertificateCheck
 $checks = @()
 $i = 0
@@ -94,6 +97,26 @@ while ($i -lt $compliances.rules.count)
     $i++
     }
 if($checks.count -eq 0)
+    {
+    write-host "no checks found, exiting"
+    exit
+    }
+
+# # Query the complaince /policies/compliance/host API and pull out the rule #s into an array
+$request = "$tlconsole/api/v1/policies/compliance/host"
+$compliances = Invoke-RestMethod $request -Authentication Basic -Credential $cred -SkipCertificateCheck
+$checksHost = @()
+$i = 0
+while ($i -lt $compliances.rules.count)
+    {
+    if($compliances.rules[$i].name -eq $arg2)
+        {
+        #Pull out the vulnerabilities/compliance check
+        $checksHost = $compliances.rules[$i].condition.vulnerabilities.id
+        }
+    $i++
+    }
+if($checksHost.count -eq 0)
     {
     write-host "no checks found, exiting"
     exit
@@ -133,7 +156,7 @@ $request = "$tlconsole/api/v1/hosts"
 $hosts = Invoke-RestMethod $request -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -SkipCertificateCheck
 $totalHosts = $hosts.count
 $outputCSV = $outputCSV + "HostComplianceID,Description,failing,passing,total"+$newline
-$outputCSV = $outputCSV + (findCompliance "host" $checks $hosts $totalHosts) + $newline
+$outputCSV = $outputCSV + (findCompliance "host" $checksHost $hosts $totalHosts) + $newline
 
 # Process the containers
 $request = "$tlconsole/api/v1/containers"
@@ -142,6 +165,6 @@ $totalContainers = $containers.count
 $outputCSV = $outputCSV + "ContainerComplianceID,Description,failing,passing,total"+$newline
 $outputCSV = $outputCSV + (findCompliance "container" $checks $containers $totalContainers) + $newline
 
-$outputFile = $time+"-"+$arg1+"-compliance-check.csv"
+$outputFile = $time+"-"+$arg1+"-"+$arg2+"-compliance-check.csv"
 $outputCSV | Out-File -FilePath .\$outputFile -Encoding ASCII
 write-host "Output file name:" $outputFile

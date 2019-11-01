@@ -13,6 +13,10 @@
 # 
 #  Usage: ./tl-rsop.ps1 <name of image>
 #
+# Debugging: $debugpreference = "continue" at the powershell command prompt for detailed output of the script 
+# 
+# Updates: 
+# 2019-10-30 adjusted for the Twistlock v19.07 API changes
 
 param ($arg1)
 if(!$arg1)
@@ -28,22 +32,15 @@ else
 
 # variables
 # change this variable for the URL to your Twistlock Console's API
-$tlconsole = "https://twistlock-console.example.com:8083"
-# Twistlock hash table for the type of packages scanned and their idenitifier, this table to use for output readability
-$vulnHash = @{"410"="Python";"411"="Binaries";"412"="Custom Components";"413"="0-day";"46"="OS Packages";"47"="Java";"48"="Ruby Gems";"49"="Node.js"}
-# This hash table will contain the images high CVSS score for each package type
-$imageVulnHash = @{"410"="0";"411"="0";"412"="0";"413"="0";"46"="0";"47"="0";"48"="0";"49"="0"}
-# Twistlock hash table to define the "low, medium, high & critical" CVSS mappings
-$sevHash = @{"0"="Low";"4"="Medium";"7"="High";"9"="Critical"}
+$tlconsole = "https://twistlock-console.example.com:8083
 # Hash table of the policy name and the order in which it is applied
 $vulnPolicies = @{}
 $policies = @()
 $compliancePolicies = @{}
-$imageChecks = [string] @(4,9)
+$imageChecks = [string] @(4,9,5)
 $foundImage = [bool]$false
 $policyMatch = [bool]$false
 $newline = [environment]::newline
-$output = "Package,Block,Severity,Highest Vulnerability Found" + $newline
 $outputCompliance = "Rule,Block,Image will be blocked" + $newline
 
 # We will need credentials to connect so we will ask the user
@@ -99,6 +96,7 @@ write-host "Found: $arg1"
 write-host "ImageID: $imageid"
 
 # Break out the vulnerabilities
+# Determine the lowest severity level this will be used to determine if the block rule is applied
 write-host ""
 write-host "Vulnerabilities:"
 write-host "`tCritical: "$image[0].info.cveVulnerabilityDistribution.critical
@@ -106,23 +104,10 @@ write-host "`tHigh: "$image[0].info.cveVulnerabilityDistribution.high
 write-host "`tMedium: "$image[0].info.cveVulnerabilityDistribution.medium
 write-host "`tLow: "$image[0].info.cveVulnerabilityDistribution.low
 
-# Determine the highest level severity of the packages' CVEs, base it upon CVSS
-# For each type of package scanned put the highest found vulnerability into the $imageVulnHash table
-$vulnerabilities = $image[0].info.cveVulnerabilities
-foreach($vulnerability in $vulnerabilities)
-    {
-    # Update the $imageVulnHash table with the highest vulnerability
-    $tmpVulnIDString = $vulnerability.id.ToString()
-    
-    if([int]$imageVulnHash.$tmpVulnIDString -le $vulnerability.cvss)
-        {
-        $imageVulnHash.$tmpVulnIDString = $vulnerability.cvss
-        }
-    } #end of foreach vulnerability within the image
-
 # Now query the API to determine which Defend > Policy > Vulnerabilities > Policy rule applies to the image
 # and what is the Action is Alert or Block
-$request = "$tlconsole/api/v1/policies/cve"
+# Updated for v19.07 API 
+$request = "$tlconsole/api/v1/policies/vulnerability/images"
 $returnedRules = Invoke-RestMethod $request -Authentication Basic -Credential $cred -SkipCertificateCheck
 
 # Pull out the rule names in order because Twistlock process the rules in order and the first matching rule is processed
@@ -134,17 +119,29 @@ foreach ($rule in $rules)
     # put the policies name into an array and a hash table as well so we can index it when we go to examine the policies.
     # have to do the array for the policy names to keep the order of the rule application.
     # the hash table flips it, if you can tell me how to do it with just the hash table, submit a PR please.
-    $tmp = $rule[0].name
-    $policies += $tmp
-    $vulnPolicies.$tmp = $i
-    $i++
+    # Filter out the disabled=True policies
+    if($rule[0].disabled -ne "True")
+        {
+        $tmp = $rule[0].name
+        $policies += $tmp
+        $vulnPolicies.$tmp = $i
+        $i++
+        }
+    else
+        {
+        # increment the counter because we use the $rules return array to determine which policy rules to apply
+        # this way the hash table of the of the vulnPolicies will match the number of the rules array   
+        $i++
+        }
     }
+# Debug: output the hash table of "enabled" vulnerability policies    
+write-debug ($vulnPolicies|Out-String)
 
 # call impacted API to see if the rule applies to this image
 $matchingPolicy = ""
 foreach($policy in $policies)
     {
-    $request = "$tlconsole/api/v1/policies/cve/impacted?ruleName=$policy&search=$imageid"
+    $request = "$tlconsole/api/v1/policies/vulnerability/images/impacted?ruleName=$policy&search=$imageid"
     $returnedImpact = Invoke-RestMethod $request -Authentication Basic -Credential $cred -SkipCertificateCheck
     if($returnedImpact.count -eq 1)
         {
@@ -168,26 +165,44 @@ write-host "Matching Vulnerability Policy: $matchingPolicy"
 # pull out the Policy's ID, Type and Action and combine with the images corresponding vuln from the $imageVulHash table into output
 # use the $vulnPolicies hash table to find which array element the $rule conditions/settings
 $TLBlock = [bool]$false
-$conditions = $rules[$vulnPolicies.$matchingPolicy].condition.vulnerabilities
-foreach ($condition in $conditions)
+$conditions = $rules[$vulnPolicies.$matchingPolicy].blockThreshold
+
+# Debug output 
+$debug_out = "Rule: " +$rules[$vulnPolicies.$matchingPolicy].name
+write-debug $debug_out
+$debug_out = "Blocking: " + $conditions.enabled
+write-debug $debug_out
+$debug_out = "Block threshold: " + $conditions.value
+write-debug $debug_out
+
+if($conditions.enabled -eq "True")
     {
-    # what is the package type of the image cveVuln
-    $tmpPackage = ($condition[0].id).ToString()
-    $tmpSev = ($condition[0].minSeverity).ToString()
-    # use the hash tables to make the output readable (names instead of number)
-    $output = $output + $vulnHash.$tmpPackage+","+$condition[0].block+","+$sevHash.$tmpSev+","+$imageVulnHash.$tmpPackage + $newline
-    # determine if Twistlock will block the deployment of the image
-    if(($condition[0].minSeverity -le $imageVulnHash.$tmpPackage) -and ($condition[0].block) -and ($imageVulnHash.$tmpPackage -ne 0))
-      {
-      $TLBlock = [bool]$true
-      }
+    switch($conditions.value)
+        {
+        9 {if([int]$image[0].info.cveVulnerabilityDistribution.critical -gt 0){$TLBlock = [bool]$true}}
+        7 {if(([int]$image[0].info.cveVulnerabilityDistribution.high -gt 0) -or ([int]$image[0].info.cveVulnerabilityDistribution.critical -gt 0)){$TLBlock = [bool]$true}}
+        4 {if(([int]$image[0].info.cveVulnerabilityDistribution.medium -gt 0) -or ([int]$image[0].info.cveVulnerabilityDistribution.high -gt 0) -or ([int]$image[0].info.cveVulnerabilityDistribution.critical -gt 0)){$TLBlock = [bool]$true}}
+        1 {if(([int]$image[0].info.cveVulnerabilityDistribution.low -gt 0) -or ([int]$image[0].info.cveVulnerabilityDistribution.medium -gt 0) -or ([int]$image[0].info.cveVulnerabilityDistribution.high -gt 0) -or ([int]$image[0].info.cveVulnerabilityDistribution.critical -gt 0)){$TLBlock = [bool]$true}}
+        }
     }
-# send to output 
-ConvertFrom-Csv $output | Format-Table
+else
+    {
+    write-debug "Vulnerability Policy does not have a Block threshold"
+    }
+
+# Output vulnerability result
+if($TLBlock)
+    {
+    write-host "Vulnerability Policy Fail: image will be blocked"
+    }
+else
+    {
+    write-host "Vulnerability Policy Pass"    
+    }
 
 # Now determine the Compliance Policy that is applied to the image 
 $policies = @() #reset and reuse array
-$request = "$tlconsole/api/v1/policies/compliance"
+$request = "$tlconsole/api/v1/policies/compliance/container"
 $compliances = Invoke-RestMethod $request -Authentication Basic -Credential $cred -SkipCertificateCheck
 # Pull out the compliance rule names in order
 $rules = $compliances[0].rules
@@ -208,7 +223,7 @@ $policyMatch = [bool]$false
 $matchingPolicy = ""
 foreach($policy in $policies)
     {
-    $request = "$tlconsole/api/v1/policies/compliance/impacted?ruleName=$policy&search=$imageid"
+    $request = "$tlconsole/api/v1/policies/compliance/container/impacted?ruleName=$policy&search=$imageid"
     $returnedImpact = Invoke-RestMethod $request -Authentication Basic -Credential $cred -SkipCertificateCheck
     if($returnedImpact.count -eq 1)
         {
@@ -243,10 +258,9 @@ $complianceVulnerabilities = $image[0].info.complianceVulnerabilities
 # find the rule in the existing $returnedRules and determine the effect
 $TLComplianceBlock = [bool]$false
 $conditions = $rules[$compliancePolicies.$matchingPolicy].condition.vulnerabilities
-$i = 1 # counter to help with the output formating
 foreach ($condition in $conditions)
     {
-    # only process image checks, checks that start with either "4" or "9"
+    # only process image checks, checks that start with either "4", "5" or"9"
     $strCheckId = [string]$condition.id
     if($imageChecks.Contains($strCheckId.Substring(0,1)))
         {
