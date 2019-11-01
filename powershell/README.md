@@ -42,6 +42,7 @@ Pull requests are welcomed.
     ```
 
 * **compliance_status.ps1** - this script takes the name of a compliance policy rule as input and finds all images, containers and hosts' compliance status to the rule.
+  * Update 20191101: updated for API v19.07, compliance policies are divided between images/container and hosts.
   * Modify:
     * Change the $tlconsole variable to your Twistlock Console's API URL
   * Output:
@@ -51,9 +52,9 @@ Pull requests are welcomed.
     ![Compliance Status Image](../images/compliance_status.png?raw=true "compliance status results")
 
   * Execute:
-    * Provide the name of the compliance policy rule. For example _800-190_
+    * Provide the name of the compliance policy rules. For example _800-190-images_ and _800-190-hosts_
     ```
-    .\compliance_status.ps1 800-190
+    .\compliance_status.ps1 800-190-images 800-190-hosts
     ```
 
 * **rmf_ato.ps1** - this script generates a sample Authority to Operate report for an image showing the packages, vulnerabilities, compliance and running containers. You can expand upon the data you want to render in the resulting csv file.
@@ -72,6 +73,7 @@ Pull requests are welcomed.
         ```
 
 * **tl-rsop.ps1** - Queries Twistlock API to determine the vulnerability and compliance rules applied to an image. Basically a Resultant Set of Policies (RSOP).
+  * Update 20191101: updated for API v19.07.
   * Logic:
     * Finds the Vulnerability Policy (Defend > Vulnerabilities > Policy) that applies to the image.
     * Compares the images vulnerabilities to the settings within the policy.
@@ -85,67 +87,46 @@ Pull requests are welcomed.
   * Output:
     * Outputs to stdout
 
-    ```
-    $ ./tl-rsop.ps1 neilcar/struts2_demo:latest
-    Checking vulnerablity and compliance policy for: neilcar/struts2_demo:latest
-    PowerShell credential request
-    Enter your credentials.
-    User: pfox
-    Password for user pfox: *********
-    Found image found on a docker host
+  ```$ ./tl-rsop.ps1 infoslack/dvwa:latest
+  Checking vulnerablity and compliance policy for: infoslack/dvwa:latest
 
-    Found: neilcar/struts2_demo:latest
-    ImageID: sha256:a1b269ad8edb447e3179911a4b6a0db011e692db6b68829a3d828315a865b4b6
+  PowerShell credential request
+  Enter your credentials.
+  User: paul
+  Password for user paul: *************
 
-    Vulnerabilities:
-            Critical:  16
-            High:  56
-            Medium:  115
-            Low:  41
+  Found image found on a docker host
 
-    Matching Vulnerability Policy: Twistlock RSOP Vulnerability Rule
+  Found: infoslack/dvwa:latest
+  ImageID: sha256:779975a3607d703c6cce88f2bb6076ef2f8e0b20d971d474cb1b81dee5d5acca
 
-    Package           Block Severity Highest Vulnerability Found
-    -------           ----- -------- ---------------------------
-    Python            False Low      0
-    Binaries          False Medium   0
-    Custom Components False High     0
-    0-day             False Critical 0
-    OS Packages       False Low      9.8
-    Java              True  Medium   10
-    Ruby Gems         False High     0
-    Node.js           False Critical 0
+  Vulnerabilities:
+          Critical:  0
+          High:  12
+          Medium:  340
+          Low:  235
 
-    Matching Compliance Policy: Twistlock RSOP Compliance Rule
+  Matching Vulnerability Policy: High and Critical
+  Vulnerability Policy Fail: image will be blocked
 
-    Rule                                                                        Block   Image will be blocked
-    ----                                                                        -----   ---------------------
+  Matching Compliance Policy: 800-190-images
 
-    1) Add HEALTHCHECK instruction to the container image One of the important
-    security triads is availability. Adding HEALTHCHECK instruction to your
-    container image ensures that the docker engine periodically checks the
-    running container instances against that instruction to ensure that the
-    instances are still working                                                 False   False
+  Rule                             Block Image will be blocked
+  ----                             ----- ---------------------
+  7) Private keys stored in image  True  True
 
-    2) Image should be created with a non-root user It is a good practice to
-    run the container as a non-root user if possible. Though user namespace
-    mapping is now available if a user is already defined in the container
-    image the container is run as that user by default and specific user
-    namespace remapping is not required                                         False   False
+  *** Twistlock will block this image from running as a container on nodes running the Twistlock Defender ***
+  ```
 
-    3) Image is not trusted                                                     False   False
 
-    4) etc passwd 644                                                           False   False
 
-    *** Twistlock will block this image from running as a container on nodes running the Twistlock Defender ***
-    ```
+  If any matching vulnerability or compliance rule that is set to "block" the script will output *** Twistlock will block this image from running as a container on nodes running the Twistlock Defender *** and set exit(1). The exit status can be determined with the command $LASTEXITCODE
 
-    If any matching vulnerability or compliance rule that is set to "block" the script will output *** Twistlock will block this image from running as a container on nodes running the Twistlock Defender *** and set exit(1). The exit status can be determined with the command $LASTEXITCODE
 
-    ```
-    $LASTEXITCODE
-    1
-    ```
+  ```
+  $LASTEXITCODE
+  1
+  ```
 
   * Execute:
     * Provide the name of the image. For example  _neilcar/struts2_demo:latest_
