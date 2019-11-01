@@ -87,7 +87,8 @@ Pull requests are welcomed.
   * Output:
     * Outputs to stdout
 
-  ```$ ./tl-rsop.ps1 infoslack/dvwa:latest
+  ```
+  $ ./tl-rsop.ps1 infoslack/dvwa:latest
   Checking vulnerablity and compliance policy for: infoslack/dvwa:latest
 
   PowerShell credential request
@@ -132,7 +133,7 @@ Pull requests are welcomed.
     * Provide the name of the image. For example  _neilcar/struts2_demo:latest_
 
       ```
-      ./tl-rsop.ps1 neilcar/struts2_demo:latest
+      ./tl-rsop.ps1 infoslack/dvwa:latest
       ```
 
 * **compliance_check.ps1** - this script takes the Twistlock ID of a compliance check as input and finds all failing images, containers or hosts' compliance to the individual compliance check.
