@@ -73,7 +73,7 @@ Pull requests are welcomed.
         ```
 
 * **tl-rsop.ps1** - Queries Twistlock API to determine the vulnerability and compliance rules applied to an image. Basically a Resultant Set of Policies (RSOP).
-  * Update 20191101: updated for API v19.07.
+  * Update 20191126: updated for API v19.11
   * Logic:
     * Finds the Vulnerability Policy (Defend > Vulnerabilities > Policy) that applies to the image.
     * Compares the images vulnerabilities to the settings within the policy.
@@ -87,7 +87,8 @@ Pull requests are welcomed.
   * Output:
     * Outputs to stdout
 
-  ```$ ./tl-rsop.ps1 infoslack/dvwa:latest
+  ```
+  $ ./tl-rsop.ps1 infoslack/dvwa:latest
   Checking vulnerablity and compliance policy for: infoslack/dvwa:latest
 
   PowerShell credential request
