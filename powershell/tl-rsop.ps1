@@ -17,6 +17,7 @@
 # 
 # Updates: 
 # 2019-10-30 adjusted for the Twistlock v19.07 API changes
+# 2019-11-26 updated for Prisma Cloud v19.11 API changes
 
 param ($arg1)
 if(!$arg1)
@@ -99,10 +100,10 @@ write-host "ImageID: $imageid"
 # Determine the lowest severity level this will be used to determine if the block rule is applied
 write-host ""
 write-host "Vulnerabilities:"
-write-host "`tCritical: "$image[0].info.cveVulnerabilityDistribution.critical
-write-host "`tHigh: "$image[0].info.cveVulnerabilityDistribution.high
-write-host "`tMedium: "$image[0].info.cveVulnerabilityDistribution.medium
-write-host "`tLow: "$image[0].info.cveVulnerabilityDistribution.low
+write-host "`tCritical: "$image[0].vulnerabilityDistribution.critical
+write-host "`tHigh: "$image[0].vulnerabilityDistribution.high
+write-host "`tMedium: "$image[0].vulnerabilityDistribution.medium
+write-host "`tLow: "$image[0].vulnerabilityDistribution.low
 
 # Now query the API to determine which Defend > Policy > Vulnerabilities > Policy rule applies to the image
 # and what is the Action is Alert or Block
@@ -179,10 +180,10 @@ if($conditions.enabled -eq "True")
     {
     switch($conditions.value)
         {
-        9 {if([int]$image[0].info.cveVulnerabilityDistribution.critical -gt 0){$TLBlock = [bool]$true}}
-        7 {if(([int]$image[0].info.cveVulnerabilityDistribution.high -gt 0) -or ([int]$image[0].info.cveVulnerabilityDistribution.critical -gt 0)){$TLBlock = [bool]$true}}
-        4 {if(([int]$image[0].info.cveVulnerabilityDistribution.medium -gt 0) -or ([int]$image[0].info.cveVulnerabilityDistribution.high -gt 0) -or ([int]$image[0].info.cveVulnerabilityDistribution.critical -gt 0)){$TLBlock = [bool]$true}}
-        1 {if(([int]$image[0].info.cveVulnerabilityDistribution.low -gt 0) -or ([int]$image[0].info.cveVulnerabilityDistribution.medium -gt 0) -or ([int]$image[0].info.cveVulnerabilityDistribution.high -gt 0) -or ([int]$image[0].info.cveVulnerabilityDistribution.critical -gt 0)){$TLBlock = [bool]$true}}
+        9 {if([int]$image[0].vulnerabilityDistribution.critical -gt 0){$TLBlock = [bool]$true}}
+        7 {if(([int]$image[0].vulnerabilityDistribution.high -gt 0) -or ([int]$image[0].vulnerabilityDistribution.critical -gt 0)){$TLBlock = [bool]$true}}
+        4 {if(([int]$image[0].vulnerabilityDistribution.medium -gt 0) -or ([int]$image[0].vulnerabilityDistribution.high -gt 0) -or ([int]$image[0].vulnerabilityDistribution.critical -gt 0)){$TLBlock = [bool]$true}}
+        1 {if(([int]$image[0].vulnerabilityDistribution.low -gt 0) -or ([int]$image[0].vulnerabilityDistribution.medium -gt 0) -or ([int]$image[0].vulnerabilityDistribution.high -gt 0) -or ([int]$image[0].vulnerabilityDistribution.critical -gt 0)){$TLBlock = [bool]$true}}
         }
     }
 else
@@ -253,15 +254,17 @@ foreach($compliance in $return.complianceVulnerabilities)
 }
 
 # Get the compliance findings for the image
-$complianceVulnerabilities = $image[0].info.complianceVulnerabilities
+$complianceVulnerabilities = $image[0].complianceIssues
 
 # find the rule in the existing $returnedRules and determine the effect
 $TLComplianceBlock = [bool]$false
 $conditions = $rules[$compliancePolicies.$matchingPolicy].condition.vulnerabilities
+
 foreach ($condition in $conditions)
     {
     # only process image checks, checks that start with either "4", "5" or"9"
     $strCheckId = [string]$condition.id
+
     if($imageChecks.Contains($strCheckId.Substring(0,1)))
         {
         # it is an image check, process
