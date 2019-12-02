@@ -1,6 +1,6 @@
 This repo includes an example GitHub Action that can be used for integrating vulnerability and compliance scans with regular pushes and pull requests.
 
-A big shoutout to @jpadams for the initial sample Action and scan.yml used to configure the Action.
+A big shoutout to [@jpadams](https://github.com/jpadams) for the initial sample Action and scan.yml used to configure the Action.
 
 ## Requirements
 To use the GitHub Action, users will need the following:
