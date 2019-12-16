@@ -9,7 +9,7 @@
 
 1.  run 'python getModels.py <image name>'
        if you leave off image name, this will find and save all runtime model ID's
-2. run changeState manualLearn modelIDs.txt
+2. run changeState manualLearning modelIDs.txt
 3. run changeState manualActive modelIDs.txt
 
  
