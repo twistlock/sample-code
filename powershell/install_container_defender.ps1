@@ -1,5 +1,5 @@
 # Set credentials for the initial API call to authenticate endpoint, going forward you will use the token returned.
-$params = @{“username”=“<Username>”;“password”=“<passowrd>”;}
+$params = @{“username”=“<Username>”;“password”=“<password>”;}
 
 # Address to the Console
 $console = 'https://<console-addr>:8083'
