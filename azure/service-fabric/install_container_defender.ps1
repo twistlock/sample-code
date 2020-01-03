@@ -19,4 +19,10 @@ Invoke-WebRequest $request2 -Headers @{"authorization" = 'Bearer ' + $token.toke
 
 # file will be saved as defender.ps1 in the current directory
 
+#remove docker engine prerequisite
+(Get-Content -path defender.ps1) -replace ' -DependsOn "docker"' | Set-Content -Path defender.ps1
+
+#Install Twistlock
+.\defender.ps1 -type dockerWindows -consoleCN <console-addr> -install
+
 
