@@ -111,10 +111,10 @@
       </input>
       <table>
         <search>
-          <query>index=main sourcetype=twistlock:forensicdata containerId=$container_id$
-          | table timestamp, type, ppid, pid, path, args
+          <query>index=main sourcetype=twistlock:forensicdata incidentID=$container_incident_id$
+          | table timestamp, type, ppid, pid, path, command
           | sort timestamp
-          | rename timestamp as Time, type as Type, ppid as PPID, pid as PID, path as Path, args as Arguments</query>
+          | rename timestamp as Time, type as Type, ppid as "Parent PID", pid as PID, path as Path, command as Command</query>
         </search>
         <option name="count">20</option>
         <option name="drilldown">none</option>
@@ -148,9 +148,8 @@
         </search>
         <option name="count">10</option>
         <option name="drilldown">row</option>
-        <option name="refresh.display">progressbar</option>
         <drilldown>
-          <set token="hostname">$row.Host$</set>
+          <set token="host_incident_id">$row.ID$</set>
           <set token="show_host_forensics">true</set>
         </drilldown>
       </table>
@@ -169,10 +168,10 @@
       </input>
       <table>
         <search>
-          <query>index=main sourcetype=twistlock:forensicdata hostname=$hostname$
+          <query>index=main sourcetype=twistlock:forensicdata incidentID=$host_incident_id$
           | table timestamp, type, ppid, ppath, pid, path, command
           | sort timestamp
-          | rename timestamp as Time, type as Type, ppid as "Parent PID", ppath as "Parent Process Path", pid as PID, path as "Process Path", command as Command</query>
+          | rename timestamp as Time, type as Type, ppid as "Parent PID", ppath as "Parent Path", pid as PID, path as Path, command as Command</query>
         </search>
         <option name="count">20</option>
         <option name="drilldown">none</option>

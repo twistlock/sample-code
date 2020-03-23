@@ -9,33 +9,38 @@ forensics_file = os.path.join(os.environ["SPLUNK_HOME"], "etc", "apps", "twistlo
 config_file = os.path.join(os.environ["SPLUNK_HOME"], "etc", "apps", "twistlock", "bin", "meta", "config.json")
 config = json.load(open(config_file))
 
-console_fqdn = config["setup"]["console_fqdn"]
-endpoint = "/api/v1/profiles/"
+console_url = config["setup"]["console_url"]
+auth_endpoint = "/api/v1/authenticate"
+forensics_endpoint = "/api/v1/profiles/"
 
-username = config["credentials"]["username"]
-password = config["credentials"]["password"]
+credentials = {"username": config["credentials"]["username"], "password": config["credentials"]["password"]}
 
 if (os.path.isfile(forensics_file)):
+    auth_url = console_url + auth_endpoint
+    auth_response = requests.post(auth_url, headers={"Content-Type": "application/json"}, data=json.dumps(credentials), verify=False)
+    try:
+        auth_response_json = auth_response.json()
+    except ValueError:
+        print("ValueError with URL:", auth_url, file=sys.stderr)
+        exit(1)
+
     field_extracts = json.load(open(forensics_file))
 
     for field in field_extracts:
-        url = console_fqdn + endpoint + field["type"] + "/" + field["profileID"] + "/forensic?hostname=" + field["hostname"] + "&limit=500"
-        response = requests.get(url, auth=(username, password))
+        forensics_url = console_url + forensics_endpoint + field["type"] + "/" + field["profileID"] + "/forensic?incidentID=" + field["_id"] + "&limit=500"
+        forensics_header = {"Authorization": "Bearer " + auth_response_json['token']}
+        forensics_response = requests.get(forensics_url, headers=forensics_header, verify=False)
         try:
-            json_response = response.json()
+            forensics_response_json = forensics_response.json()
         except ValueError:
-            print("ValueError with URL:", url, file=sys.stderr)
+            print("ValueError with URL:", forensics_url, file=sys.stderr)
             exit(1)
 
-        if json_response is not None:
-            # Add hostname field for matching host incident to forensic data
-            if (field["type"] == "host"):
-                for element in json_response:
-                    element["hostname"] = field["hostname"]
-                    print(json.dumps(element))
-            else:
-                for element in json_response:
-                    print(json.dumps(element))
+        if forensics_response_json is not None:
+            # Add incident ID to forensic data
+            for element in forensics_response_json:
+                element["incidentID"] = field["_id"]
+                print(json.dumps(element))
 
     os.remove(forensics_file)
 else:
