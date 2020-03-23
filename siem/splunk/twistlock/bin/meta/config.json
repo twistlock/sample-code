@@ -4,6 +4,6 @@
     "password": ""
   },
   "setup": {
-    "console_fqdn": ""
+    "console_url": ""
   }
 }
