@@ -2,11 +2,13 @@
 #  Queries Twistlock API to return all things releated to an image that can be used for an Authority to Operate package.
 #  Outputs an CSV file yyyyMMdd-imagename-ato.csv
 #
-#  Requires: Twistlock v2.4
+#  Requires: Prisma Cloud Compute v19.11.x
 #  Requires: powershell v6 https://blogs.msdn.microsoft.com/powershell/2018/01/10/powershell-core-6-0-generally-available-ga-and-supported/
 #  Discalimer: Use of this script does not imply any rights to Twistlock products and/or services.
 #
 #  Usage: ./rmf_ato.ps1 <name of image>
+#
+# 20200325 - Updated for Prisma Cloud Compute Edition 19.11.x
 
 param ($arg1)
 
@@ -22,9 +24,8 @@ else
 
 # variables
 $tlconsole = "https://twistlock.example.com"
-$outputCSV = "ATO Package: $arg1"+$newline
 $newline = [environment]::newline
-
+$outputCSV = "ATO Package: $arg1"+$newline
 $time = Get-Date -f "yyyyMMdd-HHmmss"
 
 # We will need credentials to connect so we will ask the user
@@ -76,56 +77,49 @@ if(!$foundBaseImage){
 } # end if !Image search registry for base image
 
 # The image we are looking for is
-$baseImage
-$imageID = $baseImage.info.id
-$firstCVE = $baseImage.info.cveVulnerabilities[0].cve
+# Debugging - uncomment next line for debug output
+#$baseImage
+$imageID = $baseImage.id
 
 # generate the output as a CSV
 # CVE vulnerabilities
 $outputCSV = $outputCSV + "ImageID: $imageID" + $newline + $newline
 $outputCSV = $outputCSV + "CVEVulnerabilities" + $newline
-$outputCSV = $outputCSV + "NumberOfVulnerabilities," + $baseImage.info.cveVulnerabilitiescnt + $newline
+$outputCSV = $outputCSV + "NumberOfVulnerabilities," + $baseImage.vulnerabilitiesCount + $newline
 $outputCSV = $outputCSV + ",Critical,High,Medium,Low" + $newline
-$outputCSV = $outputCSV + "CVEDistribution," + $baseimage.info.cveVulnerabilityDistribution.critical +","+ $baseimage.info.cveVulnerabilityDistribution.high +","+ $baseimage.info.cveVulnerabilityDistribution.medium  +","+ $baseimage.info.cveVulnerabilityDistribution.low + $newline + $newline
+$outputCSV = $outputCSV + "CVEDistribution," + $baseimage.vulnerabilityDistribution.critical +","+ $baseimage.vulnerabilityDistribution.high +","+ $baseimage.vulnerabilityDistribution.medium  +","+ $baseimage.vulnerabilityDistribution.low + $newline + $newline
 
 # Compliance vulnerabilities
 $outputCSV = $outputCSV + "Compliance" + $newline
-$outputCSV = $outputCSV + "ComplianceVulnerabilities," + $baseImage.info.complianceVulnerabilitiescnt + $newline
+$outputCSV = $outputCSV + "ComplianceVulnerabilities," + $baseImage.complianceIssuesCount + $newline
 $outputCSV = $outputCSV + ",Critical,High,Medium,Low" + $newline
-$outputCSV = $outputCSV + "ComplianceDistribution," + $baseimage.info.complianceDistribution.critical +","+ $baseimage.info.complianceDistribution.high +","+ $baseimage.info.complianceDistribution.medium  +","+ $baseimage.info.complianceDistribution.low + $newline + $newline
+$outputCSV = $outputCSV + "ComplianceDistribution," + $baseimage.complianceDistribution.critical +","+ $baseimage.complianceDistribution.high +","+ $baseimage.complianceDistribution.medium  +","+ $baseimage.complianceDistribution.low + $newline + $newline
 
 # Enumerate all the packages
 $outputCSV = $outputCSV + "Packages" + $newline
-$baseImage.info.data.packages.count
-$packages = $baseImage.info.data.packages
+$packages = $baseImage.packages
 foreach($pkg in $packages)
     {
     $outputCSV = $outputCSV + $pkg.pkgsType +","+ $pkg.pkgs.name + $newline
     }
 $outputCSV = $outputCSV + $newline
 
-# Query the impacted-resources API based upon a CVE associated to the image.
-# Then find the entry for the image in the returned riskTree hash table
-$request = "$tlconsole/api/v1/stats/vulnerabilities/impacted-resources?cve=$firstCVE"
+# Query Monitor > Compliance > Containers to get a list of the containers running this image
+$request = "$tlconsole/api/v1/containers?search=$imageID"
 $impacts = Invoke-RestMethod $request -Authentication Basic -Credential $cred -SkipCertificateCheck
-
 $outputCSV = $outputCSV + "Containers" + $newline
-foreach ($container in $impacts.riskTree.$imageID)
+foreach ($container in $impacts)
     {
-    $outputCSV = $outputCSV + $container.container + $newline
+    $outputCSV = $outputCSV + $container.info.name + $newline
     }
-#$impacts.riskTree.$imageID
-
 
 # Output to CSV
 $file = $arg1.Split("/")
-
-write-host $file.Count
 $i = $file.count
 $outfile = $file[--$i]
 $outputFile = $time+"-"+($outfile -replace ":","_")+"-ato.csv"
 
 $outputCSV | Out-File -FilePath ./$outputFile -Encoding ASCII
 write-host "Output file name:" $outputFile
+write-host $newline
 write-host $outputCSV
-
