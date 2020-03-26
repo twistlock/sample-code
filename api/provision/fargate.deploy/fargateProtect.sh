@@ -10,6 +10,8 @@ export PC_KEY=""
 
 export PC_CONSOLE="https://${PC_ADDR}"
 
+echo -e "Prisma Cloud Console:\n$PC_CONSOLE\n"
+
 generate_post_data()
 {
    cat <<EOF
@@ -27,7 +29,11 @@ HEADER="Content-Type: application/json"
 
 TOKEN=$(curl ${OPTIONS} -H "${HEADER}"  --data "$(generate_post_data)"  "${PC_CONSOLE}/api/v1/authenticate" | python -c 'import sys, json; print json.load(sys.stdin)["token"]' )
 
+echo -e "Create access token with access Key:\n $TOKEN\n"
+
 unprotectedTask=unprotectedTask.json
+
+echo -e "\ncurl ${OPTIONS} -H \"Authorization: Bearer ${TOKEN}\" \"${PC_CONSOLE}/api/v1/defenders/fargate.json?consoleaddr=${PC_ADDR}&defenderType=appEmbedded\" -X POST --data-binary "@${unprotectedTask}" --output protectedTask.json\n\n"
 
 curl ${OPTIONS} -H "Authorization: Bearer ${TOKEN}" "${PC_CONSOLE}/api/v1/defenders/fargate.json?consoleaddr=${PC_ADDR}&defenderType=appEmbedded" -X POST --data-binary "@${unprotectedTask}" --output protectedTask.json
 
