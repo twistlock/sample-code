@@ -2,10 +2,10 @@
 
 if [ "$#" -gt 0 ]; then
    echo "retrieving registry image scan reports for images with $1 in name"
-   curl -sku admin:$TL_ADMIN_PW -o $1_images.json "$TL_CONSOLE_HTTP/api/v1/registry?search=$1"
+   curl -sku $TL_USER:$TL_USER_PW -o $1_images_in_registry.json "$TL_CONSOLE/api/v1/registry?search=$1"
 else
   echo "retrieving all registry image scan reports"
-  curl -sku admin:$TL_ADMIN_PW -o images.json "$TL_CONSOLE_HTTPS/api/v1/registry"
+  curl -sku $TL_USER:$TL_USER_PW -o images_in_registry.json "$TL_CONSOLE/api/v1/registry"
 fi
 
 
