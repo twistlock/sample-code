@@ -1,5 +1,5 @@
 curl -sku $TL_USER:$TL_USER_PW -o twistcli \
-     "$TL_CONSOLE/api/v1/util/twistcli" 
+     "$TL_CONSOLE/api/v1/util/osx/twistcli" 
 
 chmod +x twistcli
 

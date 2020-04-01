@@ -2,10 +2,10 @@
 
 if [ "$#" -gt 0 ]; then
    echo "retrieving container scan reports for images with $1 in name"
-   curl -sku admin:$TL_ADMIN_PW -o $1.json "$TL_CONSOLE_HTTP/api/v1/containers?search=$1"
+   curl -sku $TL_USER:$TL_USER_PW -o $1_containers.json "$TL_CONSOLE/api/v1/containers?search=$1"
 else
   echo "retrieving all container scan reports"
-  curl -sku admin:$TL_ADMIN_PW -o containers.json "$TL_CONSOLE_HTTPS/api/v1/containers"
+  curl -sku $TL_USER:$TL_USER_PW -o containers.json "$TL_CONSOLE/api/v1/containers"
 fi
 
 
