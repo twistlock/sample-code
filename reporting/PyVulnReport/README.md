@@ -4,4 +4,4 @@ It expects environment variables for Twistlock config:
 
 * TL_CONSOLE:  URL of the console (`https://twistlock.contoso.com:8083`)
 * TL_USER:  Username to use for generating the report.  Must have the Auditor role or higher
-* TL_PASS:  Password for TL_USER
+* TL_USER_PW:  Password for TL_USER
