@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import getpass
@@ -19,7 +19,7 @@ def parse_args():
     CLI argument handling
     """
 
-    desc = 'Generate an HTML report of CVEs per image, displaying the data to STDOUT\n'
+    desc = 'Generate an HTML report of CVEs per image, displaying the data to STDOUT/n'
 
     epilog = 'The console and user arguments can be supplied using the environment variables TL_CONSOLE and TL_USER.'
     epilog += ' The password can be passed using the environment variable TL_USER_PW.'
@@ -63,7 +63,7 @@ def generate_html(images_json):
 def get_images_json(console,user,password):
     api_endpt = '/api/v1/images'
     request_url = console + api_endpt
-    image_req = requests.get(request_url, auth=HTTPBasicAuth(user,password))
+    image_req = requests.get(request_url, verify=False, auth=HTTPBasicAuth(user,password))
     if image_req.status_code != 200:
         # This means something went wrong.
         raise imgRequestError('GET /api/v1/images {} {}'.format(image_req.status_code,image_req.reason))
@@ -75,12 +75,13 @@ def main():
 
     try:
         images_json = get_images_json(args.console,args.user,args.password)
+
     except imgRequestError as e:
         print("Error querying API: {}".format(e))
         return 3
 
     output_html = generate_html(images_json)
-    print(output_html)
+    print(output_html, file=open("report.html", "w"))
 
     return 0
 
