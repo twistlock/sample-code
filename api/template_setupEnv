@@ -1,10 +1,7 @@
 # modify these, take out brackets
-export TL_ADMIN_PW='<changeme>'
-export TL_CONSOLE_URL='<yourserver.com>'
+export TL_USER='<changeme>'
+export TL_USER_PW='<changeme>'
+export TL_CONSOLE='<prisma cloud console url including https>'
 export TL_RELEASE_URL='<from documentation for latest release>'
 export TL_LICENSE='<your long license string>'
-
-# leave these alone unless you want to change default ports!
-export TL_CONSOLE_HTTP="http://$TL_CONSOLE_URL:8081"
-export TL_CONSOLE_HTTPS="https://$TL_CONSOLE_URL:8083"
 
