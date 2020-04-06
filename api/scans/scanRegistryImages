@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# '{"username": "admin", "password": "'"$TL_ADMIN_PW"'"}'
+# '{"username": "$TL_USER", "password": "'"$TL_USER_PW"'"}'
 
 
 
@@ -13,9 +13,9 @@ if [ "$#" -gt 0 ]; then
    fi
    echo "Scanning image $1 in registry"
    json_payload='{"tag":{"registry":"docker.io","repo":"'"$1"'","tag":"'"$tag"'"}}'
-   curl POST -vu admin:$TL_ADMIN_PW \
+   curl POST -vu $TL_USER:$TL_USER_PW \
       -H 'Content-Type: application/json' -d $json_payload \
-      "$TL_CONSOLE_HTTP/api/v1/registry/scan"
+      "$TL_CONSOLE/api/v1/registry/scan"
 else
    echo "nothing"
 fi

@@ -1,2 +1,2 @@
-curl -vk $TL_CONSOLE_HTTPS/api/v1/_ping
+curl -vk $TL_CONSOLE/api/v1/_ping
 

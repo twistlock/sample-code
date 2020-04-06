@@ -22,8 +22,8 @@ def parse_args():
     desc = 'Generate an HTML report of CVEs per image, displaying the data to STDOUT\n'
 
     epilog = 'The console and user arguments can be supplied using the environment variables TL_CONSOLE and TL_USER.'
-    epilog += ' The password can be passed using the environment variable TL_PASS.'
-    epilog += ' The user will be prompted for the password when the TL_PASS variable is not set.'
+    epilog += ' The password can be passed using the environment variable TL_USER_PW.'
+    epilog += ' The user will be prompted for the password when the TL_USER_PW variable is not set.'
     epilog += ' Environment variables override CLI arguments.'
 
     p = argparse.ArgumentParser(description=desc,epilog=epilog)
@@ -32,7 +32,7 @@ def parse_args():
     args = p.parse_args()
 
     # Populate args by env vars if they're set
-    envvar_map = {'TL_USER':'user','TL_CONSOLE':'console','TL_PASS':'password'}
+    envvar_map = {'TL_USER':'user','TL_CONSOLE':'console','TL_USER_PW':'password'}
     for evar in envvar_map.keys():
         evar_val = os.environ.get(evar,None)
         if evar_val is not None:
