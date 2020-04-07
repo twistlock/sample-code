@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # General vars
-export OPERATOR_NAME=${OPERATOR_NAME:-"twistlock-console-operator"}
+export OPERATOR_NAME=${OPERATOR_NAME:-"prisma-cloud-compute-console-operator"}
 export OPERATOR_NAMESPACE=${OPERATOR_NAMESPACE:-"twistlock"}
 export OPERATOR_VERSION=${OPERATOR_VERSION:-"latest"}
 export OPERATOR_BUILD_DIR=${OPERATOR_BUILD_DIR:-"build"}
