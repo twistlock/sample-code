@@ -1,4 +1,4 @@
 apiVersion: v1
-description: Twistlock Console Helm Chart
+description: Prisma Cloud Compute (Twistlock) Console Helm Chart
 name: twistlock-console
-version: 19.03.317
+version: 20.03.150

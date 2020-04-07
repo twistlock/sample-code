@@ -1,11 +1,11 @@
 # User Guide
 
-This guide walks through using the Twistlock Console operator 
+This guide walks through using the Prisma Cloud Compute (Twistlock) Console operator 
 powered by Helm using tools and libraries provided by the Operator SDK.
 
-The operator runs as a container that has the Twistlock Console helm charts on board
+The operator runs as a container that has the Prisma Cloud Compute (Twistlock) Console helm charts on board
 and can watch to see if the components are present. If they're not, the
-operator will use Helm to install the Twistlock Console correctly without
+operator will use Helm to install the Prisma Cloud Compute (Twistlock) Console correctly without
 any user interaction!
 
 All you have to to do is tell your cluster about the new TwistlockConsole custom resource by
