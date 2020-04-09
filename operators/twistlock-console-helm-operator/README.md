@@ -19,18 +19,24 @@ that came with your license. All of the yaml files you need to deploy are number
 ##  Here's the plan:
 
 ```sh
-# Let the cluster know about our new custom resource, TwistlockConsole
-kubectl apply -f deploy/0_6_crds/0_charts_v1alpha1_twistlockconsole_crd.yaml
-# Create the 'twistlock' namespace
-kubectl apply -f deploy/1_namespace.yaml
-# Create necessary user and permissions to make things happen
-kubectl apply -f deploy/2_service_account.yaml 
-kubectl apply -f deploy/3_role.yaml
-kubectl apply -f deploy/4_role_binding.yaml
-# Deploy the operator container as a pod
-kubectl apply -f deploy/5_operator.yaml
-# Add your token and apply. For more detail, before you apply the CR, read the note below
-kubectl apply -f deploy/0_6_crds/6_charts_v1alpha1_twistlockconsole_cr.yaml
+    # Let the cluster know about our new custom resource, TwistlockConsole
+    kubectl apply -f deploy/0_8_crds/0_charts_v1alpha1_twistlockconsole_crd.yaml
+
+    # Create the 'twistlock' namespace
+    kubectl apply -f deploy/1_namespace.yaml
+
+    # Create necessary user and permissions to make things happen
+    kubectl apply -f deploy/2_service_account.yaml 
+    kubectl apply -f deploy/3_role.yaml
+    kubectl apply -f deploy/4_role_binding.yaml
+    kubectl apply -f deploy/5_clusterrole.yaml
+    kubectl apply -f deploy/6_clusterrole_binding.yaml
+
+    # Deploy the operator container as a pod
+    kubectl apply -f deploy/7_operator.yaml
+
+    # Add your token and apply. For more detail, before you apply the CR, read the note below
+    kubectl apply -f deploy/0_8_crds/8_charts_v1alpha1_twistlockconsole_cr.yaml
 ``` 
 
 
@@ -42,11 +48,11 @@ file.
 
 Overriding these defaults is as simple as setting the desired values in the CR
 spec. In our case we just have to override this value by replacing the string
-`<REPLACE_TWISTLOCK_TOKEN>` with your token. Save the deploy/0_6_crds/6_charts_v1alpha1_twistlockconsole_cr.yaml
+`<REPLACE_TWISTLOCK_TOKEN>` with your token. Save the deploy/0_8_crds/8_charts_v1alpha1_twistlockconsole_cr.yaml
 file, then you're ready to apply it as the last step.
 
 ```sh
-consoleImageName: registry-auth.twistlock.com/tw_<REPLACE_TWISTLOCK_TOKEN>/twistlock/console:console_19_03_317
+consoleImageName: registry-auth.twistlock.com/tw_<REPLACE_TWISTLOCK_TOKEN>/twistlock/console:console_20_04_163
 ``` 
 
 The other option to choose is whether we're on OpenShift, since Kubernetes is the default. If on OpenShift, be sure to add these lines to your CR spec as well:
