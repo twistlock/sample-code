@@ -1,5 +1,0 @@
-channels:
-- currentCSV: twistlock-console-operator.v0.0.10
-  name: alpha
-defaultChannel: alpha
-packageName: twistlock-console-operator

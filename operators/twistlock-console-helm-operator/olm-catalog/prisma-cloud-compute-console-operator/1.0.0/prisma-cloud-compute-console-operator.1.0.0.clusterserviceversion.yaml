@@ -3,13 +3,13 @@ kind: ClusterServiceVersion
 metadata:
   annotations:
     alm-examples: |
-      [{"apiVersion":"charts.helm.k8s.io/v1alpha1","kind":"TwistlockConsole","metadata":{"name":"example-twistlockconsole"},"spec":{"COMMUNICATION_PORT":"8084","CONSOLE_CN":"","DATA_FOLDER":"/var/lib/twistlock","DATA_RECOVERY_ENABLED":"true","DATA_RECOVERY_VOLUME":"/var/lib/twistlock-backup","DEFENDER_CN":"","DEFENDER_LISTENER_TYPE":"","DOCKER_SOCKET":"","DOCKER_TWISTLOCK_TAG":"_19_03_317","HIGH_AVAILABILITY_ENABLED":"false","HIGH_AVAILABILITY_PORT":"8086","HIGH_AVAILABILITY_STATE":"PRIMARY","MANAGEMENT_PORT_HTTP":"8081","MANAGEMENT_PORT_HTTPS":"8083","READ_ONLY_FS":"true","RUN_CONSOLE_AS_ROOT":"","SCAP_ENABLED":"","SELINUX_LABEL":"disable","SYSTEMD_ENABLED":"","consoleImageName":"registry-auth.twistlock.com/tw_<REPLACE_TWISTLOCK_TOKEN>/twistlock/console:console_19_03_317","namespace":"twistlock","openshift":false,"persistentVolumeDataFolder":"var/lib/twistlock","persistentVolumeDataRecoveryFolder":"var/lib/twistlock-backup","persistentVolumeStorage":"100Gi","privileged":false,"secrets":[],"selinux-type":"","serviceType":"LoadBalancer","twistlock_cfg":"\"# 
+      [{"apiVersion":"charts.helm.k8s.io/v1alpha1","kind":"TwistlockConsole","metadata":{"name":"example-twistlockconsole"},"spec":{"COMMUNICATION_PORT":"8084","CONSOLE_CN":"","DATA_FOLDER":"/var/lib/twistlock","DATA_RECOVERY_ENABLED":"true","DATA_RECOVERY_VOLUME":"/var/lib/twistlock-backup","DEFENDER_CN":"","DEFENDER_LISTENER_TYPE":"","DOCKER_SOCKET":"","DOCKER_TWISTLOCK_TAG":"_20_04_163","HIGH_AVAILABILITY_ENABLED":"false","HIGH_AVAILABILITY_PORT":"8086","HIGH_AVAILABILITY_STATE":"PRIMARY","MANAGEMENT_PORT_HTTP":"8081","MANAGEMENT_PORT_HTTPS":"8083","READ_ONLY_FS":"true","RUN_CONSOLE_AS_ROOT":"","SCAP_ENABLED":"","SELINUX_LABEL":"disable","SYSTEMD_ENABLED":"","consoleImageName":"registry-auth.twistlock.com/tw_<REPLACE_TWISTLOCK_TOKEN>/twistlock/console:console_20_04_163","namespace":"twistlock","openshift":false,"persistentVolumeDataFolder":"var/lib/twistlock","persistentVolumeDataRecoveryFolder":"var/lib/twistlock-backup","persistentVolumeStorage":"100Gi","privileged":false,"secrets":[],"selinux-type":"","serviceType":"LoadBalancer","twistlock_cfg":"\"# 
       _____          _     _   _            _    \\n# |_   _|_      _(_)___| |_|
       | ___   ___| | __  \\n#   | | \\\\ \\\\ /\\\\ / / / __| __| |/ _ \\\\ /
       __| |/ /      \\n#   | |  \\\\ V  V /| \\\\__ \\\\ |_| | (_) | (__|  
       \u003c       \\n#   |_|   \\\\_/\\\\_/ |_|___/\\\\__|_|\\\\___/
       \\\\___|_|\\\\_\\\\\\\\     \\n\\n# This configuration file contains the
-      setup parameters for Twistlock\\n# This file is typically stored in the
+      setup parameters for Prisma Cloud Compute (Twistlock)\\n# This file is typically stored in the
       same directory as the installation script (twistlock.sh)\\n# To
       reconfigure settings, update this configuration file and re-run
       twistlock.sh; state and unchanged settings will
@@ -72,16 +72,16 @@ metadata:
       configuration\\n#############################################\\n# Sets the
       version tag of the Twistlock containers\\n# Do not modify unless
       instructed to by Twistlock
-      Support\\nDOCKER_TWISTLOCK_TAG=_19_03_317\\n\""}}]
+      Support\\nDOCKER_TWISTLOCK_TAG=_20_04_163\\n\""}}]
     capabilities: Basic Install
     categories: Security
     certified: 'false'
-    containerImage: twistlock/console-operator:0.0.9
+    containerImage: prismacloud/prisma-cloud-compute-console-operator:v0.0.10-rc1
     createdAt: '2019-04-01 00:00:00'
     description: Deploy Twistlock cloud native security in Kubernetes.
-    repository: https://github.com/twistlock/sample-code/tree/master/operators/twistlock-console-helm-operator
+    repository: https://github.com/twistlock/sample-code/tree/master/operators/prisma-cloud-compute-console-helm-operator
     support: Twistlock
-  name: twistlock-console-operator.v0.0.10
+  name: twistlock-console-operator.v1.0.0
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -90,12 +90,31 @@ spec:
       - kind: TwistlockConsole
         name: twistlockconsoles.charts.helm.k8s.io
         version: v1alpha1
-        displayName: Twistlock Console
+        displayName: Twistlock
         description: |
           Twistlock Console is installed first and provides policy, API
           endpoints, GUI, and makes install of Defenders on each node easy
           through a daemonset.
-  displayName: Twistlock Console Operator
+        resources:
+        - kind: ReplicationController
+          name: ''
+          version: v1
+        - kind: Service
+          name: ''
+          version: v1
+        - kind: PersistentVolumeClaim
+          name: ''
+          version: v1
+        - kind: ConfigMap
+          name: ''
+          version: v1
+        - kind: Secret
+          name: ''
+          version: v1
+        - Kind: ServiceAccount
+          name: ''
+          version: v1
+  displayName: Prisma Cloud Compute (Twistlock) Console Operator
   icon:
     - base64data: >-
         PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDQuNzYgMTIwLjQyIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6IzYxMThmZjt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPmNvbG9yLWxvZ29tYXJrPC90aXRsZT48ZyBpZD0iTGF5ZXJfMiIgZGF0YS1uYW1lPSJMYXllciAyIj48ZyBpZD0iTGF5ZXJfMS0yIiBkYXRhLW5hbWU9IkxheWVyIDEiPjxwb2x5Z29uIGNsYXNzPSJjbHMtMSIgcG9pbnRzPSIxMDQuNzYgNDkuNjMgMTA0Ljc2IDMxLjQgODkuMDMgNDAuNDggODkuMDMgNTguNzEgMTA0Ljc2IDQ5LjYzIi8+PHBvbHlnb24gY2xhc3M9ImNscy0xIiBwb2ludHM9Ijg5LjAzIDYyLjI1IDg5LjAzIDc5LjIxIDEwMy43MSA3MC43MyA4OS4wMyA2Mi4yNSIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMSIgcG9pbnRzPSI4Ny4wMiA0MS42NyA3MS4yMyA1MC43OSA3MS4yMyA5MS44OCA1My40NCAxMDIuMTYgNTMuNDQgMTIwLjM2IDEwNC43NiA5MC43MiAxMDQuNzYgNzIuNDQgODcuMDIgODIuNjggODcuMDIgNDEuNjciLz48cG9seWdvbiBjbGFzcz0iY2xzLTEiIHBvaW50cz0iMzUuNTEgMjcuOTggNTAuMyAxOS40MyAzNS41MSAxMC44OSAzNS41MSAyNy45OCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMSIgcG9pbnRzPSIzNC41OSA0OS4wNSA3MC4xNyAyOC41MSA4Ny45NyAzOC43OCAxMDMuNzYgMjkuNjYgNTIuMzggMCAzNi41MiA5LjE2IDU0LjMxIDE5LjQzIDE4LjggMzkuOTQgMzQuNTkgNDkuMDUiLz48cG9seWdvbiBjbGFzcz0iY2xzLTEiIHBvaW50cz0iMTcuODcgOTkuOCAzMi41OSA5MS4zIDE3Ljg3IDgyLjgxIDE3Ljg3IDk5LjgiLz48cG9seWdvbiBjbGFzcz0iY2xzLTEiIHBvaW50cz0iNTEuMzggODEuNjEgMTUuNzkgNjEuMDYgMTUuNzkgNDAuNTIgMTQuNzkgMzkuOTQgMTQuNzkgMzkuOTQgMCAzMS40IDAgOTAuNzIgMTUuODcgOTkuODkgMTUuODcgNzkuMzQgNTEuMzggOTkuODQgNTEuMzggODEuNjEiLz48cG9seWdvbiBjbGFzcz0iY2xzLTEiIHBvaW50cz0iNTEuNDQgMTAyLjE5IDM1LjU5IDkzLjA0IDM1LjU5IDExMS4yNyA1MS40NCAxMjAuNDIgNTEuNDQgMTAyLjE5Ii8+PHBvbHlnb24gY2xhc3M9ImNscy0xIiBwb2ludHM9IjE3LjggNTkuOSAzMy41OCA2OS4wMiAzMy41OCA1MC43OSAxNy44IDQxLjY3IDE3LjggNTkuOSIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMSIgcG9pbnRzPSIxIDI5LjY2IDE2LjggMzguNzggMzIuNjYgMjkuNjIgMTYuODcgMjAuNSAxIDI5LjY2Ii8+PHBvbHlnb24gY2xhc3M9ImNscy0xIiBwb2ludHM9IjY4LjIzIDcwLjczIDUyLjQ5IDYxLjY0IDM2LjY1IDcwLjc5IDUyLjM4IDc5Ljg3IDY4LjIzIDcwLjczIi8+PHBvbHlnb24gY2xhc3M9ImNscy0xIiBwb2ludHM9IjUxLjM4IDU5Ljk3IDUxLjM4IDQxLjY3IDM1LjU5IDUwLjc5IDM1LjU5IDY5LjA5IDUxLjM4IDU5Ljk3Ii8+PHBvbHlnb24gY2xhc3M9ImNscy0xIiBwb2ludHM9Ijg2IDM5Ljk1IDcwLjE3IDMwLjgyIDU0LjQxIDM5LjkyIDcwLjIzIDQ5LjA1IDg2IDM5Ljk1Ii8+PHBvbHlnb24gY2xhc3M9ImNscy0xIiBwb2ludHM9IjUzLjM4IDU5Ljg0IDY5LjIzIDY4Ljk5IDY5LjIzIDUwLjc5IDUzLjM4IDQxLjY0IDUzLjM4IDU5Ljg0Ii8+PHBvbHlnb24gY2xhc3M9ImNscy0xIiBwb2ludHM9IjUzLjM4IDgxLjYxIDUzLjM4IDk5Ljg4IDY5LjIzIDkwLjczIDY5LjIzIDcyLjQ2IDUzLjM4IDgxLjYxIi8+PC9nPjwvZz48L3N2Zz4=
@@ -107,36 +126,41 @@ spec:
       type: SingleNamespace
     - supported: false
       type: MultiNamespace
-    - supported: true
+    - supported: false
       type: AllNamespaces
   keywords:
     - twistlock
+    - prisma
+    - prisma-cloud
+    - prisma-cloud-compute
+    - paloalto 
+    - paloaltonetworks
     - security
     - monitoring
     - scanning
     - runtime-security
   links:
     - name: Source Code
-      url: https://github.com/twistlock/sample-code/tree/master/operators/twistlock-console-helm-operator
-  maturity: alpha
+      url: https://github.com/twistlock/sample-code/tree/master/operators/prisma-cloud-compute-console-helm-operator
+  maturity: beta
   provider:
     name: Twistlock
-  #replaces: twistlock-console-operator.v0.0.9
-  version: 0.0.10
+  replaces: twistlock-console-operator.v0.0.9
+  version: 1.0.0
   install:
     spec:
       deployments:
-        - name: twistlock-console-helm-operator
+        - name: prisma-cloud-compute-console-helm-operator
           spec:
             replicas: 1
             selector:
               matchLabels:
-                name: twistlock-console-helm-operator
+                name: prisma-cloud-compute-console-helm-operator
             strategy: {}
             template:
               metadata:
                 labels:
-                  name: twistlock-console-helm-operator
+                  name: prisma-cloud-compute-console-helm-operator
               spec:
                 containers:
                   - env:
@@ -149,12 +173,21 @@ spec:
                           fieldRef:
                             fieldPath: metadata.name
                       - name: OPERATOR_NAME
-                        value: twistlock-console-helm-operator
-                    image: twistlock/console-operator:0.0.9
+                        value: prisma-cloud-compute-console-helm-operator
+                    image: prismacloud/prisma-cloud-compute-console-operator:v0.0.10-rc1
                     imagePullPolicy: Always
-                    name: twistlock-console-helm-operator
+                    name: prisma-cloud-compute-console-helm-operator
                     resources: {}
-                serviceAccountName: twistlock-console-helm-operator
+                serviceAccountName: prisma-cloud-compute-console-helm-operator
+      clusterPermissions:
+      - rules:
+        - apiGroups:
+          - security.openshift.io
+          resources:
+          - securitycontextconstraints
+          verbs:
+          - '*'
+        serviceAccountName: prisma-cloud-compute-console-helm-operator
       permissions:
         - rules:
             - apiGroups:
@@ -196,7 +229,7 @@ spec:
             - apiGroups:
                 - apps
               resourceNames:
-                - twistlock-console-helm-operator
+                - prisma-cloud-compute-console-helm-operator
               resources:
                 - deployments/finalizers
               verbs:
@@ -215,7 +248,7 @@ spec:
                 - hostaccess
             - verbs:
                 - use
-          serviceAccountName: twistlock-console-helm-operator
+          serviceAccountName: prisma-cloud-compute-console-helm-operator
     strategy: deployment
   maintainers:
     - email: contact@twistlock.com
@@ -259,28 +292,32 @@ spec:
 
     # Let the cluster know about our new custom resource, TwistlockConsole
 
-    kubectl apply -f deploy/crds/charts_v1alpha1_twistlockconsole_crd.yaml
+    kubectl apply -f deploy/0_8_crds/0_charts_v1alpha1_twistlockconsole_crd.yaml
 
     # Create the 'twistlock' namespace
 
-    kubectl apply -f deploy/namespace.yaml
+    kubectl apply -f deploy/1_namespace.yaml
 
     # Create necessary user and permissions to make things happen
 
-    kubectl apply -f deploy/service_account.yaml 
+    kubectl apply -f deploy/2_service_account.yaml 
 
-    kubectl apply -f deploy/role.yaml
+    kubectl apply -f deploy/3_role.yaml
 
-    kubectl apply -f deploy/role_binding.yaml
+    kubectl apply -f deploy/4_role_binding.yaml
+
+    kubectl apply -f deploy/5_clusterrole.yaml
+
+    kubectl apply -f deploy/6_clusterrole_binding.yaml
 
     # Deploy the operator container as a pod
 
-    kubectl apply -f deploy/operator.yaml
+    kubectl apply -f deploy/7_operator.yaml
 
     # Add your token and apply. For more detail, before you apply the CR, read
     the note below
 
-    kubectl apply -f deploy/crds/charts_v1alpha1_twistlockconsole_cr.yaml
+    kubectl apply -f deploy/0_8_crds/8_charts_v1alpha1_twistlockconsole_cr.yaml
 
     ``` 
 
@@ -309,7 +346,7 @@ spec:
     ```sh
 
     consoleImageName:
-    registry-auth.twistlock.com/tw_<REPLACE_TWISTLOCK_TOKEN>/twistlock/console:console_19_03_317
+    registry-auth.twistlock.com/tw_<REPLACE_TWISTLOCK_TOKEN>/twistlock/console:console_20_04_163
 
     ``` 
 
