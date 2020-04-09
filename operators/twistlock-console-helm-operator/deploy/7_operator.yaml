@@ -29,3 +29,5 @@ spec:
                   fieldPath: metadata.name
             - name: OPERATOR_NAME
               value: "prisma-cloud-compute-console-helm-operator"
+            - name: RELATED_IMAGE_CONSOLE
+              value: registry-auth.twistlock.com/tw_<REPLACE_TWISTLOCK_TOKEN>/twistlock/console:console_20_04_163
