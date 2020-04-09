@@ -16,7 +16,7 @@ spec:
       containers:
         - name: prisma-cloud-compute-console-helm-operator
           # Replace this with the built image name
-          image: twistlock/console-operator:0.0.9
+          image: prismacloud/prisma-cloud-compute-console-operator:v0.0.10-rc1
           imagePullPolicy: Always
           env:
             - name: WATCH_NAMESPACE

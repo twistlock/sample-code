@@ -1,5 +1,7 @@
 FROM quay.io/operator-framework/helm-operator:latest
 
+MAINTAINER Gunjan Patel gpatel@paloaltonetworks.com
+
 ### Required OpenShift Labels
 LABEL name="prisma-cloud-compute-operator" \
       vendor="Palo Alto Networks" \
@@ -8,10 +10,7 @@ LABEL name="prisma-cloud-compute-operator" \
       summary="This is an operator for Prisma Cloud Compute (Twistlock) Console ." \
       description="This operator will deploy Prisma Cloud Compute (Twistlock) Console."
 
-RUN mkdir ${HOME}/helm-charts
-RUN pwd
-RUN ls -la
-RUN ls -la  ${HOME}/
+COPY licenses /licenses
 
-COPY ./helm-charts/ ${HOME}/helm-charts/
+COPY helm-charts ${HOME}/helm-charts/
 COPY ./watches.yaml ${HOME}/watches.yaml
