@@ -7,4 +7,4 @@ source ${HACK_DIR}/env.sh
 operator-sdk build ${OPERATOR_IMAGE} --image-builder ${OPERATOR_IMAGE_BUILDER}
 
 # Push the operator container image
-#${OPERATOR_IMAGE_BUILDER} push ${OPERATOR_IMAGE}
+${OPERATOR_IMAGE_BUILDER} push ${OPERATOR_IMAGE}
