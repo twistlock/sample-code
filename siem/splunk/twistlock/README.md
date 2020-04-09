@@ -1,6 +1,6 @@
 # Prisma Cloud Compute Splunk App
 
-_Updated for Prisma Cloud Compute (formerly Twistlock) versions 19.11 and onwards_
+_Updated for Prisma Cloud Compute (formerly Twistlock) versions 19.11 and onwards. Previous Twistlock versions are not supported._
 
 The Prisma Cloud Compute Splunk App allows high priority security incidents from Prisma Cloud to be sampled by Splunk on a user-defined interval and provides in-depth forensic data for incident analysis and response.
 
@@ -8,7 +8,7 @@ The app adds two main components to your Splunk deployment: scripted data inputs
 
 ## Installation
 
-1. Add Prisma Cloud Compute Console credentials and URL (without trailing `/`) to `pcc/bin/meta/config.json`. For example, your file could look like this:
+1. Add Prisma Cloud Compute Console credentials and URL (without trailing `/`) to `bin/meta/config.json`. If you are using Prisma Cloud Compute Edition (or Twistlock), this will likely just be the address in your URL bar. If you are using Prisma Cloud Enterprise Edition, you can find this address at **Compute > Manage > System > Downloads** under the **Path to Console** heading. For example, your file could look like this:
 ```json
 {
   "credentials": {
@@ -20,7 +20,7 @@ The app adds two main components to your Splunk deployment: scripted data inputs
   }
 }
 ```
-2. Drop the `pcc` directory into `$SPLUNK_HOME/etc/apps` on the necessary Splunk host(s). Be sure the directory and its contents are owned by the `splunk` user. See Splunk documentation for specific details based on deployment architecture.
+2. Drop the app directory into `$SPLUNK_HOME/etc/apps` on the necessary Splunk host(s). Be sure the directory and its contents are owned by the `splunk` user. See Splunk documentation for specific details based on deployment architecture.
 
 3. Run `$SPLUNK_HOME/bin/splunk restart` to load the app.
 

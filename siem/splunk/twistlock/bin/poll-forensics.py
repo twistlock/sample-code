@@ -5,8 +5,8 @@ import os
 import requests
 import sys
 
-forensics_file = os.path.join(os.environ["SPLUNK_HOME"], "etc", "apps", "pcc", "bin", "meta", "forensics_events.txt")
-config_file = os.path.join(os.environ["SPLUNK_HOME"], "etc", "apps", "pcc", "bin", "meta", "config.json")
+forensics_file = os.path.join(os.environ["SPLUNK_HOME"], "etc", "apps", "twistlock", "bin", "meta", "forensics_events.txt")
+config_file = os.path.join(os.environ["SPLUNK_HOME"], "etc", "apps", "twistlock", "bin", "meta", "config.json")
 config = json.load(open(config_file))
 
 console_url = config["setup"]["console_url"]
