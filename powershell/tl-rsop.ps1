@@ -22,7 +22,7 @@
 # Updates: 
 # 2019-10-30 adjusted for the Twistlock v19.07 API changes
 # 2019-11-26 updated for Prisma Cloud v19.11 API changes
-# 2020-04-09 updated for Prisma Cloud Compute Edition 20.04.163, additional logic to evaluated CI images against runtime policies.
+# 2020-04-09 updated for Prisma Cloud Compute Edition 20.04.163, additional logic to evaluated CI images against runtime policies
 
 param ($arg1)
 if(!$arg1)

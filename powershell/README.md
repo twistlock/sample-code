@@ -74,7 +74,7 @@ Pull requests are welcomed.
         ```
 
 * **tl-rsop.ps1** - Queries Twistlock API to determine the vulnerability and compliance rules applied to an image. Basically a Resultant Set of Policies (RSOP).
-  * Update 20200409: updated for the API v20.04.163, additional logic to evaluated CI images against runtime policies.
+  * Update 20200409: updated for the API v20.04.163, additional logic to evaluated CI images against runtime policies
   * Update 20191126: updated for API v19.11
   * Logic:
     * Finds the Vulnerability Policy (Defend > Vulnerabilities > Policy) that applies to the image.
