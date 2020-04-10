@@ -25,7 +25,6 @@ else
 
 # variables
 $tlconsole = "https://twistlock.example.com"
-$tlconsole = "https://onebox.authnfox.com:8083"
 $newline = [environment]::newline
 $outputCSV = "ATO Package: $arg1"+$newline
 $time = Get-Date -f "yyyyMMdd-HHmmss"
