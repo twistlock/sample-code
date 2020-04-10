@@ -8,6 +8,10 @@
 #  Find the Compliance Policy (Defend > Compliance > Policy) that applies to the image.
 #  Compare the image's failed compliance findings to the applied rule and the Action defined
 #
+# Update 20200409 - updated for the v20.04.163 api. This accounts for images scanned as part of the CI process (jenkins and twistcli).
+# For example, you want to know what rules will impact an image in the CI process when moved to ship and run. Answering "will this image be allowed to run based upon vulneraiblity and compliance policies"
+# The json structure for the CI images ($ciImage flag) is accounted for in the script. 
+#
 #  Requires: powershell v6 https://blogs.msdn.microsoft.com/powershell/2018/01/10/powershell-core-6-0-generally-available-ga-and-supported/
 #  Discalimer: Use of this script does not imply any rights to Twistlock products and/or services.
 # 
@@ -18,6 +22,7 @@
 # Updates: 
 # 2019-10-30 adjusted for the Twistlock v19.07 API changes
 # 2019-11-26 updated for Prisma Cloud v19.11 API changes
+# 2020-04-09 updated for Prisma Cloud Compute Edition 20.04.163, additional logic to evaluated CI images against runtime policies
 
 param ($arg1)
 if(!$arg1)
@@ -33,14 +38,16 @@ else
 
 # variables
 # change this variable for the URL to your Twistlock Console's API
-$tlconsole = "https://twistlock-console.example.com:8083
-# Hash table of the policy name and the order in which it is applied
-$vulnPolicies = @{}
-$policies = @()
-$compliancePolicies = @{}
-$imageChecks = [string] @(4,9,5)
+$tlconsole = "https://twistlock-console.example.com:8083"
+$vulnPolicies = @{} # Hash table of the vulnerability policy name and the order in which it is applied
+$vulnResources = @{} # Hash table of the rules' image filters
+$policies = @() # Array of policy names
+$compliancePolicies = @{} # Hash table of the compliance policy name and the order in which it is applied
+$complianceResources = @{} # Hash table of the rules' image filters
+$imageChecks = [string] @(4,9,5) # The type of compliance checks that apply to images
 $foundImage = [bool]$false
 $policyMatch = [bool]$false
+$ciImage = [bool]$false
 $newline = [environment]::newline
 $outputCompliance = "Rule,Block,Image will be blocked" + $newline
 
@@ -86,9 +93,32 @@ if(!$foundImage){
     else
         {
         write-host "Did not find image in a registry"
-        exit
         }
 
+# Search for image in CI Scans
+if(!$foundImage)
+    {
+    $request = "$tlconsole/api/v1/scans?search=$arg1&type=ciImage"
+    $image = Invoke-RestMethod $request -Authentication Basic -Credential $cred -SkipCertificateCheck
+    if($image.count -eq 1)
+        {
+        $foundImage = [bool]$true
+        write-host "Found image found in CI Scans"
+        $imageid = $image.entityInfo.id
+        $ciImage = [bool]$true
+        }   
+    elseif ($image.count -gt 1)
+        {
+        write-host "found more than 1 image that matches that name, please narrow your search"
+        exit
+        }
+    else
+        {
+        write-host "Did not find image in CI Scans"
+        exit
+        }
+    }
+   
 } # end if !foundImage search registry for base image
 
 # Output the image found
@@ -98,16 +128,26 @@ write-host "ImageID: $imageid"
 
 # Break out the vulnerabilities
 # Determine the lowest severity level this will be used to determine if the block rule is applied
+# updated for v20.04 api 
 write-host ""
 write-host "Vulnerabilities:"
-write-host "`tCritical: "$image[0].vulnerabilityDistribution.critical
-write-host "`tHigh: "$image[0].vulnerabilityDistribution.high
-write-host "`tMedium: "$image[0].vulnerabilityDistribution.medium
-write-host "`tLow: "$image[0].vulnerabilityDistribution.low
+if($ciImage)
+    {
+    write-host "`tCritical: "$image.entityInfo.vulnerabilityDistribution.critical
+    write-host "`tHigh: "$image.entityInfo.vulnerabilityDistribution.high
+    write-host "`tMedium: "$image.entityInfo.vulnerabilityDistribution.medium
+    write-host "`tLow: "$image.entityInfo.vulnerabilityDistribution.low
+    }
+else
+    {
+    write-host "`tCritical: "$image[0].vulnerabilityDistribution.critical
+    write-host "`tHigh: "$image[0].vulnerabilityDistribution.high
+    write-host "`tMedium: "$image[0].vulnerabilityDistribution.medium
+    write-host "`tLow: "$image[0].vulnerabilityDistribution.low
+    }
 
 # Now query the API to determine which Defend > Policy > Vulnerabilities > Policy rule applies to the image
 # and what is the Action is Alert or Block
-# Updated for v19.07 API 
 $request = "$tlconsole/api/v1/policies/vulnerability/images"
 $returnedRules = Invoke-RestMethod $request -Authentication Basic -Credential $cred -SkipCertificateCheck
 
@@ -121,11 +161,25 @@ foreach ($rule in $rules)
     # have to do the array for the policy names to keep the order of the rule application.
     # the hash table flips it, if you can tell me how to do it with just the hash table, submit a PR please.
     # Filter out the disabled=True policies
-    if($rule[0].disabled -ne "True")
+
+    # 20200409 - Since the /api/v1/policies/vulnerability/images/impacted api does not work for CI images
+    # We want to be able to know what the resultant policy for an image built via the CI process
+    # put the rule's Resources Images into a comma seperated sting. Then add into the $vulnResources hash table
+    # then if ciImages = True we will associate the image to the rule via this method
+   if($rule[0].disabled -ne "True")
         {
+        # pull out the image filters
+        $tmpResources = ""
+        $filter =  $rule[0].resources.images
+        foreach($flt in $filter)
+            {
+            $tmpResources = $tmpResources + $flt + ","
+            }
+        # build the array and hash tables
         $tmp = $rule[0].name
         $policies += $tmp
         $vulnPolicies.$tmp = $i
+        $vulnResources.$tmp = $tmpResources
         $i++
         }
     else
@@ -136,22 +190,49 @@ foreach ($rule in $rules)
         }
     }
 # Debug: output the hash table of "enabled" vulnerability policies    
+write-debug "Array of enabled vulnerability Policy names"
+write-debug ($policies|Out-String)
+write-debug "Policy hash table for rule orders:"
 write-debug ($vulnPolicies|Out-String)
+write-debug "Policy hash table of ACLed images, used for CI images:"
+write-debug ($vulnResources|Out-String)
 
+# If this is a CI images match based upon the vulResources hash table filters
+# else
 # call impacted API to see if the rule applies to this image
 $matchingPolicy = ""
-foreach($policy in $policies)
+:top foreach($policy in $policies)
     {
-    $request = "$tlconsole/api/v1/policies/vulnerability/images/impacted?ruleName=$policy&search=$imageid"
-    $returnedImpact = Invoke-RestMethod $request -Authentication Basic -Credential $cred -SkipCertificateCheck
-    if($returnedImpact.count -eq 1)
+    if($ciImage)
         {
-        $matchingPolicy = $policy
-        $policyMatch = [bool]$true
-        break
+        $tmpArray = $vulnResources.$policy -split ","
+        :botton foreach($tm1 in $tmpArray)
+            {
+            #$tm1 = $tm1.Replace('*','')
+            if($arg1 -like $tm1)
+                {
+                $debug_out = "CI Image vulnerability policy match policy = $policy : Image filter = $tm1"
+                write-debug $debug_out
+                $matchingPolicy = $policy
+                $policyMatch = [bool]$true
+                break top
+                }
+            }
+        }
+    else
+        {
+        $request = "$tlconsole/api/v1/policies/vulnerability/images/impacted?ruleName=$policy&search=$imageid"
+        $returnedImpact = Invoke-RestMethod $request -Authentication Basic -Credential $cred -SkipCertificateCheck
+        if($returnedImpact.count -eq 1)
+            {
+            $matchingPolicy = $policy
+            $policyMatch = [bool]$true
+            break top
+            }
         }        
     } # end of foreach policy
 
+# Did we find a matching policy?
 if(!$policyMatch)
     {
     write-host "No vulnerability policies match, odd the Default Rule should apply, exiting"
@@ -176,7 +257,18 @@ write-debug $debug_out
 $debug_out = "Block threshold: " + $conditions.value
 write-debug $debug_out
 
-if($conditions.enabled -eq "True")
+# Account for the different json structure for CI images
+if(($conditions.enabled -eq "True") -and $ciImage)
+    {
+    switch($conditions.value)
+        {
+        9 {if([int]$image.entityInfo.vulnerabilityDistribution.critical -gt 0){$TLBlock = [bool]$true}}
+        7 {if(([int]$image.entityInfo.vulnerabilityDistribution.high -gt 0) -or ([int]$image.entityInfo.vulnerabilityDistribution.critical -gt 0)){$TLBlock = [bool]$true}}
+        4 {if(([int]$image.entityInfo.vulnerabilityDistribution.medium -gt 0) -or ([int]$image.entityInfo.vulnerabilityDistribution.high -gt 0) -or ([int]$image.entityInfo.vulnerabilityDistribution.critical -gt 0)){$TLBlock = [bool]$true}}
+        1 {if(([int]$image.entityInfo.vulnerabilityDistribution.low -gt 0) -or ([int]$image.entityInfo.vulnerabilityDistribution.medium -gt 0) -or ([int]$image.entityInfo.vulnerabilityDistribution.high -gt 0) -or ([int]$image.entityInfo.vulnerabilityDistribution.critical -gt 0)){$TLBlock = [bool]$true}}
+        }
+    }
+elseif($conditions.enabled -eq "True")
     {
     switch($conditions.value)
         {
@@ -213,24 +305,62 @@ foreach ($rule in $rules)
     # put the policies name into an array and a hash table as well so we can index it when we go to examine the policies.
     # have to do the array for the policy names to keep the order of the rule application.
     # the hash table flips it, if you can tell me how to do it with just the hash table, submit a PR please.
-    $tmp = $rule[0].name
-    $policies += $tmp
-    $compliancePolicies.$tmp = $i
-    $i++
+    # 20200409 - updated for v20.04.163 api
+    # pull out the image filters
+     if($rule[0].disabled -ne "True")
+        {
+        $tmpResources = ""
+        $filter =  $rule[0].resources.images
+        foreach($flt in $filter)
+            {
+            $tmpResources = $tmpResources + $flt + ","
+            }
+        $tmp = $rule[0].name
+        $policies += $tmp
+        $compliancePolicies.$tmp = $i
+        $complianceResources.$tmp = $tmpResources
+        $i++
+        }
     }
+
+# Debug: output the hash table of "enabled" compliance policies    
+write-debug "Array of enabled compliance Policy names"
+write-debug ($policies|Out-String)
+write-debug "Policy hash table for rule orders:"
+write-debug ($compliancePolicies|Out-String)
+write-debug "Policy hash table of ACLed images, used for CI images:"
+write-debug ($complianceResources|Out-String)
 
 # find the rule that applies to the image 
 $policyMatch = [bool]$false
 $matchingPolicy = ""
-foreach($policy in $policies)
+:top foreach($policy in $policies)
     {
-    $request = "$tlconsole/api/v1/policies/compliance/container/impacted?ruleName=$policy&search=$imageid"
-    $returnedImpact = Invoke-RestMethod $request -Authentication Basic -Credential $cred -SkipCertificateCheck
-    if($returnedImpact.count -eq 1)
+    if($ciImage)
         {
-        $matchingPolicy = $policy
-        $policyMatch = [bool]$true
-        break
+        $tmpArray = $complianceResources.$policy -split ","
+        :botton foreach($tm1 in $tmpArray)
+            {
+            if($arg1 -like $tm1)
+                {
+                $debug_out = "CI Image compliance policy match policy = $policy : Image filter = $tm1"
+                write-debug $debug_out
+                $matchingPolicy = $policy
+                $policyMatch = [bool]$true
+                break top
+                }
+            }
+        }
+    else
+        {
+        $request = "$tlconsole/api/v1/policies/compliance/container/impacted?ruleName=$policy&search=$arg1"
+        $returnedImpact = Invoke-RestMethod $request -Authentication Basic -Credential $cred -SkipCertificateCheck
+        if($returnedImpact.count -eq 1)
+            {
+            $matchingPolicy = $policy
+            $policyMatch = [bool]$true
+            break top
+            }
         }        
     } # end of foreach policy
 
@@ -249,17 +379,25 @@ write-host "Matching Compliance Policy: $matchingPolicy"
 $request = "$tlconsole/api/v1/static/vulnerabilities"
 $return = Invoke-RestMethod $request -Authentication Basic -Credential $cred -SkipCertificateCheck
 foreach($compliance in $return.complianceVulnerabilities)
-{
+    {
     $complianceChecks += @{[string]$compliance.id = $compliance.title,$compliance.description}
-}
+    }
 
 # Get the compliance findings for the image
-$complianceVulnerabilities = $image[0].complianceIssues
+# 20200409 - v20.04.163 api, CI images have a difference json structure 
+if($ciImage)
+    {
+    $complianceVulnerabilities = $image.entityInfo.complianceIssues
+    }
+else
+    {
+    $complianceVulnerabilities = $image[0].complianceIssues
+    }
 
 # find the rule in the existing $returnedRules and determine the effect
 $TLComplianceBlock = [bool]$false
 $conditions = $rules[$compliancePolicies.$matchingPolicy].condition.vulnerabilities
-
+    
 foreach ($condition in $conditions)
     {
     # only process image checks, checks that start with either "4", "5" or"9"
