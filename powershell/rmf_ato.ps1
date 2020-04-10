@@ -9,7 +9,7 @@
 #  Usage: ./rmf_ato.ps1 <name of image>
 #
 # 20200325 - Updated for Prisma Cloud Compute Edition 19.11.x
-# 20200409 - Tested against Prisma Cloud Compute Edition 20.04.163
+# 20200409 - Tested against Prisma Cloud Compute Edition 20.04.163.
 
 param ($arg1)
 
