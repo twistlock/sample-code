@@ -44,6 +44,14 @@ metadata:
           }
         }
       ]
+    capabilities: Basic Install
+    categories: Security
+    certified: 'false'
+    containerImage: prismacloud/prisma-cloud-compute-console-operator:1.0.0-rc2
+    createdAt: '2019-04-01 00:00:00'
+    description: Deploy Prisma Cloud Compute (Twistlock) cloud native security in Kubernetes.
+    repository: https://github.com/twistlock/sample-code/tree/master/operators/prisma-cloud-compute-console-helm-operator
+    support: Palo Alto Networks
   name: prisma-cloud-compute-console-operator.v1.0.0
   namespace: placeholder
 spec:
