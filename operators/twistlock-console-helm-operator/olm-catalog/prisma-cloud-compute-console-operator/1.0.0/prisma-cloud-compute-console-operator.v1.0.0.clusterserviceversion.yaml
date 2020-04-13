@@ -47,7 +47,7 @@ metadata:
     capabilities: Basic Install
     categories: Security
     certified: 'false'
-    containerImage: prismacloud/prisma-cloud-compute-console-operator:1.0.0-rc2
+    containerImage: prismacloud/prisma-cloud-compute-console-operator:1.0.0-rc3
     createdAt: '2019-04-01 00:00:00'
     description: Deploy Prisma Cloud Compute (Twistlock) cloud native security in Kubernetes.
     repository: https://github.com/twistlock/sample-code/tree/master/operators/prisma-cloud-compute-console-helm-operator
@@ -147,7 +147,7 @@ spec:
                         value: prisma-cloud-compute-console-helm-operator
                       - name: RELATED_IMAGE_CONSOLE
                         value: registry-auth.twistlock.com/tw_<REPLACE_TWISTLOCK_TOKEN>/twistlock/console:console_20_04_163
-                    image: prismacloud/prisma-cloud-compute-console-operator:v0.0.10-rc1
+                    image: prismacloud/prisma-cloud-compute-console-operator:1.0.0-rc3
                     imagePullPolicy: Always
                     name: prisma-cloud-compute-console-helm-operator
                     resources: {}
@@ -227,35 +227,28 @@ spec:
     - email: contact@twistlock.com
       name: 'Twistlock'
   description: |
-    This guide walks through using the Twistlock Console operator 
+    This guide walks through using the [Prisma Cloud Compute (Twistlock)](https://docs.paloaltonetworks.com/prisma/prisma-cloud/20-04/prisma-cloud-compute-edition-admin.html) Console operator 
 
     powered by Helm using tools and libraries provided by the Operator SDK.
 
 
-    The operator runs as a container that has the Twistlock Console helm charts
-    on board
-
-    and can watch to see if the components are present. If they're not, the
-
-    operator will use Helm to install the Twistlock Console correctly without
-
-    any user interaction!
+    The operator runs as a container that has the Prisma Cloud Compute (Twistlock) Console
+    
+    helm charts on board and can watch to see if the components are present. If they're not,
+    
+    the operator will use Helm to install the Twistlock Console correctly without any user interaction!
 
 
-    All you have to to do is tell your cluster about the new TwistlockConsole
-    custom resource by
-
-    applying the included Custom Resource Definition (CRD). Then deploy the
-    operator
+    All you have to to do is tell your cluster about the new TwistlockConsole custom resource
+    
+    by applying the included Custom Resource Definition (CRD). Then deploy the operator
 
     container into the cluster and let it do its thing.
 
 
-    Let's get down to it. All we need from you is the Twistlock registry/docs
-    token
-
-    that came with your license. All of the yaml files you need to deploy are
-    listed below.
+    Let's get down to it. All we need from you is the Twistlock registry/docs token that came 
+    
+    with your license. All of the yaml files you need to deploy are listed below.
 
 
     ##  Here's the plan:
@@ -299,7 +292,7 @@ spec:
     ### Understanding the Twistlock Customer Resource (CR) spec
 
 
-    Helm uses a concept called [values][helm_values] to provide customizations
+    Helm uses a concept called [values](https://helm.sh/docs/chart_template_guide/values_files/) to provide customizations
 
     to a Helm chart's defaults, which are defined in the Helm chart's
     `values.yaml`
