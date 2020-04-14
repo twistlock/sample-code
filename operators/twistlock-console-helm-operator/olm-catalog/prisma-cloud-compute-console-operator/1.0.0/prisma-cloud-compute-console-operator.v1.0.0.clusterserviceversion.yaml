@@ -47,7 +47,7 @@ metadata:
     capabilities: Basic Install
     categories: Security
     certified: 'false'
-    containerImage: prismacloud/prisma-cloud-compute-console-operator:1.0.0-rc3
+    containerImage: prismacloud/prisma-cloud-compute-console-operator:1.0.0
     createdAt: '2019-04-01 00:00:00'
     description: Deploy Prisma Cloud Compute (Twistlock) cloud native security in Kubernetes.
     repository: https://github.com/twistlock/sample-code/tree/master/operators/prisma-cloud-compute-console-helm-operator
@@ -115,7 +115,7 @@ spec:
       url: https://github.com/twistlock/sample-code/tree/master/operators/prisma-cloud-compute-console-helm-operator
   maturity: beta
   provider:
-    name: Twistlock
+    name: Palo Alto Networks (Twistlock)
   replaces: twistlock-console-operator.v0.0.9
   version: 1.0.0
   install:
@@ -147,7 +147,7 @@ spec:
                         value: prisma-cloud-compute-console-helm-operator
                       - name: RELATED_IMAGE_CONSOLE
                         value: registry-auth.twistlock.com/tw_<REPLACE_TWISTLOCK_TOKEN>/twistlock/console:console_20_04_163
-                    image: prismacloud/prisma-cloud-compute-console-operator:1.0.0-rc3
+                    image: prismacloud/prisma-cloud-compute-console-operator:1.0.0
                     imagePullPolicy: Always
                     name: prisma-cloud-compute-console-helm-operator
                     resources: {}
@@ -224,8 +224,8 @@ spec:
           serviceAccountName: prisma-cloud-compute-console-helm-operator
     strategy: deployment
   maintainers:
-    - email: contact@twistlock.com
-      name: 'Twistlock'
+    - email: pcc-integrations@paloaltonetworks.com
+      name: 'Palo Alto Networks'
   description: |
     This guide walks through using the [Prisma Cloud Compute (Twistlock)](https://docs.paloaltonetworks.com/prisma/prisma-cloud/20-04/prisma-cloud-compute-edition-admin.html) Console operator 
 
