@@ -115,7 +115,7 @@ spec:
       url: https://github.com/twistlock/sample-code/tree/master/operators/prisma-cloud-compute-console-helm-operator
   maturity: beta
   provider:
-    name: Palo Alto Networks (Twistlock)
+    name: Palo Alto Networks
   replaces: twistlock-console-operator.v0.0.9
   version: 1.0.0
   install:
