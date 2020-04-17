@@ -1,0 +1,12 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: twistlock-console-scc-admin
+subjects:
+- kind: ServiceAccount
+  name: prisma-cloud-compute-console-helm-operator
+  namespace: twistlock
+roleRef:
+  kind: ClusterRole
+  name: prisma-cloud-compute-console-helm-operator-scc-admin
+  apiGroup: rbac.authorization.k8s.io
