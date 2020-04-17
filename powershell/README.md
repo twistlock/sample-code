@@ -58,6 +58,7 @@ Pull requests are welcomed.
     ```
 
 * **rmf_ato.ps1** - this script generates a sample Authority to Operate report for an image showing the packages, vulnerabilities, compliance and running containers. You can expand upon the data you want to render in the resulting csv file.
+  * Update 20200409: updated for the API v20.04.163
   * Modify:
     * Change the $tlconsole variable to your Twistlock Console's API URL
   * Output:
@@ -73,6 +74,7 @@ Pull requests are welcomed.
         ```
 
 * **tl-rsop.ps1** - Queries Twistlock API to determine the vulnerability and compliance rules applied to an image. Basically a Resultant Set of Policies (RSOP).
+  * Update 20200409: updated for the API v20.04.163, additional logic to evaluated CI images against runtime policies
   * Update 20191126: updated for API v19.11
   * Logic:
     * Finds the Vulnerability Policy (Defend > Vulnerabilities > Policy) that applies to the image.

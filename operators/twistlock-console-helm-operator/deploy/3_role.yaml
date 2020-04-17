@@ -2,7 +2,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   creationTimestamp: null
-  name: twistlock-console-helm-operator
+  name: prisma-cloud-compute-console-helm-operator
 rules:
 - apiGroups:
   - ""
@@ -14,6 +14,8 @@ rules:
   - events
   - configmaps
   - secrets
+  - serviceaccounts
+  - replicationcontrollers
   verbs:
   - '*'
 - apiGroups:
@@ -41,7 +43,7 @@ rules:
 - apiGroups:
   - apps
   resourceNames:
-  - twistlock-console-helm-operator
+  - prisma-cloud-compute-console-helm-operator
   resources:
   - deployments/finalizers
   verbs:

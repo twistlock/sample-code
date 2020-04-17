@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prisma-cloud-compute-console-helm-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: prisma-cloud-compute-console-helm-operator
+  template:
+    metadata:
+      labels:
+        name: prisma-cloud-compute-console-helm-operator
+    spec:
+      serviceAccountName: prisma-cloud-compute-console-helm-operator
+      containers:
+        - name: prisma-cloud-compute-console-helm-operator
+          # Replace this with the built image name
+          image: prismacloud/compute-console-operator:1.0.0
+          imagePullPolicy: Always
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "prisma-cloud-compute-console-helm-operator"
+            - name: RELATED_IMAGE_CONSOLE
+              value: registry-auth.twistlock.com/tw_<REPLACE_TWISTLOCK_TOKEN>/twistlock/console:console_20_04_163

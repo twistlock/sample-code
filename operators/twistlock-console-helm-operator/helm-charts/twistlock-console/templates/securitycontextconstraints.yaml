@@ -1,5 +1,5 @@
 {{- if .Values.openshift }}
-apiVersion: v1
+apiVersion: security.openshift.io/v1
 kind: SecurityContextConstraints
 metadata:
   name: twistlock-console
@@ -10,15 +10,15 @@ allowHostIPC: false
 allowHostNetwork: false
 allowHostPID: false
 allowHostPorts: false
-defaultAddCapabilities: null
-requiredDropCapabilities: null
-allowedCapabilities: null
+defaultAddCapabilities: []
+requiredDropCapabilities: []
+allowedCapabilities: []
 allowPrivilegedContainer: false
 fsGroup: # Volumes which support ownership management are modified to be owned and writable by the GID specified in fsGroup
   type: RunAsAny
-priority: null
+priority: 0
 readOnlyRootFilesystem: true
-requiredDropCapabilities: null
+requiredDropCapabilities: []
 runAsUser:
   type: RunAsAny
 seLinuxContext:

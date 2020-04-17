@@ -1,7 +1,7 @@
 <form>
-  <label>Twistlock Incidents and Forensics</label>
+  <label>Prisma Cloud Compute Incidents and Forensics</label>
   <search>
-    <query>index=main sourcetype=twistlock:incident t_id=$container_incident_id$
+    <query>index=main sourcetype=pcc:incident t_id=$container_incident_id$
     | table t_containerid</query>
     <done>
       <set token="container_id">$result.t_containerid$</set>
@@ -13,7 +13,7 @@
       <title>Total Incidents in the last 7 days</title>
       <single>
         <search>
-          <query>index=main sourcetype=twistlock:incident
+          <query>index=main sourcetype=pcc:incident
           | stats count</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
@@ -25,7 +25,7 @@
       <title>Total Incidents in the last 30 days</title>
       <single>
         <search>
-          <query>index=main sourcetype=twistlock:incident
+          <query>index=main sourcetype=pcc:incident
           | stats count</query>
           <earliest>-30d@d</earliest>
           <latest>now</latest>
@@ -40,7 +40,7 @@
       <table>
         <title>Count of incidents by image</title>
         <search>
-          <query>index=main sourcetype=twistlock:incident
+          <query>index=main sourcetype=pcc:incident
           | stats count as Incidents by imageName
           | sort 5 -count
           | rename imageName as Image</query>
@@ -54,7 +54,7 @@
       <table>
         <title>Count of incidents by host</title>
         <search>
-          <query>index=main sourcetype=twistlock:incident
+          <query>index=main sourcetype=pcc:incident
           | stats count as Incidents by hostname
           | sort 5 -Incidents
           | rename hostname as Host</query>
@@ -77,14 +77,14 @@
         <fieldForLabel>Container</fieldForLabel>
         <fieldForValue>containerName</fieldForValue>
         <search>
-          <query>index=main sourcetype=twistlock:incident containerName=* | dedup containerName</query>
+          <query>index=main sourcetype=pcc:incident containerName=* | dedup containerName</query>
         </search>
         <choice value="*">Show all</choice>
         <default>*</default>
       </input>
       <table>
         <search>
-          <query>index=main sourcetype=twistlock:incident $container_selector$
+          <query>index=main sourcetype=pcc:incident $container_selector$
           | table time, category, hostname, imageName, containerName, t_id
           | sort time
           | rename time as Time, category as Category, hostname as Host, imageName as Image, containerName as Container, t_id as ID</query>
@@ -111,7 +111,7 @@
       </input>
       <table>
         <search>
-          <query>index=main sourcetype=twistlock:forensicdata incidentID=$container_incident_id$
+          <query>index=main sourcetype=pcc:forensicdata incidentID=$container_incident_id$
           | table timestamp, type, ppid, pid, path, command
           | sort timestamp
           | rename timestamp as Time, type as Type, ppid as "Parent PID", pid as PID, path as Path, command as Command</query>
@@ -132,14 +132,14 @@
         <fieldForLabel>hostname</fieldForLabel>
         <fieldForValue>hostname</fieldForValue>
         <search>
-          <query>index=main sourcetype=twistlock:incident NOT containerName=* | dedup hostname</query>
+          <query>index=main sourcetype=pcc:incident NOT containerName=* | dedup hostname</query>
         </search>
         <choice value="*">Show all</choice>
         <default>*</default>
       </input>
       <table>
         <search>
-          <query>index=main sourcetype=twistlock:incident NOT containerID=* $hostname_selector$
+          <query>index=main sourcetype=pcc:incident NOT containerID=* $hostname_selector$
           | table time, category, hostname, profileID, "audits{}.type", "audits{}.user", t_id
           | sort time
           | rename time as Time, category as Category, hostname as Host, profileID as Application, "audits{}.type" as Type, "audits{}.user" as User, t_id as ID</query>
@@ -168,7 +168,7 @@
       </input>
       <table>
         <search>
-          <query>index=main sourcetype=twistlock:forensicdata incidentID=$host_incident_id$
+          <query>index=main sourcetype=pcc:forensicdata incidentID=$host_incident_id$
           | table timestamp, type, ppid, ppath, pid, path, command
           | sort timestamp
           | rename timestamp as Time, type as Type, ppid as "Parent PID", ppath as "Parent Path", pid as PID, path as Path, command as Command</query>
