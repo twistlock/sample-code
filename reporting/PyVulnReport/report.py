@@ -61,7 +61,7 @@ def generate_html(images_json):
     return output_html
 
 def get_images_json(console,user,password):
-    api_endpt = '/api/v1/images'
+    api_endpt = '/api/v1/images?search=node:7-onbuild'
     request_url = console + api_endpt
     image_req = requests.get(request_url, verify=False, auth=HTTPBasicAuth(user,password))
     if image_req.status_code != 200:
