@@ -1,5 +1,0 @@
-curl -s -k -u admin:$TL_ADMIN_PW $TL_CONSOLE_HTTPS/api/v1/policies/compliance > compliance.json 
-sleep 2
-cat compliance.json | jq .
-
-
