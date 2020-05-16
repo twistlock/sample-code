@@ -7,6 +7,6 @@ if [ "$#" -ne 1 ]; then
     echo "You must pass in deployed compliance policy json file"
 else
    curl -k -u $TL_USER:$TL_USER_PW -X PUT -H "Content-Type:application/json" \
-        $TL_CONSOLE/api/v1/policies/compliance/container --data-binary "@$1"
+        $TL_CONSOLE_API/policies/compliance/container --data-binary "@$1"
 fi
 

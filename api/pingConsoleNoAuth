@@ -1,2 +1,0 @@
-curl -vk $TL_CONSOLE/api/v1/_ping
-

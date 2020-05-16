@@ -2,7 +2,7 @@ echo "Provisioning Twistlock platform"
 echo "This script will do the following"
 echo "  1) download software "
 echo "  2) install console"
-echo "  3) create first user with name 'admin' and password specified by TL_ADMIN_PW"
+echo "  3) create first user with name '$TL_USER' and password specified by TL_USER_PW"
 echo "  4) install license as setup in setupEnv"
 
 ./downloadTwistlock

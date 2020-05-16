@@ -1,0 +1,12 @@
+token=$(curl -k -v  \
+   -d "{\"username\":\"$TL_USER\", \"password\":\"$TL_USER_PW\"}" \
+   -X POST -H 'content-type: application/json; charset=UTF-8' \
+   $TL_CONSOLE/login | awk -F'"' '{print $4}')
+
+echo $token
+
+ 
+
+
+
+  
