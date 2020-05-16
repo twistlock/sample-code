@@ -1,2 +1,16 @@
-curl -k -v -u $TL_USER:$TL_USER_PW $TL_CONSOLE_API/_ping
+#!/bin/bash
+
+response=$(curl -kv $TL_CONSOLE_API/_ping 2>&1 | grep "200 OK")
+
+[ -n "$response" ] && echo "ping succeeded with $response" && exit 0
+
+echo "Can't reach console at $TL_CONSOLE_API" && exit -1 
+
+
+  
+ 
+
+
+
+
 
