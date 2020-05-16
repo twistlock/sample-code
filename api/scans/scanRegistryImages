@@ -15,7 +15,7 @@ if [ "$#" -gt 0 ]; then
    json_payload='{"tag":{"registry":"docker.io","repo":"'"$1"'","tag":"'"$tag"'"}}'
    curl POST -vu $TL_USER:$TL_USER_PW \
       -H 'Content-Type: application/json' -d $json_payload \
-      "$TL_CONSOLE/api/v1/registry/scan"
+      "$TL_CONSOLE_API/registry/scan"
 else
    echo "nothing"
 fi

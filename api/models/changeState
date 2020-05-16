@@ -27,9 +27,9 @@ echo $fileName
 if [ -e "$fileName" ]; then
   echo "Changing state of all models listed in file $fileName"
   while IFS='' read -r id || [[ -n "$id" ]]; do
-     curl -sku admin:$TL_ADMIN_PW -H 'Content-Type: application/json' \
+     curl -sku $TL_USER:$TL_USER_PW -H 'Content-Type: application/json' \
          POST -d '{"state":"'"$state"'"}' \
-         $TL_CONSOLE_HTTPS/api/v1/profiles/container/$id/learn
+         $TL_CONSOLE_API/profiles/container/$id/learn
      echo "Set model $id to $state"
   done < "$fileName"
   exit
@@ -37,19 +37,19 @@ fi
 
 # echo "Changing state of model associated with passed in model"
 
-id=$(curl -v -sku admin:$TL_ADMIN_PW $TL_CONSOLE_HTTPS/api/v1/profiles/container?search=$imageName | jq . | grep '_id' | awk -F '"' '{print $4}')
+id=$(curl -v -sku $TL_USER:$TL_USER_PW $TL_CONSOLE_API/profiles/container?search=$imageName | jq . | grep '_id' | awk -F '"' '{print $4}')
 
 if [ -z "$id" ]; then
   echo "Could not find image {$imageName} or some other error occurred!"
   exit
 fi
 
-url="$TL_CONSOLE_HTTPS/api/v1/profiles/container/$id/learn"
+url="$TL_CONSOLE_API/profiles/container/$id/learn"
 # echo $url
 
-curl -v -sku admin:$TL_ADMIN_PW -H 'Content-Type: application/json' \
+curl -v -sku $TL_USER:$TL_USER_PW -H 'Content-Type: application/json' \
   POST -d '{"state":"'"$state"'"}' \
-  $TL_CONSOLE_HTTPS/api/v1/profiles/container/$id/learn
+  $TL_CONSOLE_API/profiles/container/$id/learn
 
 status=$?
 if [ $status -eq 0 ]; then

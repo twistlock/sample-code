@@ -1,4 +1,4 @@
-curl -sku $TL_USER:$TL_USER_PW "$TL_CONSOLE/api/v1/policies/compliance/container" > deployed-compliance.json 
+curl -sku $TL_USER:$TL_USER_PW "$TL_CONSOLE_API/policies/compliance/container" > deployed-compliance.json 
 sleep 2
 cat deployed-compliance.json | jq .
 

@@ -1,0 +1,2 @@
+curl -k -v -u $TL_USER:$TL_USER_PW $TL_CONSOLE_API/_ping
+

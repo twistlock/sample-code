@@ -9,11 +9,11 @@ image=$1
 group=$2
 
 echo "Assigning trust to image $image with trust group $group"
-curl -sku admin:$TL_ADMIN_PW \
+curl -sku $TL_USER:$TL_USER_PW \
   -H 'Content-Type: application/json' \
   -X PUT \
   -d '{"image":"$image", "_id":"alpine"}' \
-  "$TL_CONSOLE_HTTP/api/v1/trust/$image"
+  "$TL_CONSOLE_API/trust/$image"
  
 
 

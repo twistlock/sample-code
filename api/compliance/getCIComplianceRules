@@ -1,4 +1,4 @@
-curl -sku $TL_USER:$TL_USER_PW "$TL_CONSOLE/api/v1/policies/compliance/ci/images" > ci-compliance.json 
+curl -sku $TL_USER:$TL_USER_PW "$TL_CONSOLE_API/policies/compliance/ci/images" > ci-compliance.json 
 sleep 2
 cat ci-compliance.json | jq .
 

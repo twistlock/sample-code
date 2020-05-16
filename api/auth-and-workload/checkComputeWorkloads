@@ -1,0 +1,20 @@
+
+token=$(curl -s  \
+   -d "{\"username\":\"$TL_USER\", \"password\":\"$TL_USER_PW\"}" \
+   -X POST -H 'content-type: application/json; charset=UTF-8' \
+   $TL_CONSOLE/login | awk -F'"' '{print $4}')
+
+echo
+echo "Your token is"
+echo $token
+echo
+
+
+curl -kv \
+     -H "Accept: application/json" \
+     -H "Content-Type: application/json" \
+     -H "x-redlock-auth: $token"  \
+     -d workload.json \
+ -X POST $TL_CONSOLE/usage/compute/twistlock
+
+

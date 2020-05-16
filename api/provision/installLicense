@@ -1,9 +1,9 @@
 curl -v -k \
-  -u admin:$TL_ADMIN_PW \
+  -u $TL_USER:$TL_USER_PW \
   -H 'Content-Type: application/json' \
   POST \
   -d '{"key": "'"$TL_LICENSE"'"}' \
-  $TL_CONSOLE_HTTPS/api/v1/settings/license
+  $TL_CONSOLE_API/settings/license
 
 status=$?
 

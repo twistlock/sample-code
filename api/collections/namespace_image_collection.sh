@@ -10,34 +10,34 @@
 
 
 # All of these variables can be set as environment variables. All but the
-# TL_CONSOLE_PW var can be passed as a CLI option. When not defined, the user
-# will be prompted for the TL_CONSOLE_PW value.
+# TL_USER_PW var can be passed as a CLI option. When not defined, the user
+# will be prompted for the TL_USER_PW value.
 # As mentioned in the usage test, CLI flags will override environment
 # variables.
 NAMESPACE="${NAMESPACE:-default}"
 COLLECTION_NAME="${COLLECTION_NAME:-mycollection}"
 COLLECTION_COLOR="${COLLECTION_COLOR:-#ff0000}"
-TL_CONSOLE_USER="${TL_CONSOLE_USER:-admin}"
-TL_CONSOLE_PW="${TL_CONSOLE_PW:-NONE}"
-TL_CONSOLE_ADDR="${TL_CONSOLE_ADDR:-NONE}"
+TL_USER="${TL_USER:-$TL_USER}"
+TL_USER_PW="${TL_USER_PW:-NONE}"
+TL_CONSOLE="${TL_CONSOLE:-NONE}"
 
 usage() {
   local scriptnm="${0##*/}"
   local docstring="Usage:
-  ${scriptnm} [ -a TL_CONSOLE_ADDR ] [ -u TL_CONSOLE_USER ] [ -n NAMESPACE ]  
+  ${scriptnm} [ -a TL_CONSOLE ] [ -u TL_USER ] [ -n NAMESPACE ]  
                                 [ -N COLLECTION_NAME ] [ -c COLLECTION_COLOR ]\n
   Options:
-    -a TL_CONSOLE_ADDR     the Console URL (eg - https://console.address:8083).
-    -u TL_CONSOLE_USER     authenticate using this Console user account (default: admin)
+    -a TL_CONSOLE     the Console URL (eg - https://console.address:8083).
+    -u TL_USER     authenticate using this Console user account (default: $TL_USER)
     -n NAMESPACE           query the images in this k8s namespace (default: \"default\" namespace)
     -N COLLECTION_NAME     the name of the new collection (default: mycollection)
     -c COLLECTION_COLOR    the hex code for the collection color (default: #ff0000)\n
   Environment variables:
     All command line parameters can be passed as environment variables
-    using the name listed above, eg - set the variable TL_CONSOLE_ADDR to the
+    using the name listed above, eg - set the variable TL_CONSOLE to the
     address of the Console rather than passing the -a flag. Options passed on
     the command-line override environment variables. The Console user's password
-    can be passed via the TL_CONSOLE_PW environment variable\n
+    can be passed via the TL_USER_PW environment variable\n
   Requires:
     The curl, jq, and kubectl commands.\n"
 
@@ -53,9 +53,9 @@ get_images_in_namespace() {
 }
 
 get_collections() {
-  curl -s -k -u "${TL_CONSOLE_USER}:${TL_CONSOLE_PW}" \
+  curl -s -k -u "${TL_USER}:${TL_USER_PW}" \
     -H 'Content-Type: application/json' \
-    "${TL_CONSOLE_ADDR}/${api_path}"
+    "${TL_CONSOLE_API}/${api_path}"
 }
 
 check_for_collection() {
@@ -68,7 +68,7 @@ check_for_collection() {
 
 create_collection() {
   IMAGES_STRING=$(printf -- ", \"%s\"" ${IMAGES[*]} | cut -d ',' -f 2-)
-  curl -s -k -u "${TL_CONSOLE_USER}:${TL_CONSOLE_PW}" \
+  curl -s -k -u "${TL_USER}:${TL_USER_PW}" \
     -X "${http_req_method}" \
     -H 'Content-Type: application/json' \
     -d "{ \
@@ -81,21 +81,21 @@ create_collection() {
     \"containers\":[\"*\"], \
     \"labels\":[\"*\"]} \
     \"namespaces\":[\"*\"]}" \
-    "${TL_CONSOLE_ADDR}/${api_path}"
+    "${TL_CONSOLE_API}/${api_path}"
 }
 
 # use POST for a new Collection, PUT for replacing an existing Collection
 http_req_method="POST"
 # the base end point for defining Collections
-api_path="api/v1/collections"
+api_path="collections"
 
 while getopts ":hn:N:c:u:a:" OPTION; do
   case "${OPTION}" in
     n) NAMESPACE="${OPTARG}";;
     N) COLLECTION_NAME="${OPTARG}";;
     c) COLLECTION_COLOR="${OPTARG}";;
-    u) TL_CONSOLE_USER="${OPTARG}";;
-    a) TL_CONSOLE_ADDR="${OPTARG}";;
+    u) TL_USER="${OPTARG}";;
+    a) TL_CONSOLE="${OPTARG}";;
     h) usage
        exit 1;;
     *) usage
@@ -105,14 +105,14 @@ while getopts ":hn:N:c:u:a:" OPTION; do
 done
 
 arg_err=""
-if [[ "${TL_CONSOLE_USER}" == NONE ]]; then
-  arg_err="missing the TL_CONSOLE_USER argument (-u)"
+if [[ "${TL_USER}" == NONE ]]; then
+  arg_err="missing the TL_USER argument (-u)"
 fi
-if [[ "${TL_CONSOLE_ADDR}" == NONE ]]; then
+if [[ "${TL_CONSOLE}" == NONE ]]; then
   if [[ "${arg_err}X" == X ]] ; then
-     arg_err="missing the TL_CONSOLE_ADDR argument (-a)"
+     arg_err="missing the TL_CONSOLE argument (-a)"
   else
-     arg_err="${arg_err}, missing the TL_CONSOLE_ADDR argument (-a)"
+     arg_err="${arg_err}, missing the TL_CONSOLE argument (-a)"
   fi
 fi
 
@@ -122,8 +122,8 @@ if [[ "${arg_err}X" != X ]]; then
    exit 2
 fi
 
-if [[ "${TL_CONSOLE_PW}" == NONE ]]; then
-   read -s -p "enter password for ${TL_CONSOLE_USER}: " TL_CONSOLE_PW
+if [[ "${TL_USER_PW}" == NONE ]]; then
+   read -s -p "enter password for ${TL_USER}: " TL_USER_PW
 fi
 
 # If the Collection already exists, change the HTTP request method and the API

@@ -6,16 +6,16 @@ if [ "$#" -ne 1 ]; then
    exit 
 fi
 
-rtprofile=$(curl -sku admin:$TL_ADMIN_PW $TL_CONSOLE_HTTPS/api/v1/profiles/container?search=$1 | jq . | grep '_id' | awk -F '"' '{print $4}')
+rtprofile=$(curl -sku $TL_USER:$TL_USER_PW $TL_CONSOLE_API/profiles/container?search=$1 | jq . | grep '_id' | awk -F '"' '{print $4}')
 
 if [ -z "$rtprofile" ]; then
   echo "Could not find image {$1} or some other error occurred!"
   exit
 fi
 
-curl -sku admin:$TL_ADMIN_PW -H 'Content-Type: application/json' \
+curl -sku $TL_USER:$TL_USER_PW -H 'Content-Type: application/json' \
   POST -d '{"state":"manualRelearning"}' \
-  $TL_CONSOLE_HTTPS/api/v1/profiles/container/$rtprofile/learn
+  $TL_CONSOLE_API/profiles/container/$rtprofile/learn
 
 
 status=$?
