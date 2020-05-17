@@ -5,7 +5,7 @@ echo "  2) install console"
 echo "  3) create first user with name '$TL_USER' and password specified by TL_USER_PW"
 echo "  4) install license as setup in setupEnv"
 
-./downloadTwistlock
+# ./downloadSoftware
 
 ./installConsole
 
