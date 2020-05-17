@@ -1,6 +1,6 @@
-echo "creating first $TL_USER user"
+echo "Creating initial $TL_USER administrative user"
 
-curl -v -k  -H 'Content-Type: application/json' \
+curl -k  -H 'Content-Type: application/json' \
 POST -d '{"username": "'"$TL_USER"'", "password": "'"$TL_USER_PW"'"}' \
   "$TL_CONSOLE_API/signup" 
 
