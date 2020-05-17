@@ -1,5 +1,0 @@
-cd twistlock
-sudo ./twistlock.sh -u
-cd ..
-
-
