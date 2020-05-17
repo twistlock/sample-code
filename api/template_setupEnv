@@ -12,12 +12,13 @@ export TL_CONSOLE_API='<prisma cloud API endpoint including https>'
 #
 
 #############################################################
-#### !!!! THESE ARE FOR SELF HOSTED CONSOLE !!!!!ONLY #######
+#### THESE ARE FOR SELF HOSTED CONSOLE ONLY!!         #######
 #############################################################
 export TL_CONSOLE='<prisma cloud console URL including https and port if used>'
 export TL_RELEASE_URL='<from documentation for latest release>'
 export TL_LICENSE='<your long license string>'
 
 # SAMPLES
-TL_CONSOLE='https://myserver.com:8083'
-
+# export TL_CONSOLE='https://myserver.com:8083'
+# export TL_RELEASE_URL='https://cdn.twistlock.com/releases/adb3f009/prisma_cloud_compute_edition_20_04_169.tar.gz'
+ 
