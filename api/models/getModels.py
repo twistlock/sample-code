@@ -24,7 +24,7 @@ if  len(sys.argv) > 1:
 
 outFile += '.txt'
 
-print("Get token using: ", data)
+# print("Get token using: ", data)
 response = requests.post(api, json=data, verify=False)
 
 TOKEN = response.json()['token']
@@ -36,9 +36,9 @@ with requests.Session() as s:
     s.verify = True
 
     if searchOn:
-        print("Get all model profiles that match " + searchStr)
+        print("--- retrieving all model profiles that match " + searchStr)
     else:
-        print("Get all model profiles")
+        print("--- retrieving all model profiles")
         
     s.headers.update(HEADERS)
     api = url + '/api/v1/profiles/container'
@@ -57,7 +57,7 @@ with requests.Session() as s:
         
     idFile.close()
 
-print("Model ids written to file " + outFile)
+print("--- model ids written to file " + outFile)
        
 
 
