@@ -7,5 +7,5 @@ base='ciComplianceRules'
 file="$base.json"
 endpoint='policies/compliance/ci/images'
 
-../putDataREST $endpoint $file
+putDataREST $endpoint $file
 

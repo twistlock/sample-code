@@ -6,6 +6,6 @@ file="$base.json"
 endpoint='policies/runtime/container'
 
 # this should be left alone
-../getDataREST $endpoint $base $1 
+getDataREST $endpoint $base $1 
 
 

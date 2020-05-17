@@ -6,6 +6,6 @@ file="$base.json"
 endpoint='policies/firewall/network/container'
 
 # leave this alone
-../getDataREST $endpoint $base 
+getDataREST $endpoint $base 
 
 
