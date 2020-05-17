@@ -8,6 +8,6 @@ base='runtimeContainerRules'
 file="$base.json"
 endpoint='policies/runtime/container'
 
-../putDataREST $endpoint $file
+putDataREST $endpoint $file
 
 

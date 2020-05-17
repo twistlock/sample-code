@@ -7,5 +7,5 @@ base='deployedComplianceRules'
 file="$base.json"
 endpoint='policies/compliance/container'
 
-../putDataREST $endpoint $file
+putDataREST $endpoint $file
 
