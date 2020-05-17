@@ -1,0 +1,18 @@
+#!/bin/bash
+
+shopt -s nullglob
+for dir in *
+do
+  if [[ -d "${dir}" ]]; then
+    cd $dir
+    if [[ -f "putContainerRules" ]]; then
+      echo
+      echo "------ saving rules as json files in ${PWD} --------"  
+      ./putContainerRules$@  
+    fi
+    cd .. 
+  fi
+done
+
+
+
