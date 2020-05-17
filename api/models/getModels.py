@@ -3,11 +3,15 @@ import requests
 from requests.auth import HTTPBasicAuth
 import os, sys
 import simplejson as json
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.InsecureRequestWarning)
 
 url = os.environ['TL_CONSOLE']
 api = url + '/api/v1/authenticate'
 pw = os.environ['TL_USER_PW']
-data = {'username': '$TL_USER', 'password': pw}
+user = os.environ['TL_USER']
+data = {'username': user, 'password': pw}
 
 searchOn = False
 searchStr = ""
@@ -19,17 +23,17 @@ if  len(sys.argv) > 1:
     outFile += "-" + searchStr
 
 outFile += '.txt'
-    
-# print("Get token using username/password")
-response = requests.post(api, json=data)
 
-# print("format token")
+print("Get token using: ", data)
+response = requests.post(api, json=data, verify=False)
+
 TOKEN = response.json()['token']
 # print(TOKEN)
 bearer = "Bearer " + TOKEN
 HEADERS = {'content-type':'application/json', 'Authorization': bearer}
 
 with requests.Session() as s:
+    s.verify = True
 
     if searchOn:
         print("Get all model profiles that match " + searchStr)
@@ -40,7 +44,7 @@ with requests.Session() as s:
     api = url + '/api/v1/profiles/container'
     if searchOn:
         api += "?search=" + searchStr
-    response = s.get(api)
+    response = s.get(api, verify=False)
     print(response)
     idFile = open(outFile, 'w')
     first = True
