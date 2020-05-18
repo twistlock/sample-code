@@ -7,5 +7,6 @@ read -n 1 -p "Have you changed the passwords in user json file? (y/n)" answer
 echo 
 addUser operator
 addUser devops
+addUser dev
 
 
