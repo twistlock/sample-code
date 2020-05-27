@@ -46,6 +46,8 @@ The following rule fails the build if critical vulnerabilities are detected.
 If high severity vulns are found, they're simply reported.
 And to make the intelligence actionable, the rule only has affect if the vulnerabilities have vendor fixes.
 
+   <img width="900" alt="prisma_cloud_compute_vuln_rule" src="https://user-images.githubusercontent.com/6518946/83057385-745cf900-a01c-11ea-928f-da6855650a7f.png">
+
 3. In AWS, run the pipeline by clicking *Release Change*.
 
 4. In Prisma Cloud Console, review the results.
