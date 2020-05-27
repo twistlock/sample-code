@@ -50,5 +50,9 @@ And to make the intelligence actionable, the rule only has affect if the vulnera
 
 3. In AWS, run the pipeline by clicking *Release Change*.
 
+   <img width="1376" alt="aws_codepipeline_release_change" src="https://user-images.githubusercontent.com/6518946/83057678-df0e3480-a01c-11ea-9c5a-178c077aca31.png">
+
 4. In Prisma Cloud Console, review the results.
 In this build, my image was clean -- 0 vulns :)
+
+   <img width="1397" alt="prisma_cloud_compute_build_results" src="https://user-images.githubusercontent.com/6518946/83057757-f64d2200-a01c-11ea-8a6c-b4f2adc3739c.png">
