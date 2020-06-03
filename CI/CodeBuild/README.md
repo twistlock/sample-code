@@ -37,9 +37,11 @@ Be sure to create a CI User (the lowest privileged role) in Console specifically
 
 1. Enter the following commands in the `post_build` phase of your `buildspec.yml`:
 
-      - curl -k -u $TL_USER:$TL_PASS --output ./twistcli $TL_CONSOLE_URL/api/v1/util/twistcli
-      - chmod +x ./twistcli
-      - ./twistcli images scan --details -address $TL_CONSOLE_URL -u $TL_USER -p $TL_PASS $IMAGE_REPO_NAME:$IMAGE_TAG
+   ```
+   - curl -k -u $TL_USER:$TL_PASS --output ./twistcli $TL_CONSOLE_URL/api/v1/util/twistcli
+   - chmod +x ./twistcli
+   - ./twistcli images scan --details -address $TL_CONSOLE_URL -u $TL_USER -p $TL_PASS $IMAGE_REPO_NAME:$IMAGE_TAG
+   ```
 
 2. Set your vulnerability and compliance policy for the build in Prisma Cloud Console.
 The following rule fails the build if critical vulnerabilities are detected.
