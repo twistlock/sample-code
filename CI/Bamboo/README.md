@@ -15,5 +15,5 @@ PASSWORD=my_twistlock_users_password
 
 curl -u ${USER}:${PASSWORD} --output ./twistcli ${CONSOLE}/api/v1/util/twistcli
 chmod +x ./twistcli
-./twistcli images scan --address ${CONSOLE} -u ${USER} -p ${PASSWORD} --vulnerability-threshold low --compliance-threshold low my_image_created/in_the_previous:task
+./twistcli images scan --address ${CONSOLE} -u ${USER} -p ${PASSWORD} my_image_created/in_the_previous:task
 ```
