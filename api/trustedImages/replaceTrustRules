@@ -1,0 +1,12 @@
+#!/bin/bash
+  
+# You can change base or file (and endpoint if endpoint changes)
+base='trust'
+file="$base.json"
+endpoint='trust/data'
+
+# leave this alone
+putDataREST $endpoint $file
+
+
+
