@@ -1,0 +1,1 @@
+$.spec.template.spec.containers[*].ports[*].containerPort any equals 80
