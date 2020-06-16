@@ -1,0 +1,155 @@
+---
+id: policy-samples
+title: Sample Policies
+description: Sample Code from Prisma Cloud Compute
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import Link from "@docusaurus/Link";
+
+export function SetLanguage (lang) {
+  if (typeof window !== 'undefined'){
+    localStorage.setItem('defaultLanguage', lang)
+    window.location.reload()
+  }
+}
+
+## Choose a Language
+
+<a className="button button--primary" onClick={() => SetLanguage('rego')}>
+rego
+</a>&nbsp;
+<a className="button button--info" onClick={() => SetLanguage('json')}>
+json
+</a>&nbsp;
+
+## Policy Samples
+
+## Deny a Specific Container Image
+
+<Tabs
+defaultValue={typeof window !== 'undefined' && localStorage.getItem('defaultLanguage') ? localStorage.getItem('defaultLanguage') : 'rego'}
+values={[
+{ label: 'Rego', value: 'rego', },
+{ label: 'JSON', value: 'json', },
+]
+}>
+<TabItem value="rego">
+
+```bash
+match[{"msg": msg}] {
+    input.request.operation == "CREATE"
+    input.request.kind.kind == "Pod"
+    input.request.resource.resource == "pods"
+    input.request.object.spec.containers[_].image == "nginx"
+    msg := "It's not allowed to use the nginx Image!"
+}
+```
+
+</TabItem>
+
+<TabItem value="json">
+
+```bash
+$.spec.template.spec.containers[*].image equals nginx
+```
+
+</TabItem>
+</Tabs>
+
+## Deny Exposing a Specific Container Port
+
+<Tabs
+defaultValue={typeof window !== 'undefined' && localStorage.getItem('defaultLanguage') ? localStorage.getItem('defaultLanguage') : 'rego'}
+values={[
+{ label: 'Rego', value: 'rego', },
+{ label: 'JSON', value: 'json', },
+]
+}>
+<TabItem value="rego">
+
+```bash
+match[{"msg": msg}] {
+    input.request.operation == "CREATE"
+    input.request.kind.kind == "Pod"
+    input.request.resource.resource == "pods"
+    input.request.object.spec.containers[_].ports[_].containerPort == 80
+    msg := "It's not allowed to use port 80 (HTTP) with a Pod configuration!"
+}
+```
+
+</TabItem>
+
+<TabItem value="json">
+
+```bash
+$.spec.template.spec.containers[*].ports[*].containerPort any equals 80
+```
+
+</TabItem>
+</Tabs>
+
+## Deny Privilaged Pod
+
+<Tabs
+defaultValue={typeof window !== 'undefined' && localStorage.getItem('defaultLanguage') ? localStorage.getItem('defaultLanguage') : 'rego'}
+values={[
+{ label: 'rego', value: 'rego', },
+{ label: 'json', value: 'json', },
+]
+}>
+<TabItem value="rego">
+
+```bash
+match[{"msg": msg}] {
+input.request.operation == "CREATE"
+input.request.kind.kind == "Pod"
+input.request.resource.resource == "pods"
+input.request.object.spec.containers[_].securityContext.privileged
+msg := "Privileged pod created"
+}
+```
+
+</TabItem>
+
+<TabItem value="json">
+
+```bash
+$.spec.template.spec.containers[*].securityContext.privileged any true
+```
+
+</TabItem>
+
+</Tabs>
+
+
+## Deny Namespace Creation
+
+<Tabs
+defaultValue={typeof window !== 'undefined' && localStorage.getItem('defaultLanguage') ? localStorage.getItem('defaultLanguage') : 'rego'}
+values={[
+{ label: 'Rego', value: 'rego', },
+{ label: 'JSON', value: 'json', },
+]
+}>
+<TabItem value="rego">
+
+```bash
+match[{"msg": msg}] {
+    input.request.operation == "CREATE"
+    input.request.kind.kind == "Namespace"
+    msg := "It's not allowed to create new namespace!"
+}
+```
+
+</TabItem>
+
+<TabItem value="json">
+
+```bash
+Namespace object not supported in Prisma Cloud IaC
+```
+
+</TabItem>
+</Tabs>
