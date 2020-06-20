@@ -1,0 +1,15 @@
+
+result=$(twistcli images scan -u $TL_USER -p $TL_USER_PW --address $TL_CONSOLE \
+   --ci $1 | grep -v DATA)
+
+printf "%s\n" "$result"
+
+passfail=$(echo $result | grep -c "Scan failed due to")
+exit $passfail
+
+
+
+
+ 
+
+

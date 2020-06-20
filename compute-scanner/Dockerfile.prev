@@ -1,0 +1,8 @@
+FROM alpine
+RUN apk add --update docker openrc
+RUN rc-update add docker boot
+RUN apk add --no-cache curl
+RUN apk update && apk add bash
+COPY twistcli /usr/local/bin/twistcli
+COPY scanImage /usr/local/bin/scanImage
+RUN twistcli -v 
