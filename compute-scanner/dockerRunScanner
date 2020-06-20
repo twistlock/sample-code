@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cp setupEnv env-file
+sed -i 's/export //g' env-file 
+
+docker run -t --env-file ./env-file --name scanner \
+    -v /var/run/docker.sock:/var/run/docker.sock --rm \
+   prisma-image-scan:alpine sh /usr/local/bin/scanImage aws  

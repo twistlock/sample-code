@@ -1,0 +1,11 @@
+#!/bin/bash
+[ -z "$TL_CONSOLE" ] && echo "First run 'source setupEnv'" && exit 1
+
+if [ ! -f "twistcli" ]; then
+  ./download-twistcli linux 
+fi
+
+echo "Building Alpine based image with Linux version of twistcli image scanner"
+docker build -t prisma-image-scan:alpine .
+ 
+

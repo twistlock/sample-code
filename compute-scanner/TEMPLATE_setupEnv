@@ -1,0 +1,6 @@
+export TL_CONSOLE='https://<url with port if non SaaS>'
+export TL_USER=<CI user name>
+export TL_USER_PW=<CI user password>
+
+# leave this alone
+export TL_CONSOLE_API=$TL_CONSOLE/api/v1
