@@ -38,55 +38,18 @@
             "helpMarkDown": "Select the Twistlock end point to use. If needed, click on 'manage', and add a new service endpoint of type 'Twistlock server connection'"
         },
         {
-            "name": "vulnerabilityThreshold",
-            "type": "pickList",
-            "label": "Vulnerability Threshold",
-            "defaultValue": "high",
-            "required": true,
-            "options": {
-                "critical": "critical",
-                "high": "high",
-                "medium": "medium",
-                "low": "low"
-            },
-            "helpMarkDown": "Select minimum vulnerability threshold for failing the build on vulnerability checks"
-        },
-        {
-            "name": "onlyFixed",
-            "type": "boolean",
-            "label": "Only Fixed",
-            "defaultValue": "false",
-            "required": true,
-            "helpMarkDown": "Include only vulnerabilities with a fix"
-        },
-        {
-            "name": "gracePeriod",
-            "type": "number",
-            "label": "Grace Period (images only)",
-            "defaultValue": 0,
-            "required": true,
-            "helpMarkDown": "Grace period specifies the timeframe for which a vulnerability should be ignored (measured in days from first vendor publish)"
-        },
-        {
-            "name": "complianceThreshold",
-            "type": "pickList",
-            "label": "Compliance Threshold",
-            "defaultValue": "high",
-            "required": true,
-            "options": {
-                "critical": "critical",
-                "high": "high",
-                "medium": "medium",
-                "low": "low"
-            },
-            "helpMarkDown": "Select minimum compliance threshold for failing the build on compliance checks"
-        },
-        {
             "name": "artifact",
             "type": "string",
             "label": "Image/Function zip",
             "required": true,
             "helpMarkDown": "The ID or name of the container image to scan or filename of the serverless functions zip file"
+        },
+        {
+            "name": "httpProxy",
+            "type": "string",
+            "label": "Http Proxy",
+            "required": false,
+            "helpMarkDown": "The http proxy to be used by twistcli"
         }
     ],
     "execution": {

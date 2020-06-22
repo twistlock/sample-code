@@ -1,6 +1,6 @@
 {
   "name": "azure-pipelines-tasks-twistlock",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "This contains the Azure DevOps pipeline tasks to integrate twistcli functionality.",
   "main": "index.js",
   "scripts": {

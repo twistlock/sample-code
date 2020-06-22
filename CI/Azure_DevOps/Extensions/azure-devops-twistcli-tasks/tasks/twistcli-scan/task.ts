@@ -28,6 +28,11 @@ async function run() {
         // Construct twistcli command line.
         let twistcliPath: string = tl.which('twistcli', true);
         let twistcli = tl.tool(twistcliPath);
+
+        if (tl.getInput('httpProxy', false) !== null) {
+            twistcli.arg(['--http-proxy', tl.getInput('httpProxy', false)]);
+        }
+
         if (tl.getInput('scanType', true) === "serverless") {
             twistcli.arg("serverless");
         } else {
@@ -52,19 +57,6 @@ async function run() {
             tl.warning('The connection to the Twistlock console is insecure');
         }
 
-        // Set vulnerability configuration.
-        twistcli.arg(['--vulnerability-threshold', tl.getInput('vulnerabilityThreshold', true)]);
-        // --grace-period is only for container images
-        if (tl.getInput('scanType', true) === "images") {
-            twistcli.arg(['--grace-period', tl.getInput('gracePeriod', true)]);
-        }
-
-        if (tl.getBoolInput('onlyFixed', true)) {
-            twistcli.arg('--only-fixed');
-        }
-
-        // Set compliance configuration.
-        twistcli.arg(['--compliance-threshold', tl.getInput('complianceThreshold', true)]);
 
         // Set Twistlock console authentication configuration.
         twistcli.arg(['--user', twistlockServiceEndpointAuthorization.parameters.username]);
