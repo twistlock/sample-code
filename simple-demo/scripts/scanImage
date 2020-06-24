@@ -1,0 +1,46 @@
+#!/bin/bash
+
+(( $# < 1 )) && \
+  echo "Pass in a local image to scan and optionally twistcli image scan options." && \
+  echo "Run 'scanImage --help' to see available scan options." && exit -1
+
+[[ "$1" == "--help" ]] && twistcli images scan --help && exit 1
+
+params=""
+verbose=false
+image=""
+
+# params to twistcli includes image to scan as last one
+if [ "$1" == '-v' ]; then
+  image="$2"
+  params="${@:3}"
+  verbose=true
+else
+  image=$1
+  params="$@:2"
+fi
+
+SCAN="twistcli"
+[[ "$CRIO" == "true" ]] && image="localhost/$image" && \
+   SCAN="sudo $TL_DEMO_ROOT_FOLDER/scripts/twistcli"
+   
+# pass in v to get verbose print_msgs
+print_msg() {
+   [ "$verbose" == "true" ] && echo $1 
+} 
+
+print_msg "This only works with 20.04 hosted release and uses --ci flag"
+print_msg "scan results saved on $TL_CONSOLE/#!/monitor/vulnerabilities/images/ci"
+
+echo
+echo "------------ Utilizing twistcli to scan $image --------------------"
+result=$($SCAN images scan -u $TL_USER -p $TL_USER_PW --address $TL_CONSOLE \
+   --ci $image $params | grep -v DATA)
+
+printf "%s\n" "$result"
+
+result=$(echo $result | grep -c "Scan failed due to")
+
+echo "------------------ twistcli scan of $images complete --------------------"
+exit $result
+

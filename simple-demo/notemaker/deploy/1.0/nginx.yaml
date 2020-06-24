@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx 
+  namespace: notemaker
+spec:
+  selector:
+    app: nginx 
+    tier: web 
+  ports:
+    - port: 80
+      targetPort: 80 
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx 
+  namespace: notemaker
+  labels:
+    app: nginx 
+    tier: web 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx 
+      tier: web 
+  template:
+    metadata:
+      labels:
+        app: nginx 
+        tier: web 
+    spec:
+      containers:
+        - name: nginx 
+          image: notemaker/nginx:1.0
+          imagePullPolicy: Always 
+          ports:
+            - containerPort: 80 
+          env:
+            - name: MONGO_URL
+              value: mongodb://mongodb:27017/dev 
+

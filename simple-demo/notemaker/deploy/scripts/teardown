@@ -1,0 +1,10 @@
+
+[ "$#" -lt 1 ] && echo "You must enter '1.0' or '2.0'" && exit 1
+
+echo "destroying everything except PVC for mongodb"
+cd $1
+kubectl delete -f web-service.yaml
+kubectl delete -f performance-meter.yaml
+kubectl delete -f mongodb.yaml
+cd ..
+

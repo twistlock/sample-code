@@ -1,0 +1,21 @@
+#!/bin/bash
+
+[ "$#" -ne 2 ] && echo "You must pass in API endpoint and path to json data file" && exit -1
+[ -z $TL_CONSOLE_API ] && echo "You must setup environment variables such as TL_CONSOLE_API and TL_CONSOLE_USER" && exit -1
+
+endpoint=$1
+jsonFile=$2
+
+response=$(curl -sku $TL_USER:$TL_USER_PW -X PUT -H "Content-Type:application/json" \
+        $TL_CONSOLE_API/$endpoint --data-binary "@$jsonFile")
+
+
+[[ -n $response ]] && echo "ERROR OCCURRED" && echo $response && exit -1
+
+echo ">>> rules successfully replaced using $jsonFile"
+exit 0
+
+
+
+
+

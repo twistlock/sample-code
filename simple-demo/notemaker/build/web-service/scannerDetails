@@ -1,0 +1,13 @@
+#!/bin/bash
+clear
+
+echo  "SCRIPT PROVIDED BY SECURITY TO DEV/BUILD TEAM"
+echo "JUST A WRAPPER AROUND 'twistcli images scan'"
+echo "Uses security and compliance threshold set in Prisma Cloud Console"
+echo
+
+echo "--------------------------------------------------------"
+cat `which scanImage`
+echo "--------------------------------------------------------"
+
+

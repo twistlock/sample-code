@@ -1,0 +1,19 @@
+#!/bin/bash
+
+[ "$#" -lt 1 ] && echo "You must enter '1.0' or '2.0'" && exit -1 
+
+shopt -s nullglob
+for dir in *
+do
+  if [[ -d "${dir}" ]]; then
+    cd $dir
+    if [[ -f "modifyPatchNumber" ]]; then
+      echo
+      echo "------ slight modification of Dockerfile in ${PWD##*/} --------"  
+      ./modifyPatchNumber $@  
+    fi
+    cd .. 
+  fi
+done
+
+

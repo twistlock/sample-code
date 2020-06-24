@@ -1,0 +1,19 @@
+#!/bin/bash
+
+[ "$#" -lt 2 ] && echo "You must enter '1.0' or '2.0' and string with one or more of 'all|allsecure|build|scan|test|push'" && exit
+
+shopt -s nullglob
+for dir in *
+do
+  if [[ -d "${dir}" ]]; then
+    cd $dir
+    if [[ -f "buildRelease" ]]; then
+      echo
+      echo "------ building, testing, and pushing image in ${PWD##*/} --------"  
+      ./buildRelease $@  
+    fi
+    cd .. 
+  fi
+done
+
+

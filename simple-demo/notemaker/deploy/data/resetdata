@@ -1,0 +1,10 @@
+read -p "Are you sure you want to destroy the existing data in db? " -n 1 -r
+echo    # (optional) move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+  kubectl delete -f mongodb-pvc.yaml
+  sleep 10
+  kubectl create -f mongodb-pvc.yaml
+  echo "All data for mongodb has been reset - gone!"
+fi
+

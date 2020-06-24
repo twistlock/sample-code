@@ -1,0 +1,3 @@
+kubectl get events -n notemaker | grep monitor | grep Error
+
+

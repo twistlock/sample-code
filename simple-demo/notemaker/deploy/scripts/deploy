@@ -1,0 +1,30 @@
+#!/bin/bash
+
+[ "$#" -lt 1 ] && echo "You must enter '1.0' or '2.0' and optionally mongo|nginx|web|perf" && exit 1
+
+# if no 2nd parameter passed in, deploy all
+[ "$#" -eq 1 ] && op=mongonginxwebperf
+[ "$#" -eq 2 ] && op=$2
+
+echo "Deploying Notemaker on openshift using project 'notemaker'"
+echo; echo "Deploying version $1 of Note Maker application"
+echo "Leveraging existing storage"
+
+cd $1
+[[ "$op" == *"mongo"* ]] && kubectl apply -f mongodb.yaml
+sleep 10
+[[ "$op" == *"perf"* ]] && kubectl apply -f performance-meter.yaml
+sleep 10
+
+if [[ "$op" == *"web"* ]]; then
+  kubectl apply -f web-service.yaml
+  sleep 5
+fi
+if [[ "$op" == *"nginx"* ]]; then
+  kubectl apply -f nginx.yaml
+  ../scripts/waitsvc nginx 
+  ip=$(kubectl get svc -n notemaker | grep nginx | awk '{print $4}')
+  echo "Use browser to create some notes at http://$ip to generate runtime models"   
+fi
+cd ..
+

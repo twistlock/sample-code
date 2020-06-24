@@ -1,0 +1,27 @@
+#!/bin/bash
+
+echo "Make sure proper version of twistcli is in your PATH or add a full path below"
+echo "For scanning user only needs CI Role; for API POST, operator or admin role"
+
+export TL_DEMO_ROOT_FOLDER='<git repo notemaker base>'
+# SAMPLE:  export TL_DEMO_ROOT_FOLDER='/var/home/core/git-repos/notemaker-demo'
+
+export PATH=$TL_DEMO_ROOT_FOLDER/scripts:./scripts:$PATH
+export TL_USER='<user with proper privs>' > /dev/null
+export TL_USER_PW='<changeme>' > /dev/null
+export TL_CONSOLE='<openshift route to Compute Console>' > /dev/null
+# SAMPLE: export TL_CONSOLE='https://twistlock-console-twistlock.apps.yossi-ocp43.ose43.authnfox.com' 
+export TL_CONSOLE_API="$TL_CONSOLE/api/v1" > /dev/null
+export CRIO="true"
+
+read -p "Do you want to download the latest version of twistcli(y/n)? " -n 1 -r
+echo
+[[ $REPLY =~ [Yy]$ ]] && download-twistcli
+mv twistcli $TL_DEMO_ROOT_FOLDER/scripts
+twistcli -v
+
+echo "Using OpenShift4 version of Prisma Cloud Notemaker Demo wth twistcli in PATH"
+echo "these environment variables have been setup in addition to TL_USER_PW: "
+env | grep TL | grep -v PW
+
+

@@ -1,0 +1,10 @@
+echo "Waiting for $1 service to come up"
+ready=""
+while [ -z "$ready" ]; do
+  sleep 6
+  status=$(kubectl get svc -n notemaker | grep $1 )
+  echo $status
+  ready=$(echo "$status" | grep -v pending)
+done
+
+

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+release='1.0'
+[ "$#" -eq 1 ] && release=$1 
+
+grep FROM $release/Dockerfile
+
+
+

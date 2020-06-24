@@ -1,0 +1,19 @@
+#!/bin/bash
+
+[ "$#" -lt 1 ] && echo "You must enter '1.0' or '2.0' and optionally pass in  'secure'" && exit
+
+shopt -s nullglob
+for dir in *
+do
+  if [[ -d "${dir}" ]]; then
+    cd $dir
+    if [[ -f "testForCommitReadiness" ]]; then
+      echo
+      echo "------ building and running commit readiness tests in ${PWD##*/} --------"  
+      ./testForCommitReadiness $@  
+    fi
+    cd .. 
+  fi
+done
+
+
