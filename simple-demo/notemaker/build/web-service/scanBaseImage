@@ -1,0 +1,13 @@
+#!/bin/bash
+
+release='1.0'
+[ "$#" -eq 1 ] && release=$1 
+
+base=$(grep FROM $release/Dockerfile | awk '{ print $2 }')
+
+scanImage $base
+
+
+
+
+

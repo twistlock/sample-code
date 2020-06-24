@@ -1,0 +1,11 @@
+echo "Events tied to namespace:"
+show events
+
+echo 
+echo "Events not tied to any namespace:"
+kubectl get events 
+
+echo
+
+
+

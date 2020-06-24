@@ -1,0 +1,30 @@
+#!/bin/bash
+
+[ "$#" -lt 1 ] && echo "You must enter '1.0' or '2.0' and optionally mongo|web|perf" && exit 1
+
+alias kubectl=oc
+oc project notemaker > /dev/null
+
+# if no 2nd parameter passed in, deploy all
+[ "$#" -eq 1 ] && op=mongowebperf
+[ "$#" -eq 2 ] && op=$2
+
+echo; echo "Deploying version $1 of Note Maker application"
+echo "Leveraging existing storage"
+
+cd $1
+[[ "$op" == *"mongo"* ]] && kubectl apply -f mongodb.yaml
+sleep 10
+[[ "$op" == *"perf"* ]] && kubectl apply -f performance-meter.yaml
+sleep 10
+if [[ "$op" == *"web"* ]]; then
+  kubectl apply -f oc-web-service.yaml
+  sleep 10
+  echo "Creating route to web-service"
+  oc expose svc/web-service
+  weburl=$(oc get route | grep web | awk '{ print $2 }')
+  echo "Browse to $weburl and create some notes to populate runtime models"
+fi
+cd ..
+
+echo "Notemaker deployed"

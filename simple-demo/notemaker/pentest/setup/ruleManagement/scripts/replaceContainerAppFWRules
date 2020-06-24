@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# You can change base or file (and endpoint if endpoint changes)
+base='containerAppFWRules'
+file="$base.json"
+endpoint='policies/firewall/app/container'
+
+# leave this alone
+putDataREST $endpoint $file 
+

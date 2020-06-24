@@ -1,0 +1,23 @@
+#!/bin/bash
+
+
+case "$OSTYPE" in
+
+  darwin*)
+    echo "Downloading osx version of twistcli, please be patient" 
+    curl -o twistcli -sku $TL_USER:$TL_USER_PW $TL_CONSOLE_API/util/osx/twistcli 
+    chmod +x twistcli
+    ;;
+  
+  linux*)
+        echo "Downloading Linux version of twistcli, please be patient"
+    curl -o twistcli -sku $TL_USER:$TL_USER_PW $TL_CONSOLE_API/util/twistcli 
+    chmod +x twistcli
+    ;;
+  
+  *)        echo "unknown: $OSTYPE" ;;
+
+esac
+
+
+

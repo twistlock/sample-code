@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: performance-meter 
+  namespace: notemaker
+  labels:
+    app: notemaker
+    tier: database 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notemaker
+      tier: database 
+  template:
+    metadata:
+      labels:
+        app: notemaker
+        tier: database 
+    spec:
+      containers:
+      - name: performance-meter 
+        image: notemaker/performance-meter:1.0
+        imagePullPolicy: Always
+        env:
+          - name: MONGO_HOST
+            value: "mongodb"
+          - name: PERIOD
+            value: "300"
+
+

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+[ "$#" -lt 1 ] && echo "You must enter '1.0' or '2.0' and optionally mongo|nginx|web|perf" && exit 1
+
+[ "$#" -eq 1 ] && op=mongonginxwebperf 
+[ "$#" -eq 2 ] && op=$2
+
+echo; echo "Redeploying version $1 of Note Maker application"
+echo "Leveraging existing storage"
+
+cd $1
+[[ "$op" == *"mongo"* ]] && kubectl delete -f mongodb.yaml
+[[ "$op" == *"nginx"* ]] && kubectl delete -f nginx.yaml
+[[ "$op" == *"web"* ]] && kubectl delete -f web-service.yaml
+[[ "$op" == *"perf"* ]] && kubectl delete -f performance-meter.yaml
+sleep 10
+cd ..
+
+pwd
+echo $PATH
+
+deploy $@
+
+

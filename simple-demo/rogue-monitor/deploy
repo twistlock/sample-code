@@ -1,0 +1,11 @@
+#!/bin/bash
+
+kubectl create -f monitor.yaml
+
+kubectl get svc -n notemaker -w
+
+sleep 5
+
+kubectl get pods -n notemaker | grep monitor
+
+

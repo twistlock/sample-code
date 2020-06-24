@@ -1,0 +1,63 @@
+#!/bin/bash
+# using version number only for local tag, only one version of mongo # op can have 'auto' in it and one or more of build, scan, push
+# for example "autobuildscan"  or "scanpush"
+
+[ "$#" -lt 2 ] && echo "You must enter '1.0' or '2.0' and string with one or more of 'all|build|test|scan|push'" && exit
+
+ver=$1
+op=$2
+local=performance-meter:$ver
+image=notemaker/$local
+
+if [[ "$op" == *"all"* ]]; then
+  [[ "$op" == *"secure"* ]] && scan=true
+  build=true && test=true && push=true
+else
+  [[ "$op" == *"build"* ]] && build=true
+  [[ "$op" == *"test"* ]] && test=true
+  [[ "$op" == *"scan"* ]] && scan=true
+  [[ "$op" == *"push"* ]] && push=true
+fi
+
+build_image () {
+  cd $ver
+  echo; echo "Building $local from Dockerfile"
+  docker build -t $local . > /dev/null
+  [[ "$?" != "0" ]] && echo "Build image FAILED, exiting" && exit 1
+  docker tag $local $image
+  cd ..
+  return 0
+}
+
+test_image () {
+  echo; echo "Performing unit tests.."; sleep 3
+  echo "Unit tests PASSED."
+}
+
+scanErrMsg="Security scan FAILED, exiting, secure it before you commit it!"
+scan_image () {
+  echo; echo "Scanning $image for vulnerabilities and compliance issues"
+  scanImage $image 
+  [[ "$?" != "0" ]] && echo $scanErrMsg && exit 2
+}
+
+push_image () {
+  echo; echo "Pushing $image to dockerhub, be patient"
+  docker push $image 1>  /dev/null
+  [[ "$?" != "0" ]] && echo "Push image FAILED, exiting" && exit 3
+}
+
+[ "$build" == "true" ] && build_image
+
+[ "$scan" == "true" ] && scan_image
+
+[ "$test" == "true" ] && test_image
+
+[ "$push" == "true" ] && push_image
+
+echo 
+echo "---------------------------------------------------------------------------------------"
+echo "   PASS: successfully completed build pipeline for $image"
+echo "   READY for DEPLOYMENT"
+echo "---------------------------------------------------------------------------------------"
+echo

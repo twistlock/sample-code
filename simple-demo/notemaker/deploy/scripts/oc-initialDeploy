@@ -1,0 +1,20 @@
+#!/bin/bash
+[ "$#" -lt 1 ] && echo "You must enter '1.0' or '2.0'" && exit 1
+
+alias kubectl=oc
+
+echo; echo "Initial deploy of version $1 of Note Maker application into an OpenShift cluster"
+
+echo "Creating namespace(project) and storage"
+kubectl create ns notemaker 
+kubectl create -f data/mongodb-pvc.yaml
+kubectl create -f data/web-service-pvc.yaml
+
+sleep 10
+
+oc-deploy $1
+
+
+
+
+

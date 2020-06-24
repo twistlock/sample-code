@@ -1,0 +1,3 @@
+buildReleaseAll $1 allsecure | egrep -i 'fail|pass'
+
+

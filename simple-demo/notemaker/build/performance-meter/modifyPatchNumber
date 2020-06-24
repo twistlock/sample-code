@@ -1,0 +1,9 @@
+#!/bin/bash
+
+[ "$#" -lt 1 ] && echo "You must enter '1.0' or '2.0'" && exit
+
+cd $1
+sed -i 's/LABEL patch="1/LABEL patch="1.1/' Dockerfile
+cd ..
+
+

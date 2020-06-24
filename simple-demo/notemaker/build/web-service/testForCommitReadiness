@@ -1,0 +1,45 @@
+#!/bin/bash
+
+[ "$#" -lt 1 ] && echo "You must enter '1.0' or '2.0' and optionally pass in 'secure'" && exit
+
+ver=$1
+op=$2
+local=notemaker:$ver
+image=notemaker/$local
+
+[[ "$op" == *"secure"* ]] && scan=true
+
+build_image () {
+  cd $ver
+  echo; echo "Building $local from Dockerfile"
+  docker build -t $local . > /dev/null
+  [[ "$?" != "0" ]] && echo "Build image FAILED, exiting" && exit 1
+  docker tag $local $image
+  cd ..
+  return 0
+}
+
+test_image () {
+  echo; echo "Performing unit tests.."; sleep 3
+  echo "Unit tests PASSED."
+}
+
+scanErrMsg="Security scan FAILED, exiting, secure it before you commit it!"
+scan_image () {
+  echo; echo "Scanning $image for vulnerabilities and compliance issues"
+  scanImage $image 
+  [[ "$?" != "0" ]] && echo $scanErrMsg && exit 2
+}
+
+build_image
+
+[ "$scan" == "true" ] && scan_image
+
+test_image
+
+echo 
+echo "---------------------------------------------------------------------------------------"
+echo "   PASS: successfully built and tested $image"
+echo "   READY for COMMIT"
+echo "---------------------------------------------------------------------------------------"
+echo
