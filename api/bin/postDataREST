@@ -6,12 +6,12 @@
 endpoint=$1
 jsonFile=$2
 
-response=$(curl -sku $TL_USER:$TL_USER_PW -X PUT -H "Content-Type:application/json" \
+response=$(curl -sku $TL_USER:$TL_USER_PW -X POST -H "Content-Type:application/json" \
         $TL_CONSOLE_API/$endpoint --data-binary "@$jsonFile")
 
 [[ -n $response ]] && echo "ERROR OCCURRED" && echo $response && exit -1
 
-echo ">>> PUT successfully executed using $jsonFile"
+echo ">>> POST successfully executed using $jsonFile"
 exit 0
 
 
