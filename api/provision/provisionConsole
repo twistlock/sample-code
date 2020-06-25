@@ -24,7 +24,7 @@ sleep 2
 
 ./installLicense
 
-./addMorUsers
+./addMoreUsers
 
 echo "Installation complete, log in to $TL_CONSOLE with credentials as show by running 'env | grep TL_USER'"
 
