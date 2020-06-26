@@ -2,6 +2,6 @@
 
 **deploy** - allows one to deploy a simple multi-tier application into your kubernetes cluster - this is a note taking application
 
-**pentest** - provides for container focused pentesting on notemaker application - launching attacks on process/filesystem/network as well as layer7 attacks on notemaker/web-service
+**pentest** - provides for container focused pentesting on notemaker application - launching inside container attacks on process/filesystem/network as well as layer7 attacks on notemaker/web-service
 
 
