@@ -1,4 +1,4 @@
-## Prisma Cloud NoteMaker Simple as Possible Demo (SAP)
+## Prisma Cloud Compute Simple Demo
 
 ### Prerequisites
 1. You have setup a kubernetes or Openshift cluster and have kubectl or oc project access to your cluster
@@ -20,13 +20,13 @@
     
 7. Container focused pen tests are in notemaker/pentest, check README.md file at that location for instructions 
 
-### Recording of SAP Demo available
+### Recording of Simple Demo available
  https://paloaltonetworks.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=4e4bd448-849e-4be7-ab7b-abc80016ac99
 
-### How to leverage SAP Demo to demo all core features in Prisma Cloud Compute
+### How to leverage Simple Demo to demo all core features in Prisma Cloud Compute
 Consider a typical CI/CD pipeline - Dev, Build, Share (registry), Test, Deploy
 
-Using a command shell that has kubectl access to your cluster (or oc)
+#### Using a command shell that has kubectl access to your cluster (or oc)
 * Dev - cd to {ROOT_FLDR}/notemaker/build, run `testForCommitRediness secure`
 * Build - cd to /build, run `buildReleaseAll 1.0 allsecure`
 * Share - connect notemaker* registry to your Prisma Cloud Console
