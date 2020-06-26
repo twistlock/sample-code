@@ -20,6 +20,9 @@
     
 7. Container focused pen tests are in notemaker/pentest, check README.md file at that location for instructions 
 
+### PowerPoint Presentation
+https://docs.google.com/presentation/d/1voPH0H9uaz98DH8_LEcE4DLFVPMmmA4e3zsoU71x4gA/edit#slide=id.g8812de11a9_3_0
+
 ### Recording of Simple Demo available
  https://paloaltonetworks.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=4e4bd448-849e-4be7-ab7b-abc80016ac99
 
