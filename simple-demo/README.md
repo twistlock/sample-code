@@ -3,7 +3,7 @@
 ### Prerequisites
 1. You have setup a kubernetes or Openshift cluster and have kubectl or oc project access to your cluster
 2. You have installed Prisma Cloud DefenderDS into your cluster
-3. Your kubernetes environment supports LoadBalancer services (non Openshift)
+3. Your kubernetes environment supports LoadBalancer services (non Openshift) and the the ability to provision a PVC
 3. For OpenShift4 using RHCOS, create a soft link in your exe path so that docker will execute podman
 
 ### Setup
