@@ -31,6 +31,7 @@ Consider a typical CI/CD pipeline - Dev, Build, Share (registry), Test, Deploy
 * Build - cd to /build, run `buildReleaseAll 1.0 allsecure`
 * Share - connect notemaker* registry to your Prisma Cloud Console
 * Test/Deloy
+   - deploy **see Setup for deployment**
    - show security posture with runtime radar and Monitor/Vulnerabilities/VulnerabilityExplorer
    - cd to {ROOT_FLDER}/notemaker/pentest to show durability of deployment by running conatinerized pentests - see README.md in that folder for instructions 
 
