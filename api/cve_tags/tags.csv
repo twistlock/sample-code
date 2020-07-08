@@ -1,0 +1,3 @@
+tag,cve,packageName,comment,timeAdded
+testing-High,CVE-2020-12243,openldap,,
+testing-Critical,CVE-2020-12399,nss,My comment,
