@@ -9,11 +9,11 @@ The admission controller policies are written in Rego.
 Admission controller policies are evaluated at the moment apps are put in production.
 
 Here we show examples of policies written in JSON, and the equivalent policies written in Rego.
-They're designed to do the same thing, just at different points.
+They're designed to do the same thing, just at different points in the app lifecycle.
 
 The policies are:
 
-* Deny specific container images.images.
-* Deny exposing specific container ports (for example, deny all apps that open port 80 for unsecured HTTP traffic).
+* Deny specific container images.
+* Deny containers from exposing specific ports (for example, deny all apps that open port 80 for unsecured HTTP traffic).
 * Deny privileged pods.
-* Deny namespace creation.
+* Deny namespaces from being created.
