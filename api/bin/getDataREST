@@ -4,7 +4,7 @@
 
 endpoint=$1
 jsonfile=$2.json
-response=$(curl -o $jsonfile -sku $TL_USER:$TL_USER_PW $TL_CONSOLE_API/$endpoint) 
+response=$(curl -o $jsonfile -vku $TL_USER:$TL_USER_PW $TL_CONSOLE_API/$endpoint) 
 success=$(cat $jsonfile | egrep -c 'rule|username')
 
 if [[ "$success" == "0" ]]; then
