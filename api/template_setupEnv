@@ -11,9 +11,10 @@ export PATH={$PWD}/bin:.:$PATH
 # leave this one alone
 export TL_CONSOLE_API="$TL_CONSOLE/v1/api"
 
-# SAMPLES 
+# SAMPLES
 # SaaS console URL can be found by browsing to COMPUTE/Manage/System/Downloads/"Path to Console"
 # SaaS console TL_CONSOLE_API='https://us-east1.cloud.twistlock.com/pandemoapp2-XXXX'
+# for Saas  TU_USER is access key and TL_USER_PW is associated secret
 # TL_RELEASE='20.04.163'
 
 #############################################################
