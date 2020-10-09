@@ -48,11 +48,11 @@ file.
 
 Overriding these defaults is as simple as setting the desired values in the CR
 spec. In our case we just have to override this value by replacing the string
-`<REPLACE_TWISTLOCK_TOKEN>` with your token. Save the deploy/0_8_crds/8_charts_v1alpha1_twistlockconsole_cr.yaml
-file, then you're ready to apply it as the last step.
+`<REPLACE_TWISTLOCK_TOKEN>`,with your token and <CONSOLE_VERSION>, with the latest version from docs.twistlock.com. specify like: 20_09_345>. 
+Save the deploy/0_8_crds/8_charts_v1alpha1_twistlockconsole_cr.yaml file, then you're ready to apply it as the last step.
 
 ```sh
-consoleImageName: registry-auth.twistlock.com/tw_<REPLACE_TWISTLOCK_TOKEN>/twistlock/console:console_20_04_163
+consoleImageName: registry-auth.twistlock.com/tw_<REPLACE_TWISTLOCK_TOKEN>/twistlock/console:console_<CONSOLE_VERSION>
 ``` 
 
 The other option to choose is whether we're on OpenShift, since Kubernetes is the default. If on OpenShift, be sure to add these lines to your CR spec as well:
