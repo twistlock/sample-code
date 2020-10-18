@@ -1,9 +1,0 @@
-# for Prisma Cloud Demo 2  
-export PC_CONSOLE_API='https://api2.prismacloud.io'
-export TL_CONSOLE_API=https://us-east1.cloud.twistlock.com/pandemoapp2-1234/api/v1
-export TL_CONSOLE=https://us-east1.cloud.twistlock.com/pandemoapp2-1234
-export TL_DEMO_ROOT_FOLDER=/Users/mbarker/git-repo-notemaker/notemaker-demo
-export TL_USER=126cd4b3-d69e-4efc-86bf-023ea21bd957
-export TL_USER_PW=4TBAigtbJC9rLpvSKOhmePrL+EI=
-
-
