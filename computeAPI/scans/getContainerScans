@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ "$#" -gt 0 ]; then
+   echo "retrieving container scan reports for images with $1 in name"
+   curl -sku $TL_USER:$TL_USER_PW -o $1_containers.json "$TL_CONSOLE_API/containers?search=$1"
+else
+  echo "retrieving all container scan reports"
+  curl -sku $TL_USER:$TL_USER_PW -o containers.json "$TL_CONSOLE_API/containers"
+fi
+
+

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+[ "$#" -ne 1 ] && echo "You must pass in json file base name to store results" && exit -1
+
+base=$1
+file="$base.json"
+
+
+echo "Retriving all users and saving results to $jsonFile"
+getDataREST users $base
+
+[ "$?" != 0 ] && echo "Some problem occurred, exiting" && exit $?
+
+echo "Successfully retrieved all users."
+exit 0
+
+
+
+

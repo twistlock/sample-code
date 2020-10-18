@@ -1,0 +1,17 @@
+curl -v -k \
+  -u $TL_USER:$TL_USER_PW \
+  -H 'Content-Type: application/json' \
+  POST \
+  -d '{"key": "'"$TL_LICENSE"'"}' \
+  $TL_CONSOLE_API/settings/license
+
+status=$?
+
+if [ $status -eq 0 ]
+then
+  echo "Successfully installed license"
+else
+  echo "License install failed, $status"
+fi
+
+

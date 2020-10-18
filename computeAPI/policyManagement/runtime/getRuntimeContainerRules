@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# You can change base or file (and endpoint if endpoint changes)
+base='runtimeContainerRules'
+file="$base.json"
+endpoint='policies/runtime/container'
+
+# this should be left alone
+getDataREST $endpoint $base $1 
+
+

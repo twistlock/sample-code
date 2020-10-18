@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# You can change base or file (and endpoint if endpoint changes)
+base='networkFWRules'
+file="$base.json"
+endpoint='policies/firewall/network/container'
+
+# leave this alone
+putDataREST $endpoint $file 
+

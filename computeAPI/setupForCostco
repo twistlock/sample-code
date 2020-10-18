@@ -1,0 +1,23 @@
+# modify these, take out brackets
+# use access code for TL_USER and access code secret for TL_USER_PW when using SaaS
+# you can create access codes on your SaaS console at Settings/Access Keys
+
+export TL_RELEASE=''
+export TL_USER='978eeff8-c365-46d1-b583-4dcb2df7d402'
+export TL_USER_PW='OrWhf7QXL7dMAIFHKbztNi1xsFg='
+export TL_CONSOLE_API='https://us-west1.cloud.twistlock.com/us-3-159242928/api/v1'
+export PATH={$PWD}/bin:.:$PATH
+
+# SAMPLES 
+# SaaS console URL can be found by browsing to COMPUTE/Manage/System/Downloads/"Path to Console"
+# SaaS console TL_CONSOLE_API='https://us-east1.cloud.twistlock.com/pandemoapp2-XXXX/api/v1'
+# TL_RELEASE='20.04.163'
+
+#############################################################
+####           FOR SELF HOSTED CONSOLE ONLY!!         #######
+#############################################################
+export TL_CONSOLE='<prisma cloud console URL including https and port if used>'
+
+# SAMPLE
+# export TL_CONSOLE='https://myserver.com:8083'
+ 

@@ -1,0 +1,22 @@
+#!/bin/bash
+
+[ -z "$TL_RELEASE_BITS" ] && echo "You must setup environment first and define TL_RELEASE_BITS and others" && exit -1
+
+[ ! -d "$TL_INSTALLATION_ROOT" ] && \
+  echo "You must define TL_INSTALLATION_ROOT and create $TL_INSTALLATION_ROOT manually before installation" && exit -2 
+
+installFolder=$TL_INSTALLATION_ROOT/$TL_RELEASE
+mkdir -p $installFolder 
+pushd $installFolder > /dev/null
+
+echo "Downloading Prisma Cloud Compute release in folder $installFolder"
+wget -q $TL_RELEASE_BITS
+cat version.txt 
+
+rm prisma_cloud_compute_edition*.tar.gz
+
+popd > /dev/null
+
+echo "Download complete"
+
+

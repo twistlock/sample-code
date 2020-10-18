@@ -1,0 +1,86 @@
+{
+  "policy": {
+    "_id": "trust",
+    "enabled": true,
+    "rules": [
+      {
+        "modified": "2020-07-29T15:25:23.101Z",
+        "owner": "admin",
+        "name": "Trust kubernetes and notemaker",
+        "previousName": "",
+        "allowedGroups": [
+          "Artifactory",
+          "Twistlock",
+          "Kubernetes",
+          "Notemaker"
+        ],
+        "resources": {
+          "hosts": [
+            "*"
+          ]
+        },
+        "effect": "alert",
+        "blockMsg": "Not trusted"
+      },
+      {
+        "modified": "2020-06-25T13:19:57.535Z",
+        "owner": "system",
+        "name": "Default - alert all",
+        "previousName": "",
+        "resources": {
+          "hosts": [
+            "*"
+          ]
+        },
+        "effect": "alert"
+      }
+    ]
+  },
+  "groups": [
+    {
+      "_id": "Kubernetes",
+      "modified": "2020-07-29T15:07:01.858Z",
+      "owner": "admin",
+      "name": "",
+      "previousName": "",
+      "images": [
+        "k8s.gcr.io/*",
+        "gcr.io/*",
+        "gke.gcr.io/*",
+        "gke.gcr.io/prom*"
+      ]
+    },
+    {
+      "_id": "Notemaker",
+      "modified": "2020-07-29T15:21:25.774Z",
+      "owner": "admin",
+      "name": "",
+      "previousName": "",
+      "images": [
+        "notemaker/*",
+        "matthewabq/*"
+      ]
+    },
+    {
+      "_id": "Artifactory",
+      "modified": "2020-07-29T14:49:50.985Z",
+      "owner": "admin",
+      "name": "",
+      "previousName": "",
+      "images": [
+        "docker.bintray.io/jfrog/artifactory-pro:*"
+      ]
+    },
+    {
+      "_id": "Twistlock",
+      "modified": "2020-07-29T15:30:13.75Z",
+      "owner": "admin",
+      "name": "",
+      "previousName": "",
+      "images": [
+        "registry-auth.twistlock.com/*",
+        "twistlock/private:*"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# '{"username": "$TL_USER", "password": "'"$TL_USER_PW"'"}'
+
+
+
+#  json_payload='{"tag":{"registry":"docker.io","repo":"my_dockerhub_repo/my_image_name","tag":"myTag"}}'
+
+tag="latest"
+if [ "$#" -gt 0 ]; then
+   if [ "$#" -gt 1 ]; then
+      tag=$2
+   fi
+   echo "Scanning image $1 in registry"
+   json_payload='{"tag":{"registry":"docker.io","repo":"'"$1"'","tag":"'"$tag"'"}}'
+   curl POST -vu $TL_USER:$TL_USER_PW \
+      -H 'Content-Type: application/json' -d $json_payload \
+      "$TL_CONSOLE_API/registry/scan"
+else
+   echo "nothing"
+fi
+

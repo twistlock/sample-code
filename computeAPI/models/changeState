@@ -1,0 +1,65 @@
+#!/bin/bash
+
+function usage()
+{
+    echo "Usage: 'changeState {manualRelearning|manualLearning|manualActive} {<fileName>|<imageName>}'"
+    exit
+}
+
+if [ "$#" -eq 2 ]; then
+   if [ "$1" != manualRelearning -a "$1" != manualLearning -a "$1" != manualActive ]; then
+     usage
+   fi
+else
+   usage
+fi
+
+state=$1
+if [ -e "$2" ]; then
+  fileName=$2
+else
+  imageName=$2
+fi
+
+
+echo $fileName
+
+if [ -e "$fileName" ]; then
+  echo "Changing state of all models listed in file $fileName"
+  while IFS='' read -r id || [[ -n "$id" ]]; do
+     curl -sku $TL_USER:$TL_USER_PW -H 'Content-Type: application/json' \
+         POST -d '{"state":"'"$state"'"}' \
+         $TL_CONSOLE_API/profiles/container/$id/learn
+     echo "Set model $id to $state"
+  done < "$fileName"
+  exit
+fi
+
+# echo "Changing state of model associated with passed in model"
+
+id=$(curl -v -sku $TL_USER:$TL_USER_PW $TL_CONSOLE_API/profiles/container?search=$imageName | jq . | grep '_id' | awk -F '"' '{print $4}')
+
+if [ -z "$id" ]; then
+  echo "Could not find image {$imageName} or some other error occurred!"
+  exit
+fi
+
+url="$TL_CONSOLE_API/profiles/container/$id/learn"
+# echo $url
+
+curl -v -sku $TL_USER:$TL_USER_PW -H 'Content-Type: application/json' \
+  POST -d '{"state":"'"$state"'"}' \
+  $TL_CONSOLE_API/profiles/container/$id/learn
+
+status=$?
+if [ $status -eq 0 ]; then
+  echo "Model for image $imageName set to $state"
+else
+  echo "Error: rerun curl command with -v flag instead of -s to see error"
+fi
+
+
+
+
+
+

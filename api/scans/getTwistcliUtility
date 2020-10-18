@@ -1,9 +1,0 @@
-curl -sku $TL_USER:$TL_USER_PW -o twistcli \
-     "$TL_CONSOLE_API/util/twistcli" 
-
-chmod +x twistcli
-
-./twistcli -v
-
-
-

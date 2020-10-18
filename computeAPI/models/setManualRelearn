@@ -1,0 +1,28 @@
+#!/bin/bash
+echo "This script requires utility jq"
+
+if [ "$#" -ne 1 ]; then
+   echo "You must pass in an image name to set manual learning on"
+   exit 
+fi
+
+rtprofile=$(curl -sku $TL_USER:$TL_USER_PW $TL_CONSOLE_API/profiles/container?search=$1 | jq . | grep '_id' | awk -F '"' '{print $4}')
+
+if [ -z "$rtprofile" ]; then
+  echo "Could not find image {$1} or some other error occurred!"
+  exit
+fi
+
+curl -sku $TL_USER:$TL_USER_PW -H 'Content-Type: application/json' \
+  POST -d '{"state":"manualRelearning"}' \
+  $TL_CONSOLE_API/profiles/container/$rtprofile/learn
+
+
+status=$?
+if [ $status -eq 0 ]
+then
+  echo "Model for image $1 set to manualRelearn"
+else
+  echo "Error: rerun curl command with -v flag instead of -s to see error"
+fi
+

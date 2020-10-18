@@ -1,0 +1,15 @@
+#!/bin/bash
+  
+[ -z "$TL_RELEASE_URL" ] && echo "You must setup environment first and define TL_RELEASE_URL" && exit -1
+
+installFolder=$TL_INSTALL_ROOT_FOLDER/$TL_RELEASE_URL
+
+if [ ! -d "$installFolder" ]; then
+   echo "You must first run 'downloadSoftware'"
+else
+  cd $installFolder
+  sudo ./twistlock.sh -ys console
+  cd ..
+fi
+
+

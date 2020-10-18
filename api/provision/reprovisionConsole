@@ -1,7 +1,0 @@
-#!/bin/bash
-
-uninstallConsole
-
-sleep 3
-
-provisionConsole

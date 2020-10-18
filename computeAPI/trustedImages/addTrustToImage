@@ -1,0 +1,20 @@
+#!/bin/bash
+
+if [ "$#" -lt 2 ]; then
+   echo "Usage addTrust <image_name or id> <trust_group>"
+   exit 1
+fi
+
+image=$1
+group=$2
+
+echo "Assigning trust to image $image with trust group $group"
+curl -sku $TL_USER:$TL_USER_PW \
+  -H 'Content-Type: application/json' \
+  -X PUT \
+  -d '{"image":"$image", "_id":"alpine"}' \
+  "$TL_CONSOLE_API/trust/$image"
+ 
+
+
+

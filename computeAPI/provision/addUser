@@ -1,0 +1,19 @@
+#!/bin/bash
+
+[ "$#" -ne 1 ] && echo "You must pass in user name which matches json file base name" && exit -1
+
+jsonFile="$1.json"
+
+[ ! -f $jsonFile ] && echo "You must have json file in this folder" && exit -2
+
+echo "Creating user using $jsonFile"
+postDataREST users $jsonFile
+
+[ "$?" != 0 ] && echo "Some problem occurred, exiting" && exit $?
+
+echo "Successfully added $user"
+exit 0
+
+
+
+

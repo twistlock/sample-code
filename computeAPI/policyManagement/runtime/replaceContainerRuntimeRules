@@ -1,0 +1,13 @@
+#!/bin/bash
+# Updates all container runtime rules in a single shot. 
+# Updating all rules at the same time makes it possible 
+# to maintain strict ordering between rules.
+# You can change base or file (and endpoint if endpoint changes)
+
+base='runtimeContainerRules'
+file="$base.json"
+endpoint='policies/runtime/container'
+
+putDataREST $endpoint $file
+
+

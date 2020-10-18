@@ -1,0 +1,14 @@
+#!/bin/bash
+
+token=$(curl -sk  'Content-Type: application/json' POST  $TL_CONSOLE_API/authenticate) 
+
+
+status=$?
+if [ $status -eq 0 ]
+then
+  echo $token | sed "s/\"//g" | sed "s/}//g" | cut -d ":" -f2
+else
+  echo "Error: rerun curl command with -v flag instead of -s to see error"
+fi
+
+

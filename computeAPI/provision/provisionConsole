@@ -1,0 +1,34 @@
+echo "Provisioning Twistlock platform"
+echo "This script will do the following"
+echo "  1) optionally download Prisma Cloud bits"
+echo "  2) install console"
+echo "  3) create first user with name '$TL_USER' and password specified by TL_USER_PW"
+echo "  4) install license as setup in setupEnv and specified by 'TL_LICENSE'"
+
+read -p "Have you already downloaded the software(y/n)? " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Nn]$ ]]
+then
+  ./downloadSoftware
+fi
+
+
+./installConsole
+
+echo "We need to wait a while for console to come up fully before proceeding"
+sleep 10 
+
+./addFirstUser
+
+sleep 2
+
+./installLicense
+
+./addMoreUsers
+
+echo "Installation complete, log in to $TL_CONSOLE with credentials as show by running 'env | grep TL_USER'"
+
+
+
+
+

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+[ "$#" -ne 1 ] && echo "You must pass in json file base name" && exit -1
+
+echo "List access keys and save in fil $1.json" 
+getDataREST access_keys $1
+
+[ "$?" != 0 ] && echo "Some problem occurred, exiting" && exit $?
+
+echo "Successfully added access key"
+exit 0
+
+
+
+

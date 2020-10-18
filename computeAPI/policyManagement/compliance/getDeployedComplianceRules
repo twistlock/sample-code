@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# You can change base or file (and endpoint if endpoint changes)
+base=deployedComplianceRules
+file=$base.json
+endpoint='policies/compliance/container'
+
+# leave this alone
+getDataREST $endpoint $base 
+

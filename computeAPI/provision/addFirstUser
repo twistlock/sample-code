@@ -1,0 +1,18 @@
+echo "Creating initial $TL_USER administrative user"
+
+curl -k  -H 'Content-Type: application/json' \
+POST -d '{"username": "'"$TL_USER"'", "password": "'"$TL_USER_PW"'"}' \
+  "$TL_CONSOLE_API/signup" 
+
+status=$?
+
+if test "$status" == "0"; then
+   echo "Successfully setup first user"
+else
+   echo "Setup failed with error code $status"
+fi
+
+
+
+
+

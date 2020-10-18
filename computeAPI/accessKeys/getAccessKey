@@ -1,0 +1,15 @@
+#!/bin/bash
+
+[ "$#" -ne 2 ] && echo "You must pass in access key id and access key file json file base name" && exit -1
+
+echo "Getting access key using matching $1" 
+getDataREST access_keys/$1 $2
+
+[ "$?" != 0 ] && echo "Some problem occurred, exiting" && exit $?
+
+echo "Successfully added access key"
+exit 0
+
+
+
+

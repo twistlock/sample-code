@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ "$#" -gt 0 ]; then
+   echo "retrieving image scan reports for images with $1 in name"
+   curl -vk -o $1_images.json "$TL_CONSOLE_API/images?search=$1"
+else
+  echo "retrieving all image scan reports"
+  curl -vk -o images.json "$TL_CONSOLE_API/images"
+fi
+
+
