@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ "$#" -gt 0 ]; then
+   echo "getting registry scan progress for images with $1 in name and saving it to $1_progress.json"
+   curl -sku $TL_USER:$TL_USER_PW -o $1_progress.json "$TL_CONSOLE_API/registry/progress?search=$1"
+else
+  echo "getting registry scan progress and saving it to scanprogress.json"
+  curl -sku $TL_USER:$TL_USER_PW -o scanprogress.json "$TL_CONSOLE_API/registry/progress"
+  cat scanprogress.json
+  echo ""
+fi
+

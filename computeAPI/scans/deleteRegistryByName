@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ "$#" -gt 0 ]; then
+   echo "getting registry names with $1 in name and saving it to $1_regnames.json"
+   curl -sku $TL_USER:$TL_USER_PW -o $1_regnames.json "$TL_CONSOLE_API/registry/names?search=$1"
+else
+  echo "getting registry names and saving it to regnames.json"
+  curl -sku $TL_USER:$TL_USER_PW -o regnames.json "$TL_CONSOLE_API/registry/names"
+  cat regnames.json
+  echo ""
+fi
+
