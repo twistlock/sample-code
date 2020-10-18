@@ -1,0 +1,23 @@
+#!/bin/bash
+
+[[ "$#" < 2  ]] && echo "You must pass in API endpoint and base jsonfile name to save rules to" && exit -1
+
+endpoint=$1
+jsonfile=$2.json
+response=$(curl -o $jsonfile -vku $TL_USER:$TL_USER_PW $TL_CONSOLE_API/$endpoint) 
+success=$(cat $jsonfile | egrep -c 'rule|username')
+
+if [[ "$success" == "0" ]]; then
+  echo "ERROR OCCURRED, check $jsonfile for more details"
+  echo $response && exit -1
+fi
+
+echo ">>> rules retrieved from console and saved in $jsonfile"
+
+[[ "$#" > 2 ]] && cat $jsonfile | jq .
+
+exit 0
+
+
+
+

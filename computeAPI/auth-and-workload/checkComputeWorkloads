@@ -1,0 +1,17 @@
+
+token=$(./getToken)
+
+echo
+echo "Your token is"
+echo $token
+echo
+
+
+curl -kv POST \
+     -H "Accept: application/json" \
+     -H "Content-Type: application/json" \
+     -H "x-redlock-auth: $token"  \
+     -d workload.json \
+        $TL_CONSOLE_API/workload
+
+

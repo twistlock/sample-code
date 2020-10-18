@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# You can change base or file (and endpoint if endpoint changes)
+base='ciComplianceRules'
+file="$base.json"
+endpoint='policies/compliance/ci/images'
+
+# leave this alone
+getDataREST $endpoint $base 
+
+

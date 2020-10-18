@@ -1,0 +1,15 @@
+#!/bin/bash
+
+imageId=$(docker image inspect $1 |grep Id | awk -F '"' '{print $4}')
+
+echo $imageId
+
+if [ "$#" -gt 0 ]; then
+   echo "retrieving twistcli or Jenkins image scan report for image $1 with ID of $imageId"
+   curl -v -sku $TL_USER:$TL_USER_PW -H 'Content-Type: application/json' -o $1_images.json \
+        "$TL_CONSOLE_API/scans?imageID==$imageId"
+else
+  echo "retrieving all image scan reports"
+  curl -sku $TL_USER:$TL_USER_PW -o images.json "$TL_CONSOLE_API/images"
+fi
+

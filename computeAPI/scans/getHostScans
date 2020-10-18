@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "retrieving all host scan reports on all hosts a defender is on"
+curl -sku $TL_USER:$TL_USER_PW -o hosts.json "$TL_CONSOLE_API/hosts"
+
+

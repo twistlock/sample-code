@@ -1,0 +1,12 @@
+#!/bin/bash
+
+read -n 1 -p "Have you changed the passwords in user json file? (y/n)" answer
+
+[[ "$answer" != y ]] && echo && echo "You should do that before proceeding!" && exit -1
+
+echo 
+addUser operator
+addUser devops
+addUser dev
+
+

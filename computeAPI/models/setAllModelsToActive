@@ -1,0 +1,6 @@
+#!/bin/bash
+
+python getModels.py
+changeState manualLearning modelIDs.txt
+changeState manualActive modelIDs.txt
+

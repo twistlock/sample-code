@@ -1,0 +1,18 @@
+echo "Creating initial admin user"
+
+curl -k  -H 'Content-Type: application/json' \
+POST -d '{"username": "admin", "password": "changemenow"}' \
+  "https://localhost:8083/v1/api/signup" 
+
+status=$?
+
+if test "$status" == "0"; then
+   echo "Successfully setup first user"
+else
+   echo "Setup failed with error code $status"
+fi
+
+
+
+
+

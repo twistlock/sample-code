@@ -1,0 +1,18 @@
+#!/bin/bash
+  
+[ -z "$TL_RELEASE_URL" ] && echo "You must setup environment first and define TL_RELEASE_URL" && exit -1
+
+installFolder=$TL_INSTALL_ROOT_FOLDER
+
+if [ ! -d "$installFolder" ]; then
+  echo "No installation at $installFolder, check values of TL_RELEASE_URL and TL_INSTALL_ROOT"
+else
+  pushd $installFolder > /dev/null
+  sudo ./twistlock.sh -u
+  echo "Successfully uninstalled Prisma Cloud Compute"
+  popd
+fi
+
+
+
+
