@@ -44,3 +44,7 @@ Thumbs.db
 *.pem
 *.crt
 *.key
+
+# Allow Twistlock Splunk App to be tracked #
+############################################
+!pcc-splunk-app-*.tar.gz
