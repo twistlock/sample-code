@@ -3,8 +3,8 @@
 echo "Make sure proper version of twistcli is in your PATH or add a full path below"
 echo "For scanning user only needs CI Role; for API POST, operator or admin role"
 
-export TL_DEMO_ROOT_FOLDER='<git repo base folder>/notemaker-demo'
-# SAMPLE TL_DEMO_ROOT_FOLDER='~mbarker/git-repo-notemaker/notemaker-demo'
+export TL_DEMO_ROOT_FOLDER='<git repo base folder>/simple-demo'
+# SAMPLE TL_DEMO_ROOT_FOLDER='~mbarker/git-repos/simple-demo'
 export PATH=$TL_DEMO_ROOT_FOLDER/scripts:./scripts:$PATH
 export TL_USER='<user with correct privs>' > /dev/null
 export TL_USER_PW='changeme' > /dev/null
