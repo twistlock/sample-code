@@ -1,7 +1,7 @@
 FROM alpine:3.9 
 
 LABEL maintainer="Matt Barker"
-LABEL application="NoteMaker" 
+LABEL application="notemaker" 
 LABEL tier="database" 
 LABEL appVersion="1.0"
 LABEL baseImage="alpine:3.9"

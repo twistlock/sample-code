@@ -1,9 +1,9 @@
-FROM mongo 
+FROM mongo:4.0
 LABEL maintainer="MLBarker"
 LABEL tier="database"
-LABEL application="NoteMaker"
+LABEL application="notemaker"
 LABEL appVersion==="1.0"
 LABEL tier="database"
-LABEL baseImage="mongo"
+LABEL baseImage="mongo:4.0"
 LABEL patch="2"
 
