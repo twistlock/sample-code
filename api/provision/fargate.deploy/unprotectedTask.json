@@ -1,0 +1,19 @@
+{
+  "requiresCompatibilities": [
+      "FARGATE"
+  ],
+  "containerDefinitions": [
+    {
+      "entryPoint": [ "entry.sh" ],
+      "portMappings": [],
+      "command": null,
+      "image": "matthewabq/twistlock-fargate-auto",
+      "name": "twistlock-fargate-task"
+    }
+  ],
+  "family": "twistlock-fargate-task",
+  "volumes": [],
+  "networkMode": "awsvpc",
+  "memory": "512",
+  "cpu": "256"
+}
