@@ -1,0 +1,287 @@
+{
+  "_id": "containerRuntime",
+  "rules": [
+    {
+      "modified": "2020-10-15T20:23:37.878Z",
+      "owner": "mbarker_paloaltonetworks_com",
+      "name": "Protect struts server from suspicious runtime activities",
+      "previousName": "",
+      "resources": {
+        "hosts": [
+          "*"
+        ],
+        "images": [
+          "tl_demo/struts2_demo:2.3.12_build",
+          "tl_demo/struts2_demo*"
+        ],
+        "labels": [
+          "*"
+        ],
+        "containers": [
+          "*"
+        ],
+        "namespaces": [
+          "*"
+        ],
+        "accountIDs": [
+          "*"
+        ]
+      },
+      "advancedProtection": true,
+      "processes": {
+        "effect": "alert",
+        "blacklist": [],
+        "whitelist": [],
+        "checkCryptoMiners": true,
+        "checkLateralMovement": true
+      },
+      "network": {
+        "effect": "alert",
+        "blacklistIPs": [],
+        "blacklistListeningPorts": [],
+        "whitelistListeningPorts": [],
+        "blacklistOutboundPorts": [],
+        "whitelistOutboundPorts": [],
+        "whitelistIPs": [],
+        "skipModifiedProc": false,
+        "detectPortScan": true,
+        "skipRawSockets": false
+      },
+      "dns": {
+        "effect": "block",
+        "whitelist": [],
+        "blacklist": []
+      },
+      "filesystem": {
+        "effect": "alert",
+        "blacklist": [],
+        "whitelist": [],
+        "checkNewFiles": true,
+        "backdoorFiles": true
+      },
+      "kubernetesEnforcement": false,
+      "cloudMetadataEnforcement": false
+    },
+    {
+      "modified": "2020-10-15T14:22:51.275Z",
+      "owner": "mbarker_paloaltonetworks_com",
+      "name": "demo_build - Ignore Infra",
+      "previousName": "",
+      "notes": "demo_build use only",
+      "resources": {
+        "hosts": [
+          "*"
+        ],
+        "images": [
+          "*gogs*",
+          "*jenkins*",
+          "*maildev*",
+          "*nexus3*",
+          "*openldap*",
+          "*postgres*",
+          "*selenium*",
+          "*splunk*",
+          "*twistlock/defender*",
+          "*twistlock/console*"
+        ],
+        "labels": [
+          "*"
+        ],
+        "containers": [
+          "*"
+        ],
+        "namespaces": [
+          "*"
+        ],
+        "accountIDs": [
+          "*"
+        ]
+      },
+      "advancedProtection": false,
+      "processes": {
+        "effect": "disable",
+        "blacklist": [],
+        "whitelist": [],
+        "skipModified": true
+      },
+      "network": {
+        "effect": "disable",
+        "blacklistIPs": [],
+        "blacklistListeningPorts": [],
+        "whitelistListeningPorts": [],
+        "blacklistOutboundPorts": [],
+        "whitelistOutboundPorts": [],
+        "whitelistIPs": [],
+        "skipModifiedProc": true,
+        "detectPortScan": false,
+        "skipRawSockets": false
+      },
+      "dns": {
+        "effect": "disable",
+        "whitelist": [],
+        "blacklist": []
+      },
+      "filesystem": {
+        "effect": "disable",
+        "blacklist": [],
+        "whitelist": [],
+        "checkNewFiles": false,
+        "backdoorFiles": false
+      },
+      "kubernetesEnforcement": false,
+      "cloudMetadataEnforcement": false
+    },
+    {
+      "modified": "2020-10-15T14:22:50.886Z",
+      "owner": "mbarker_paloaltonetworks_com",
+      "name": "demo_build - alert on suspicious runtime behavior",
+      "previousName": "",
+      "notes": "demo_build use only",
+      "resources": {
+        "hosts": [
+          "*"
+        ],
+        "images": [
+          "*"
+        ],
+        "labels": [
+          "*"
+        ],
+        "containers": [
+          "*"
+        ],
+        "namespaces": [
+          "*"
+        ],
+        "accountIDs": [
+          "*"
+        ]
+      },
+      "advancedProtection": true,
+      "processes": {
+        "effect": "alert",
+        "blacklist": [],
+        "whitelist": [],
+        "checkCryptoMiners": true,
+        "checkLateralMovement": true,
+        "checkParentChild": true
+      },
+      "network": {
+        "effect": "alert",
+        "blacklistIPs": [],
+        "blacklistListeningPorts": [],
+        "whitelistListeningPorts": [],
+        "blacklistOutboundPorts": [],
+        "whitelistOutboundPorts": [],
+        "whitelistIPs": [],
+        "skipModifiedProc": false,
+        "detectPortScan": true,
+        "skipRawSockets": false
+      },
+      "dns": {
+        "effect": "alert",
+        "whitelist": [],
+        "blacklist": []
+      },
+      "filesystem": {
+        "effect": "alert",
+        "blacklist": [],
+        "whitelist": [],
+        "checkNewFiles": true,
+        "backdoorFiles": true
+      },
+      "kubernetesEnforcement": true,
+      "cloudMetadataEnforcement": true,
+      "customRules": [
+        {
+          "_id": 26,
+          "action": "audit",
+          "effect": "alert"
+        },
+        {
+          "_id": 19,
+          "action": "audit",
+          "effect": "alert"
+        },
+        {
+          "_id": 23,
+          "action": "audit",
+          "effect": "alert"
+        }
+      ]
+    },
+    {
+      "modified": "2020-10-15T14:00:39.729Z",
+      "owner": "system",
+      "name": "Default - alert on suspicious runtime behavior",
+      "previousName": "",
+      "resources": {
+        "hosts": [
+          "*"
+        ],
+        "images": [
+          "*"
+        ],
+        "labels": [
+          "*"
+        ],
+        "containers": [
+          "*"
+        ],
+        "functions": [
+          "*"
+        ],
+        "namespaces": [
+          "*"
+        ],
+        "appIDs": [
+          "*"
+        ],
+        "accountIDs": [
+          "*"
+        ],
+        "codeRepos": [
+          "*"
+        ],
+        "clusters": [
+          "*"
+        ]
+      },
+      "advancedProtection": true,
+      "processes": {
+        "effect": "alert",
+        "blacklist": [],
+        "whitelist": [],
+        "checkCryptoMiners": true,
+        "checkLateralMovement": true
+      },
+      "network": {
+        "effect": "alert",
+        "blacklistIPs": [],
+        "blacklistListeningPorts": [],
+        "whitelistListeningPorts": [],
+        "blacklistOutboundPorts": [],
+        "whitelistOutboundPorts": [],
+        "whitelistIPs": [],
+        "skipModifiedProc": false,
+        "detectPortScan": true,
+        "skipRawSockets": false
+      },
+      "dns": {
+        "effect": "disable",
+        "whitelist": [],
+        "blacklist": []
+      },
+      "filesystem": {
+        "effect": "alert",
+        "blacklist": [],
+        "whitelist": [],
+        "checkNewFiles": true,
+        "backdoorFiles": true
+      },
+      "kubernetesEnforcement": false,
+      "cloudMetadataEnforcement": false
+    }
+  ],
+  "learningDisabled": false
+}
