@@ -5,7 +5,7 @@ echo "Make sure access key is generated from a user account with scanning and AP
 echo "For scanning user only needs CI Role; for API POST, operator or admin role"
 
 export TL_DEMO_ROOT_FOLDER='<root folder of your demo code>'
-# SAMPLE export TL_DEMO_ROOT_FOLDER='/Users/mbarker/git-repo-notemaker/notemaker-demo'
+# SAMPLE export TL_DEMO_ROOT_FOLDER="~/git-repo/simple-demo'
 export PATH=$TL_DEMO_ROOT_FOLDER/scripts:./scripts:$PATH
 export TL_USER='<access key' > /dev/null
 export TL_USER_PW='<secret key' > /dev/null

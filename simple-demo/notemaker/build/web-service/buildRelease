@@ -2,7 +2,7 @@
 # using version number only for local tag, only one version of mongo # op can have 'auto' in it and one or more of build, scan, push
 # for example "autobuildscan"  or "scanpush"
 
-[ "$#" -lt 2 ] && echo "You must enter '1.0' or '2.0' and string with one or more of 'all|build|secure|test|scan|push'" && exit
+[ "$#" -lt 2 ] && echo "You must enter '1.0' or '2.0' and string with one or more of 'all|allsecure|build|scan|test|push'" && exit
 
 ver=$1
 op=$2
