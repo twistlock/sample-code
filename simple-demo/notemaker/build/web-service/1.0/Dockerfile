@@ -12,5 +12,5 @@ COPY . .
 RUN npm install
 CMD [ "node", "index.js" ]
 
-LABEL patch="2"
+LABEL patch="2.1"
 
