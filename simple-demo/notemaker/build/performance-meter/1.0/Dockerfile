@@ -16,5 +16,5 @@ COPY collectStats.sh collectStats.sh
 ENTRYPOINT ["./collectStats.sh"]
 CMD ["300"]
 
-LABEL patch="1.1.1.1.1"
+LABEL patch="1.1.1.1.1.1.1"
 
