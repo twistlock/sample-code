@@ -1,0 +1,7 @@
+{
+  "email": "username@yourcompany.com",
+  "firstName" : "FirstName",
+  "lastName"  : "LastName",
+  "defaultRoleId" : "Default Role Name",
+  "roleIds" : { "Default Role Name", "AnotherRoleName" }
+} 
