@@ -1,0 +1,3 @@
+docker rm -f car-server
+docker run -d -p 8888:8888 --name car-server car-server
+
