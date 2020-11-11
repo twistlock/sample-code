@@ -1,0 +1,21 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "lambda:ListFunctions",
+                "ecr:DescribeRepositories",
+                "eks:DescribeCluster",
+                "ecs:ListContainerInstances",
+                "eks:ListClusters",
+                "ecs:DescribeClusters",
+                "ecs:ListClusters",
+                "ec2:DescribeInstances",
+                "ec2:DescribeImages"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
