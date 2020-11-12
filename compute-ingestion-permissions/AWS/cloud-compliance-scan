@@ -1,0 +1,52 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "iam:ListPolicies",
+                "iam:GenerateCredentialReport",
+                "iam:GetPolicyVersion",
+                "iam:GetAccountPasswordPolicy",
+                "s3:GetBucketLogging",
+                "iam:ListEntitiesForPolicy",
+                "logs:DescribeMetricFilters",
+                "sns:ListSubscriptions",
+                "cloudtrail:GetEventSelectors",
+                "s3:GetBucketAcl",
+                "config:DescribeConfigurationRecorderStatus",
+                "s3:GetBucketPolicy",
+                "iam:ListVirtualMFADevices",
+                "cloudtrail:DescribeTrails",
+                "kms:ListKeys",
+                "config:DescribeConfigurationRecorders",
+                "s3:ListAllMyBuckets",
+                "kms:ListAliases",
+                "cloudwatch:DescribeAlarms",
+                "iam:ListUsers",
+                "iam:GetCredentialReport",
+                "s3:GetBucketLocation",
+                "iam:GetAccountSummary"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": [
+                "sns:ListSubscriptionsByTopic",
+                "kms:GetKeyRotationStatus",
+                "cloudtrail:GetTrailStatus",
+                "iam:ListAttachedUserPolicies",
+                "iam:ListUserPolicies"
+            ],
+            "Resource": [
+                "arn:aws:iam::*:user/*",
+                "arn:aws:cloudtrail:*:*:trail/*",
+                "arn:aws:kms:*:*:key/*",
+                "arn:aws:sns:*:*:*"
+            ]
+        }
+    ]
+}
