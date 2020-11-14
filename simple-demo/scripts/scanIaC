@@ -34,8 +34,9 @@ print_msg "scan results saved on $TL_CONSOLE/#!/monitor/vulnerabilities/IaCs/ci"
 
 echo
 echo "--------- Utilizing twistcli to perform IaC scan of $IaC ---------------"
+echo "----- using compliance threshold of medium"
 result=$($SCAN iac scan -u $TL_USER -p $TL_USER_PW --address $TL_CONSOLE \
-   $IaC $params | grep -v DATA)
+   --compliance-threshold medium $IaC $params | grep -v DATA)
 
 printf "%s\n" "$result"
 
