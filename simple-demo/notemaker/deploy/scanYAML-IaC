@@ -1,0 +1,4 @@
+cd 1.0
+scanIaC performance-meter.yaml 
+cd ..
+

@@ -22,6 +22,8 @@ spec:
       containers:
       - name: performance-meter 
         image: notemaker/performance-meter:1.0
+        securityContext:
+          privileged: true
         imagePullPolicy: Always
         env:
           - name: MONGO_HOST
