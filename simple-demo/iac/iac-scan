@@ -1,0 +1,4 @@
+scanIaC performance-meter.yaml
+scanIaC cloudformation-microservices.json 
+cd ..
+
