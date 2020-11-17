@@ -1,3 +1,5 @@
+#For example, the following rule checks if a pod created contains the "owner" label:
+
 match[{"msg": msg}] {
 input.request.operation == "CREATE"
 input.request.kind.kind == "Pod"
