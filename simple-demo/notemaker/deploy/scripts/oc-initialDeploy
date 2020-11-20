@@ -5,10 +5,12 @@ alias kubectl=oc
 
 echo; echo "Initial deploy of version $1 of Note Maker application into an OpenShift cluster"
 
-echo "Creating namespace(project) and storage"
-kubectl create ns notemaker 
-kubectl create -f data/mongodb-pvc.yaml
-kubectl create -f data/web-service-pvc.yaml
+echo "Creating namespace(project), giving needed privs, and creating pvc storage"
+oc create ns notemaker
+oc adm policy add-scc-to-user anyuid system:serviceaccount:notemaker:default
+ 
+oc create -f data/mongodb-pvc.yaml
+oc create -f data/web-service-pvc.yaml
 
 sleep 10
 

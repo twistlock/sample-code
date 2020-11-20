@@ -1,18 +1,20 @@
 #!/bin/bash
 
-[ "$#" -lt 1 ] && echo "You must enter '1.0' or '2.0' and optionally mongo|web|perf" && exit 1
+[ "$#" -lt 1 ] && echo "You must enter '1.0' or '2.0' and optionally nginx|mongo|web|perf" && exit 1
 
 alias kubectl=oc
-oc project notemaker > /dev/null
+
+# oc project notemaker 
 
 # if no 2nd parameter passed in, deploy all
-[ "$#" -eq 1 ] && op=mongowebperf
+[ "$#" -eq 1 ] && op=nginxmongowebperf
 [ "$#" -eq 2 ] && op=$2
 
 echo; echo "Deploying version $1 of Note Maker application"
 echo "Leveraging existing storage"
 
 cd $1
+[[ "$op" == *"nginx"* ]] && kubectl apply -f nginx.yaml
 [[ "$op" == *"mongo"* ]] && kubectl apply -f mongodb.yaml
 sleep 10
 [[ "$op" == *"perf"* ]] && kubectl apply -f performance-meter.yaml
