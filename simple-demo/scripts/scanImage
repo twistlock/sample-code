@@ -35,7 +35,7 @@ print_msg "scan results saved on $TL_CONSOLE/#!/monitor/vulnerabilities/images/c
 echo
 echo "------------ Utilizing twistcli to scan $image --------------------"
 result=$($SCAN images scan -u $TL_USER -p $TL_USER_PW --details --address $TL_CONSOLE \
-   --ci $image $params | grep -v DATA)
+   $image $params | grep -v DATA)
 
 printf "%s\n" "$result"
 
