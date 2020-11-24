@@ -1,0 +1,5 @@
+{ 
+  "orchestration": "kubernetes", 
+  "namespace" : "twistlock" 
+}
+

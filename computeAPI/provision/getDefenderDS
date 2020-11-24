@@ -1,0 +1,15 @@
+
+curl -sk \
+  -u $TL_USER:$TL_USER_PW \
+  -H 'Content-Type: application/json' \
+  -d '{"orchestration": "kubernetes", "namespace": "twistlock"}' \
+  POST \
+  $TL_CONSOLE_API/defenders/daemonset.yaml > daemonset.yaml
+
+echo "Defender daemonset.yaml file retrieived"
+
+
+
+
+
+
