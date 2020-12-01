@@ -7,9 +7,9 @@ echo $imageId
 if [ "$#" -gt 0 ]; then
    echo "retrieving twistcli or Jenkins image scan report for image $1 with ID of $imageId"
    curl -v -sku $TL_USER:$TL_USER_PW -H 'Content-Type: application/json' -o $1_images.json \
-        "$TL_CONSOLE_API/scans?imageID==$imageId"
+        "$TL_CONSOLE_API/scans?search=$1"
 else
-  echo "retrieving all image scan reports"
-  curl -sku $TL_USER:$TL_USER_PW -o images.json "$TL_CONSOLE_API/images"
+  echo "retrieving all manual (twistcli or Jenkins) scan reports"
+  curl -sku $TL_USER:$TL_USER_PW -o images.json "$TL_CONSOLE_API/scans"
 fi
 
