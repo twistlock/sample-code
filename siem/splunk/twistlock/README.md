@@ -34,9 +34,11 @@ _Note: The app version on Splunkbase may fall behind the app version in the GitH
 }
 ```
 
-2. Enable `poll-incidents.py` and `poll-forensics.py` at **Settings > Data inputs > Scripts**.
+2. *Note that **Splunk on Windows** uses different path separators than Linux, and by default this app is configured for Linux.* For Splunk on Windows, edit `etc\apps\twistlock\default\inputs.conf` according to the instructions at the top of the file, and then update the paths in `etc\apps\twistlock\local\inputs.conf` by changing `/bin/` to `\bin\`.
 
-3. **Optional:** Adjust the schedule as needed. The `poll-forensics.py` script uses a file created by `poll-incidents.py` to only pull relevant forensics information. Be sure to schedule `poll-forensics.py` to run slightly after `poll-incidents.py`. A few minutes is probably fine. A one-minute gap was used during testing.
+3. Enable `poll-incidents.py` and `poll-forensics.py` at **Settings > Data inputs > Scripts**.
+
+4. **Optional:** Adjust the schedule as needed. The `poll-forensics.py` script uses a file created by `poll-incidents.py` to only pull relevant forensics information. Be sure to schedule `poll-forensics.py` to run slightly after `poll-incidents.py`. A few minutes is probably fine. A one-minute gap was used during testing.
 
 ## Change notes
 ### October 14, 2020
