@@ -9,9 +9,11 @@ echo; echo "Deploying version $1 of Note Maker application"
 echo "This is an ephemeral deployment for demo purposes only"
 if [ "$openshift" == "true" ]; then
   echo "Deploying into an OpenShift4 environmment"
+  alias kubectl=oc
+else
+  kubectl create ns notemaker
 fi
 
-kubectl create ns notemaker
 cd $1
 kubectl apply -f mongodb.yaml
 sleep 10
