@@ -1,0 +1,4 @@
+#!/bin/bash
+
+oc delete ns notemaker
+

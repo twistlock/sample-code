@@ -1,0 +1,28 @@
+#!/bin/bash
+
+[ "$#" -lt 1 ] && echo "You must enter '1.0' or '2.0'" && exit 1
+
+alias kubectl=oc
+
+echo; echo "Ephemeral deploy of NoteMaker into Openshift4 cluster"
+
+echo "Creating project and giving needed privs"
+oc create ns notemaker
+oc adm policy add-scc-to-user anyuid system:serviceaccount:notemaker:default
+sleep 2 
+echo; echo "Deploying nginx, mongo, performance meter, and web service"
+
+deploy $1 openshift
+
+sleep 5
+oc expose svc/nginx
+nginxurl=$(oc get route | grep nginx | awk '{ print $2 }')
+echo "Browse to $nginxurl and create some notes to populate runtime models"
+
+echo "Notemaker deployed"
+
+
+
+
+
+

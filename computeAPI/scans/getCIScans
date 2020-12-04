@@ -1,6 +1,7 @@
 #!/bin/bash
 
-imageId=$(docker image inspect $1 |grep Id | awk -F '"' '{print $4}')
+# use imageId only if 2 or more scan reports have same exact name
+# imageId=$(docker image inspect $1 |grep Id | awk -F '"' '{print $4}')
 
 echo $imageId
 

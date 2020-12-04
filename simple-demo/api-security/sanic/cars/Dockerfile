@@ -3,7 +3,7 @@ RUN pip install sanic-openapi
 
 COPY car-server.py /srv
 
-EXPOSE 8888
+EXPOSE 80 
 
 ENTRYPOINT ["python3", "/srv/car-server.py"]
 

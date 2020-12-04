@@ -26,6 +26,11 @@ async def get_garage(request):
 		}]
 	})
 
+@app.post("/newcar")
+async def new_car(request):
+    req_data = request.get_json()
+    name = req_data['name']
+    return name
 
 @app.post("/car")
 async def add_new_car(request):
@@ -34,6 +39,6 @@ async def add_new_car(request):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8888)
+    app.run(host="0.0.0.0", port=80)
 
 
