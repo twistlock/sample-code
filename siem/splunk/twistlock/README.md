@@ -20,7 +20,7 @@ _Note: The app version on Splunkbase may fall behind the app version in the GitH
 
 ## Setup
 1. Open `bin/data/config.json` for editing and add the appropriate values for your environment. See the annotated example and field descriptions below for more detail:
-    ```json
+    ```
     {
       "credentials": {
         "username": "jdoe", [1]
