@@ -1,19 +1,26 @@
 <form>
   <label>Prisma Cloud Compute Incidents and Forensics</label>
-  <search>
-    <query>index=main sourcetype=pcc:incident t_id=$container_incident_id$
-    | table t_containerid</query>
-    <done>
-      <set token="container_id">$result.t_containerid$</set>
-    </done>
-  </search>
-  <fieldset submitButton="false"></fieldset>
+  <fieldset submitButton="false">
+    <input type="multiselect" token="project_selector">
+      <label>Project</label>
+      <prefix>project="</prefix>
+      <suffix>"</suffix>
+      <delimiter>" OR project="</delimiter>
+      <fieldForLabel>Project</fieldForLabel>
+      <fieldForValue>project</fieldForValue>
+      <search>
+        <query>index=main sourcetype=pcc:incident | dedup project | sort project</query>
+      </search>
+      <choice value="*">Show all</choice>
+      <default>*</default>
+    </input>
+  </fieldset>
   <row>
     <panel>
       <title>Total Incidents in the last 7 days</title>
       <single>
         <search>
-          <query>index=main sourcetype=pcc:incident
+          <query>index=main sourcetype=pcc:incident $project_selector$
           | stats count</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
@@ -25,7 +32,7 @@
       <title>Total Incidents in the last 30 days</title>
       <single>
         <search>
-          <query>index=main sourcetype=pcc:incident
+          <query>index=main sourcetype=pcc:incident $project_selector$
           | stats count</query>
           <earliest>-30d@d</earliest>
           <latest>now</latest>
@@ -40,7 +47,7 @@
       <table>
         <title>Count of incidents by image</title>
         <search>
-          <query>index=main sourcetype=pcc:incident
+          <query>index=main sourcetype=pcc:incident $project_selector$
           | stats count as Incidents by imageName
           | sort 5 -count
           | rename imageName as Image</query>
@@ -54,7 +61,7 @@
       <table>
         <title>Count of incidents by host</title>
         <search>
-          <query>index=main sourcetype=pcc:incident
+          <query>index=main sourcetype=pcc:incident $project_selector$
           | stats count as Incidents by hostname
           | sort 5 -Incidents
           | rename hostname as Host</query>
@@ -68,7 +75,7 @@
   </row>
   <row>
     <panel>
-      <title>Container incident details</title>
+      <title>Container incidents</title>
       <input type="multiselect" token="container_selector">
         <label>Container</label>
         <prefix>containerName="</prefix>
@@ -77,17 +84,17 @@
         <fieldForLabel>Container</fieldForLabel>
         <fieldForValue>containerName</fieldForValue>
         <search>
-          <query>index=main sourcetype=pcc:incident containerName=* | dedup containerName</query>
+          <query>index=main sourcetype=pcc:incident containerName=* $project_selector$ | dedup containerName</query>
         </search>
         <choice value="*">Show all</choice>
         <default>*</default>
       </input>
       <table>
         <search>
-          <query>index=main sourcetype=pcc:incident $container_selector$
-          | table time, category, hostname, imageName, containerName, t_id
+          <query>index=main sourcetype=pcc:incident $container_selector$ $project_selector$
+          | table time, category, hostname, imageName, containerName, t_id, project
           | sort time
-          | rename time as Time, category as Category, hostname as Host, imageName as Image, containerName as Container, t_id as ID</query>
+          | rename time as Time, category as Category, hostname as Host, imageName as Image, containerName as Container, t_id as ID, project as Project</query>
         </search>
         <option name="count">10</option>
         <option name="drilldown">row</option>
@@ -100,7 +107,7 @@
   </row>
   <row>
     <panel depends="$show_container_forensics$">
-      <title>Container forensic details</title>
+      <title>Container forensics - incident $container_incident_id$</title>
       <input type="radio" token="container_forensic_viz">
         <label></label>
         <choice value="false">Hide container forensics table</choice>
@@ -123,7 +130,7 @@
   </row>
   <row>
     <panel>
-      <title>Host incident details</title>
+      <title>Host incidents</title>
       <input type="multiselect" token="hostname_selector">
         <label>Host</label>
         <prefix>hostname="</prefix>
@@ -132,17 +139,17 @@
         <fieldForLabel>hostname</fieldForLabel>
         <fieldForValue>hostname</fieldForValue>
         <search>
-          <query>index=main sourcetype=pcc:incident NOT containerName=* | dedup hostname</query>
+          <query>index=main sourcetype=pcc:incident NOT containerName=* $project_selector$ | dedup hostname</query>
         </search>
         <choice value="*">Show all</choice>
         <default>*</default>
       </input>
       <table>
         <search>
-          <query>index=main sourcetype=pcc:incident NOT containerID=* $hostname_selector$
-          | table time, category, hostname, profileID, "audits{}.type", "audits{}.user", t_id
+          <query>index=main sourcetype=pcc:incident NOT containerID=* $hostname_selector$ $project_selector$
+          | table time, category, hostname, profileID, "audits{}.type", "audits{}.user", t_id, project
           | sort time
-          | rename time as Time, category as Category, hostname as Host, profileID as Application, "audits{}.type" as Type, "audits{}.user" as User, t_id as ID</query>
+          | rename time as Time, category as Category, hostname as Host, profileID as Application, "audits{}.type" as Type, "audits{}.user" as User, t_id as ID, project as Project</query>
           <earliest>$earliest$</earliest>
           <latest>$latest$</latest>
         </search>
@@ -157,7 +164,7 @@
   </row>
   <row>
     <panel depends="$show_host_forensics$">
-      <title>Host forensic details</title>
+      <title>Host forensics - incident $host_incident_id$</title>
       <input type="radio" token="host_forensic_viz">
         <label></label>
         <choice value="false">Hide host forensics table</choice>

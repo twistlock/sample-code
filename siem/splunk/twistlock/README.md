@@ -1,7 +1,5 @@
 # Prisma Cloud Compute Splunk App
 
-_Updated for Prisma Cloud Compute (formerly Twistlock) versions 19.11 and onwards. Previous Twistlock versions are not supported._
-
 **Important**: This app is delivered as-is and without guaranteed support from Palo Alto Networks.
 
 The Prisma Cloud Compute Splunk App allows high priority security incidents from Prisma Cloud to be sampled by Splunk on a user-defined interval and provides in-depth forensic data for incident analysis and response.
@@ -10,7 +8,7 @@ The app adds two main components to your Splunk deployment: scripted data inputs
 
 ## Installation
 ### Splunkbase
-_Note: The app version on Splunkbase may fall behind the app version in the GitHub repository.
+_Note: The app version on Splunkbase may fall behind the app version in the GitHub repository._
 1. Download the app tarball from [Splunkbase](https://splunkbase.splunk.com/app/4555).
 2. Install the app. Splunk documentation can be found [here](https://docs.splunk.com/Documentation/AddOns/released/Overview/Installingadd-ons) if necessary.
 3. Restart Splunk if necessary.
@@ -21,24 +19,36 @@ _Note: The app version on Splunkbase may fall behind the app version in the GitH
 3. Restart Splunk if necessary.
 
 ## Setup
-1. Add Prisma Cloud Compute Console API credentials and URL (without trailing `/`) to `bin/data/config.json`. If you are using Prisma Cloud Compute Edition (self-hosted), this will likely just be your normal username and password and the address in your URL bar. If you are using Prisma Cloud Enterprise Edition (SaaS), this will be your access key and secret key (NOT email address and password) and the address found at **Compute > Manage > System > Downloads** under the **Path to Console** heading. For example, your file could look like this:
-```json
-{
-  "credentials": {
-    "username": "user",
-    "password": "pass"
-  },
-  "console": {
-    "url": "https://your.console.url:8083"
-  }
-}
-```
+1. Open `bin/data/config.json` for editing and add the appropriate values for your environment. See the annotated example and field descriptions below for more detail:
+    ```json
+    {
+      "credentials": {
+        "username": "jdoe", [1]
+        "password": "Password123!" [1]
+      },
+      "console": {
+        "url": "https://my.console.url:8083", [2]
+        "projects": ["Central Console", "my tenant project"] [3]
+      }
+    }
+    ```
 
-2. Enable `poll-incidents.py` and `poll-forensics.py` at **Settings > Data inputs > Scripts**.
+    [1] Prisma Cloud Compute Console API credentials. If you are using Prisma Cloud Compute Edition (self-hosted), this will likely just be your normal username and password. If you are using Prisma Cloud Enterprise Edition (SaaS), this will be your [access key and secret key](https://docs.twistlock.com/docs/enterprise_edition/authentication/access_keys.html#provisioning-access-keys). With the default configuration, a user with the [DevSecOps role](https://docs.twistlock.com/docs/compute_edition/authentication/user_roles.html#devsecops-user) is required.
 
-3. **Optional:** Adjust the schedule as needed. The `poll-forensics.py` script uses a file created by `poll-incidents.py` to only pull relevant forensics information. Be sure to schedule `poll-forensics.py` to run slightly after `poll-incidents.py`. A few minutes is probably fine. A one-minute gap was used during testing.
+    [2] Prisma Cloud Compute Console URL (without trailing `/`). This URL must be reachable by Splunk. If you are using Prisma Cloud Enterprise Edition (SaaS), this will be the address found at **Compute > Manage > System > Downloads** under the **Path to Console** heading.
+
+    [3] List of projects. This is only applicable to users with [projects](https://docs.twistlock.com/docs/compute_edition/deployment_patterns/projects.html) configured in Prisma Cloud Compute Edition. **If you do not use projects, you can safely leave the default value.** The field accepts two types of values: a list of projects (example above) and the string `"all"` (be sure to include quotes). Using the list, you can specify a set of projects you'd like queried. With the string `"all"`, the script will automatically pull data from all projects. Using `"all"` requires a user with the [Administrator role](https://docs.twistlock.com/docs/compute_edition/authentication/user_roles.html#administrator).
+
+2. Enable `poll_incidents.py` and `poll_forensics.py` at **Settings > Data inputs > Scripts**.
+
+3. **Optional:** Adjust the schedule as needed. The `poll_forensics.py` script uses a file created by `poll_incidents.py` to only pull relevant forensics information. Be sure to schedule `poll_forensics.py` at least 5 minutes after `poll_incidents.py`.
 
 ## Change notes
+### December 7, 2020
+- Added projects support
+- Cleaned up code
+  - Introduced an API wrapper file for common functions
+
 ### October 14, 2020
 - Cleaned up code
   - Refactored to use functions

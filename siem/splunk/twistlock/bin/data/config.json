@@ -4,6 +4,7 @@
     "password": ""
   },
   "console": {
-    "url": ""
+    "url": "",
+    "projects": ["Central Console"]
   }
 }
