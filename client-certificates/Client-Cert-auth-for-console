@@ -1,14 +1,14 @@
 ## Create rootCA priv key
-`$ openssl genrsa -out rootCA.key 4096`
+$ openssl genrsa -out rootCA.key 4096
 
 ## self sign rootCA
-`$ openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.crt`
+$ openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.crt
 
 ## Create User Private Key
-`$ openssl genrsa -out sgordon.key  4096`
+$ openssl genrsa -out sgordon.key  4096
 
 ## Create csrconfig.txt, This file will be used in the next step to avoid interactive prompts.  Also note commonName will matching the username in the Console
-```
+
 [ req ]
 default_md = sha512
 prompt = no
@@ -23,29 +23,29 @@ organizationName = TL
 [ req_ext ]
 keyUsage=critical,digitalSignature,keyEncipherment
 extendedKeyUsage=clientAuth
-```
+
 ## Create CSR for user
-`$ openssl req -new -nodes -key sgordon.key -config csrconfig.txt -out sgordon.csr`
+$ openssl req -new -nodes -key sgordon.key -config csrconfig.txt -out sgordon.csr
 
 ## verify the request - optional step
-`$ openssl req -in sgordon.csr -noout -text`
+$ openssl req -in sgordon.csr -noout -text
 
 ## Issue Cert from CSR and rootCA
-`$ openssl x509 -req -in sgordon.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -days 365 -extensions req_ext -out sgordon.crt`
+$ openssl x509 -req -in sgordon.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -days 365 -extensions req_ext -out sgordon.crt
 
 ## Create .pem file
-`$ cat sgordon.crt sgordon.key > sgordon.pem`
+$ cat sgordon.crt sgordon.key > sgordon.pem
 
 ## Test connection with either pem file or crt and key in separate files.
-```
+
 $ curl -k -X POST --cert sgordon.pem  https://localhost:8083/api/v1/authenticate-client  -v
 $ curl -k -X POST --cert sgordon.crt --key sgordon.key  https://localhost:8083/api/v1/authenticate-client  -v
-```
+
 
 ## For this to work in your browser, you need to add a pfx file to your browser or keychain. Step below to create pfx.
-```
+
 $ openssl pkcs12 -export -out sgordon.pfx -inkey sgordon.key -in sgordon.crt
-```
+
 
 You also need to follow this documentation to add rootCA.crt to your Console
 https://docs.paloaltonetworks.com/prisma/prisma-cloud/19-11/prisma-cloud-compute-edition-admin/configure/authenticate_console_with_certs.html
