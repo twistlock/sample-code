@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: car-dealership
+  namespace: api-demo 
+spec:
+  selector:
+    matchLabels:
+      run: car-dealership
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: car-dealership
+    spec:
+      containers:
+      - name: car-dealership
+        image: mattapidemo/car-dealership 
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80 
+        env:
+          - name: MONGO_HOST
+            value: "mongodb.notemaker.svc.cluster.local"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: car-dealership
+  namespace: api-demo
+  labels:
+    run: car-dealership
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    run: car-dealership
+

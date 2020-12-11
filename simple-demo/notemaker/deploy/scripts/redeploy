@@ -1,0 +1,29 @@
+#!/bin/bash
+[[ $# -lt 2 ]] && echo "You must pass in 1.0 or 2.0 and one or more of car|web|mongo|perf|nginx" && exit 1
+op=$2
+
+cd $1 
+
+if [[ "$op" =~ "car" ]] ;then
+   kubectl delete -f car-dealership.yaml; sleep 5; kubectl create -f car-dealership.yaml
+fi
+
+if [[ "$op" =~ "mongo" ]] ;then
+   kubectl delete -f mongodb.yaml; sleep 5; kubectl create -f mongodb.yaml
+   kubectl delete -f mongo-express.yaml; sleep 5; kubectl create -f mongo-express.yaml 
+fi
+
+if [[ "$op" =~ "web" ]]; then
+   kubectl delete -f note-web-service.yaml; sleep 5; kubectl create -f note-web-service.yaml
+fi
+
+if [[ "$op" =~ "nginx" ]]; then 
+   kubectl delete -f nginx.yaml; sleep 5; kubectl create -f nginx.yaml
+   ../scripts/waitsvc nginx
+   ip=$(kubectl get svc -n notemaker | grep nginx | awk '{print $4}')
+   echo "Use browser to create some notes at http://$ip to generate runtime models"
+fi
+
+cd ..
+
+

@@ -6,5 +6,5 @@ LABEL version="2.0"
 LABEL baseImage="nginx:1.19"
 LABEL patch="2.1"
 RUN mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.orig
-COPY web-service.conf /etc/nginx/conf.d/web-service.conf
+COPY default.conf /etc/nginx/conf.d/default.conf
 

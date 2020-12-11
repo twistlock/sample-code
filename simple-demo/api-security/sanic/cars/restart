@@ -1,5 +1,0 @@
-build
-runit
-sleep 5
-docker logs car-server
-

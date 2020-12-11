@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: note-web-service 
+  namespace: notemaker
+spec:
+  selector:
+    app: note-web-service
+    tier: web 
+  ports:
+    - port: 80
+      targetPort: 3000
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: note-web-service 
+  namespace: notemaker
+  labels:
+    app: note-web-service 
+    tier: web 
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: note-web-service 
+      tier: web 
+  template:
+    metadata:
+      labels:
+        app: note-web-service 
+        tier: web 
+    spec:
+      containers:
+        - name: note-web-service 
+          image: notemaker/note-web-service:2.0
+          imagePullPolicy: Always
+          securityContext:
+             allowPrivilegeEscalation: false          
+          ports:
+            - containerPort: 3000
+          env:
+            - name: MONGO_URL
+              value: mongodb://mongodb:27017/dev 
+

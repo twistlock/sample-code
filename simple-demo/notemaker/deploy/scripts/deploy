@@ -17,10 +17,10 @@ fi
 cd $1
 kubectl apply -f mongodb.yaml
 sleep 10
-kubectl apply -f performance-meter.yaml
-sleep 10
-kubectl apply -f web-service.yaml
+kubectl apply -f mongo-express.yaml
 sleep 5
+kubectl apply -f note-web-service.yaml
+sleep 10
 
 if [ "$openshift" == "true" ]; then
    kubectl apply -f oc-nginx.yaml
@@ -28,8 +28,13 @@ else
    kubectl apply -f nginx.yaml
    ../scripts/waitsvc nginx
    ip=$(kubectl get svc -n notemaker | grep nginx | awk '{print $4}')
+   echo "Waiting for LoadBalancer to be available"
+   sleep 60
    echo "Use browser to create some notes at http://$ip to generate runtime models"
 fi
 
+
 cd ..
+
+
 

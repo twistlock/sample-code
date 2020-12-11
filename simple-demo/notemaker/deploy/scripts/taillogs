@@ -1,0 +1,2 @@
+pod=$(kubectl get pods -n notemaker | grep $1 | awk '{print$1}')
+kubectl logs -f $pod -n notemaker 
