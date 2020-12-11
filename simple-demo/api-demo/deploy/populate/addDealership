@@ -1,0 +1,7 @@
+#!/bin/bash
+
+url=$(kubectl get svc | grep Load | awk '{print $4}')
+
+echo $url
+
+curl  --header 'Content-Type: application/json' http://$url/dealer --data "@$1" 
