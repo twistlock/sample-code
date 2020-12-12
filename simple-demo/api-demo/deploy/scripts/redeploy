@@ -1,0 +1,9 @@
+#!/bin/bash
+
+kubectl delete -f car-dealership.yaml
+
+sleep 5
+
+deploy
+
+

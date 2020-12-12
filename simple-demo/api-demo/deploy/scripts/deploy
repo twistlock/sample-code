@@ -1,18 +1,22 @@
 #!/bin/bash
 
-kubectl create ns api-demo
-kubectl config set-context --current --namespace=api-demo
+kubectl create ns api-demo 2>/dev/null
+kubectl config set-context --current --namespace=api-demo 2>/dev/null
 
 kubectl create -f car-dealership.yaml
 waitsvc car 
-ip=$(kubectl get svc | grep Load | awk '{print $4}')
+url=$(kubectl get svc | grep Load | awk '{print $4}')
 echo "Waiting for LoadBalancer to be available"
-sleep 60
-echo "Use browser to test api endpoints (car,dealer)  at http://$ip"
+sleep 90
+echo "Use browser to test api endpoints (car,dealer)  at http://$url"
 
-echo "Populating api-demo car-dealership"
-cd populate 
-populate
-cd ..
+read -p "Do you want to populate the car dealership api demo(y/n)? " -n 1 -r
+echo
+if [[ $REPLY =~ [Yy]$ ]]; then 
+  echo "Populating api-demo car-dealership"
+  cd populate 
+  populate
+  cd ..
+fi
 
 

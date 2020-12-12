@@ -11,26 +11,33 @@ image=mattapidemo/$local
 if [[ "$op" == *"all"* ]]; then
   build=true && test=true && push=true
 else
-  [[ "$op" == *"build"* ]] && build=true
   [[ "$op" == *"test"* ]] && test=true
+  [[ "$op" == *"build"* ]] && build=true
   [[ "$op" == *"scan"* ]] && scan=true
   [[ "$op" == *"push"* ]] && push=true
 fi
 
 build_image () {
-  cd car-dealership  
   echo; echo "Building $local from Dockerfile"
   docker build -t $local . > /dev/null 
   [[ "$?" != "0" ]] && echo "Build image FAILED, exiting" && exit 1
   docker tag $local $image
-  cd ..
   return 0
 }
 
 test_image () {
-  echo; echo "Performing unit tests.."; sleep 3
-  echo "Unit tests PASSED."
+  echo; echo "Performing unit tests (running pylint on python code) ..";
+  pycheck car-dealership.py
+  read -p "Is the code good enough to continue(y/n)? " -n 1 -r
+  echo
+  if [[ $REPLY =~ [Yy]$ ]]; then 
+    echo "Unit tests PASSED."
+  else
+    echo "Unit tests FAILED."
+    exit
+  fi
 }
+
 
 scanErrMsg="Security scan FAILED, exiting, secure it before you commit it!"
 scan_image () {
@@ -45,11 +52,11 @@ push_image () {
   [[ "$?" != "0" ]] && echo "Push image FAILED, exiting" && exit 3
 }
 
+[ "$test" == "true" ] && test_image
+
 [ "$build" == "true" ] && build_image
 
 [ "$scan" == "true" ] && scan_image
-
-[ "$test" == "true" ] && test_image
 
 [ "$push" == "true" ] && push_image
 
