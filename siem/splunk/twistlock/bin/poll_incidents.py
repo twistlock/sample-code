@@ -14,6 +14,10 @@ config_file = os.path.join(data_dir, "config.json")
 forensics_file = os.path.join(data_dir, "forensics_events.txt")
 
 def get_incidents(console_url, auth_token, project_list):
+    if os.path.isfile(forensics_file):
+        print("Exiting poll_incidents.py. Forensics file already exists. Please ensure that poll_forensics.py runs after poll_incidents.py.", file=sys.stderr)
+        sys.exit(1)
+
     endpoint = "/api/v1/audits/incidents"
     headers = {"Authorization": "Bearer " + auth_token, "Accept": "application/json"}
     request_limit = 50
@@ -46,8 +50,8 @@ def get_incidents(console_url, auth_token, project_list):
             sys.exit(req_err)
 
         if total_count < 1:
-            print("No unacknowledged incidents found", file=sys.stderr)
-            sys.exit(1)
+            print("No unacknowledged incidents found for", project, file=sys.stderr)
+            continue
 
         # Use that count to create offsets
         # Example: 85 incidents
@@ -64,6 +68,7 @@ def get_incidents(console_url, auth_token, project_list):
                 response_json = response.json()
             except (requests.exceptions.RequestException, ValueError) as req_err:
                 print("Failed getting incidents", file=sys.stderr)
+                # TODO: break instead of exit?
                 sys.exit(req_err)
 
             if response_json is None:

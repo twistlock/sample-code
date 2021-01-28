@@ -44,6 +44,10 @@ _Note: The app version on Splunkbase may fall behind the app version in the GitH
 3. **Optional:** Adjust the schedule as needed. The `poll_forensics.py` script uses a file created by `poll_incidents.py` to only pull relevant forensics information. Be sure to schedule `poll_forensics.py` at least 5 minutes after `poll_incidents.py`.
 
 ## Change notes
+### January 28, 2021
+- Fixed bad data being added to forensics_events.txt when poll_incidents.py is ran multiple times before poll_forensics.py.
+- Fixed premature exit when a project in the list of projects does not have any new incidents.
+
 ### December 7, 2020
 - Added projects support
 - Cleaned up code
