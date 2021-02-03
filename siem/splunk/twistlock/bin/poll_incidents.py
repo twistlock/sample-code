@@ -102,9 +102,17 @@ def get_incidents(console_url, auth_token, project_list):
                 print(highest_serialNum, file=file)
     
     # Write the collected info to a file for poll-forensics.py
-    with open(forensics_file, 'a') as f:
-        json.dump(field_extracts, f)
-
+    if os.path.isfile(forensics_file):
+        forensics = json.load(open(forensics_file))
+            for event in forensics:
+                if event not in field_extracts:
+                    field_extracts.append(event)
+            with open(forensics_file, 'w') as f:
+                json.dump(field_extracts, f)                                                                                           
+    else:
+        with open(forensics_file, 'w') as f:
+            json.dump(field_extracts, f)
+            
 if __name__ == "__main__":
     config = json.load(open(config_file))
 
