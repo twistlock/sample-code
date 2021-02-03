@@ -107,7 +107,7 @@ def get_incidents(console_url, auth_token, project_list):
             for event in forensics:
                 if event not in field_extracts:
                     field_extracts.append(event)
-             with open(forensics_file, 'w') as f:
+            with open(forensics_file, 'w') as f:
                 json.dump(field_extracts, f)                                                                                           
     else:
         with open(forensics_file, 'w') as f:
