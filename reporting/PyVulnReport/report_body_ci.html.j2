@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<HEAD>
+<TITLE>Twistlock Images Report</TITLE>
+<STYLE>
+main {
+  max-width: 120ch;
+  padding: 2ch;
+  margin: auto;
+}
+h1 {
+  text-align: center;
+}
+table, th, td {
+  border: 1px solid black;
+  padding: 0;
+}
+table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+}
+td {
+  vertical-align: top;
+}
+td, th {
+  padding: 5px;
+}
+thead th:nth-child(1) {
+  width: 15%;
+}
+thead th:nth-child(2) {
+  width: 65%;
+}
+thead th:nth-child(3) {
+  width: 10%;
+}
+thead th:nth-child(4) {
+  width: 10%;
+} 
+</STYLE>
+</HEAD>
+<FONT FACE="Arial" COLOR="Black">
+<BODY>
+  <MAIN>
+    <H1>Twistlock CI Scan Report</H1> 
+        {% for scans in images %}
+    <H2>Job Name (Build Number): {{ scans.jobName }} ({{ scans.build }})</H2>
+      <TABLE>
+        <THEAD>
+          <TR>
+            <TH>CVE</TH>
+            <TH>Description</TH>
+            <TH>Severity</TH>
+            <TH>Status</TH>
+          </TR>
+        </THEAD>
+
+         <TBODY>
+        {% for vuln in scans.entityInfo.vulnerabilities %}
+          <TR>
+            <TD>{{ vuln.cve }}</TD>
+            <TD>{{ vuln.description }}</TD>
+            <TD>{{ vuln.severity }}</TD>
+            <TD>{{ vuln.status }}</TD>
+          </TR>
+        {% endfor %}
+        </TBODY>
+      </TABLE>
+    {% endfor %}
+  </MAIN> 
+</BODY>
+</HTML>
+
