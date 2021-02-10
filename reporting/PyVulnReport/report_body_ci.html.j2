@@ -1,57 +1,30 @@
 <!DOCTYPE HTML>
 <HEAD>
-<TITLE>Twistlock Images Report</TITLE>
-<STYLE>
-main {
-  max-width: 120ch;
-  padding: 2ch;
-  margin: auto;
-}
-h1 {
-  text-align: center;
-}
-table, th, td {
-  border: 1px solid black;
-  padding: 0;
-}
-table {
-  border-collapse: collapse;
-  table-layout: fixed;
-  width: 100%;
-}
-td {
-  vertical-align: top;
-}
-td, th {
-  padding: 5px;
-}
-thead th:nth-child(1) {
-  width: 15%;
-}
-thead th:nth-child(2) {
-  width: 65%;
-}
-thead th:nth-child(3) {
-  width: 10%;
-}
-thead th:nth-child(4) {
-  width: 10%;
-} 
-</STYLE>
+<TITLE>Prisma Cloud Compute Images Report</TITLE>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.jqueryui.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/dataTables.jqueryui.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#images').DataTable();
+  } );
+</script>
 </HEAD>
-<FONT FACE="Arial" COLOR="Black">
 <BODY>
   <MAIN>
     <H1>Twistlock CI Scan Report</H1> 
         {% for scans in images %}
     <H2>Job Name (Build Number): {{ scans.jobName }} ({{ scans.build }})</H2>
-      <TABLE>
+      <TABLE id="images" class="display" style="width:100%">
         <THEAD>
           <TR>
-            <TH>CVE</TH>
-            <TH>Description</TH>
-            <TH>Severity</TH>
-            <TH>Status</TH>
+            <TH style="width:10%">CVE</TH>
+            <TH style="width:10%">Severity</TH>
+            <TH style="width:10%">Status</TH>
+            <TH style="width:70%">Description</TH>
+
           </TR>
         </THEAD>
 
@@ -59,9 +32,10 @@ thead th:nth-child(4) {
         {% for vuln in scans.entityInfo.vulnerabilities %}
           <TR>
             <TD>{{ vuln.cve }}</TD>
-            <TD>{{ vuln.description }}</TD>
             <TD>{{ vuln.severity }}</TD>
             <TD>{{ vuln.status }}</TD>
+            <TD>{{ vuln.description }}</TD>
+
           </TR>
         {% endfor %}
         </TBODY>
