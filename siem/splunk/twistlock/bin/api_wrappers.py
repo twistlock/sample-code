@@ -1,6 +1,7 @@
 import json
 import requests
 import sys
+from __future__ import print_function
 
 # Wrapper around /api/v1/authenticate
 # Even when using projects, /api/v1/authenticate should still hit against Central Console
