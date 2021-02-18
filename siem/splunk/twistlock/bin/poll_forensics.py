@@ -55,7 +55,7 @@ if __name__ == "__main__":
         password = config["credentials"]["password"]
         console_url = config["console"]["url"]
 
-        auth_token = get_auth_token(console_url, username, password)["token"]
+        auth_token = get_auth_token(console_url, username, password)
         get_forensics(console_url, auth_token)
     else:
         print("Forensics file not found", file=sys.stderr)

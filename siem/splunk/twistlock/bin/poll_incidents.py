@@ -42,8 +42,8 @@ def get_incidents(console_url, auth_token, project_list):
             response.raise_for_status()
             total_count = int(response.headers["Total-Count"])
         except (requests.exceptions.RequestException, ValueError) as req_err:
-            print("Failed getting incidents count", file=sys.stderr)
-            sys.exit(req_err)
+            print("Failed getting incidents count for {}\n{}".format(project, req_err), file=sys.stderr)
+            continue
 
         if total_count < 1:
             print("No unacknowledged incidents found for", project, file=sys.stderr)
@@ -63,9 +63,8 @@ def get_incidents(console_url, auth_token, project_list):
                 response.raise_for_status()
                 response_json = response.json()
             except (requests.exceptions.RequestException, ValueError) as req_err:
-                print("Failed getting incidents", file=sys.stderr)
-                # TODO: break instead of exit?
-                sys.exit(req_err)
+                print("Failed getting incidents\n{}".format(req_err), file=sys.stderr)
+                break
 
             if response_json is None:
                 print("Unusually empty response", file=sys.stderr)
@@ -120,7 +119,7 @@ if __name__ == "__main__":
     password = config["credentials"]["password"]
     console_url = config["console"]["url"]
 
-    auth_token = get_auth_token(console_url, username, password)["token"]
+    auth_token = get_auth_token(console_url, username, password)
 
     # Check if supplied Console address is SaaS or not
     # SaaS does not have projects, so use default value
@@ -131,10 +130,7 @@ if __name__ == "__main__":
         if type(config["console"]["projects"]) is list:
             projects = config["console"]["projects"]
         elif config["console"]["projects"].lower() == "all":
-            projects_json = get_projects(console_url, auth_token)
-            projects = ["Central Console"] # Central Console doesn't show up in projects list, so explicitly add it here.
-            for item in projects_json:
-                projects.append(item["_id"])
+            projects = get_projects(console_url, auth_token)
         else:
             print("console.projects in config.json is invalid: ", config["console"]["projects"], file=sys.stderr)
             sys.exit(1)

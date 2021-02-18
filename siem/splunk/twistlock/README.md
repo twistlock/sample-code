@@ -37,13 +37,16 @@ _Note: The app version on Splunkbase may fall behind the app version in the GitH
 
     [2] Prisma Cloud Compute Console URL (without trailing `/`). This URL must be reachable by Splunk. If you are using Prisma Cloud Enterprise Edition (SaaS), this will be the address found at **Compute > Manage > System > Downloads** under the **Path to Console** heading.
 
-    [3] List of projects. This is only applicable to users with [projects](https://docs.twistlock.com/docs/compute_edition/deployment_patterns/projects.html) configured in Prisma Cloud Compute Edition. **If you do not use projects, you can safely leave the default value.** The field accepts two types of values: a list of projects (example above) and the string `"all"` (be sure to include quotes). Using the list, you can specify a set of projects you'd like queried. With the string `"all"`, the script will automatically pull data from all projects. Using `"all"` requires a user with the [Administrator role](https://docs.twistlock.com/docs/compute_edition/authentication/user_roles.html#administrator).
+    [3] List of projects. This is only applicable to users with [projects](https://docs.twistlock.com/docs/compute_edition/deployment_patterns/projects.html) configured in Prisma Cloud Compute Edition. **If you do not use projects, you can safely leave the default value.** The field accepts two types of values: a list of projects (example above) and the string `"all"` (be sure to include quotes). Using the list, you can specify a set of projects you'd like queried. With the string `"all"`, the script will automatically pull data from all projects. Using `"all"` requires a user with at least the [DevSecOps role](https://docs.twistlock.com/docs/compute_edition/authentication/user_roles.html#devsecops-user).
 
 2. Enable `poll_incidents.py` and `poll_forensics.py` at **Settings > Data inputs > Scripts**.
 
 3. **Optional:** Adjust the schedule as needed. The `poll_forensics.py` script uses a file created by `poll_incidents.py` to only pull relevant forensics information. Be sure to schedule `poll_forensics.py` at least 5 minutes after `poll_incidents.py`.
 
 ## Change notes
+### February 17, 2021 - v3.2.0
+- Changed the method of getting projects to not require an admin user ([#91](https://github.com/twistlock/sample-code/issues/91).
+
 ### January 28, 2021
 - Fixed bad data being added to forensics_events.txt when poll_incidents.py is ran multiple times before poll_forensics.py.
 - Fixed premature exit when a project in the list of projects does not have any new incidents.

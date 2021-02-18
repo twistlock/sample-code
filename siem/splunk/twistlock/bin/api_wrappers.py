@@ -1,7 +1,8 @@
+from __future__ import print_function
+import base64
 import json
 import requests
 import sys
-from __future__ import print_function
 
 # Wrapper around /api/v1/authenticate
 # Even when using projects, /api/v1/authenticate should still hit against Central Console
@@ -20,13 +21,31 @@ def get_auth_token(console_url, username, password):
         print("Failed getting auth token", file=sys.stderr)
         sys.exit(req_err)
 
-    return response_json
+    return response_json['token']
 
-# Wrapper around /api/v1/projects
-# Requires Twistlock admin user
+# Wrapper around /api/v1/current/projects
+# Sample output:
+# [{"_id":"string","address":"string","creationTime":"string","connected":Boolean}
+# ,{"_id":"string","address":"string","creationTime":"string","connected":Boolean}
+# ]
+# Remark: Even if the user is permitted to Central Console, Central Console will not be an element in the response.
+# A user can have access to 1) all projects or 2) a subset of projects not including the Central Console
 def get_projects(console_url, auth_token):
-    endpoint = "/api/v1/projects"
-    params = {"project": "Central Console"}
+    projects = []
+
+    # A user's permitted projects are listed in the JWT payload
+    # Load the decoded JWT payload to get available projects
+    # https://stackoverflow.com/a/49459036
+    jwt_payload = json.loads(base64.b64decode(auth_token.split('.')[1] + "==="))
+
+    # Address case in which user has permission to all projects
+    # Otherwise Central Console would not be added to projects list
+    if jwt_payload["permissions"][0]["project"] == "Central Console":
+        projects.append("Central Console")
+
+    endpoint = "/api/v1/current/projects"
+    # jwt_payload["permissions"][0]["project"] ensures that the project specified is one the user is permitted to access
+    params = {"project":  jwt_payload["permissions"][0]["project"]}
     headers = {"Authorization": "Bearer " + auth_token, "Accept": "application/json"}
     request_url = console_url + endpoint
 
@@ -38,4 +57,7 @@ def get_projects(console_url, auth_token):
         print("Failed getting projects", file=sys.stderr)
         sys.exit(req_err)
 
-    return response_json
+    for item in response_json:
+        projects.append(item["_id"])
+
+    return projects

@@ -7,14 +7,10 @@ while [[ $# -gt 0 ]]; do
       build_version=$2
       shift 2
       ;;
-    -d|--directory)
-      root_dir=$2
-      shift 2
-      ;;
   esac
 done
 
 # exit if either variable is missing
-[[ -z $build_version ]] || [[ -z "$root_dir" ]] && exit 1
+[[ -z $build_version ]] && exit 1
 
-tar -czf pcc-splunk-app-${build_version}.tar.gz -C "$root_dir"/siem/splunk/ twistlock
+tar -czf pcc-splunk-app-${build_version}.tar.gz --exclude __pycache__ twistlock
