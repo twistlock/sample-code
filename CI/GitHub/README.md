@@ -1,18 +1,18 @@
-This repo includes an example GitHub Action that can be used for integrating vulnerability and compliance scans with regular pushes and pull requests.
+This directory contains an example GitHub Action that can be used to integrate vulnerability and compliance scanning with regular pushes and pull requests.
 
-A big shoutout to [@jpadams](https://github.com/jpadams) for the initial sample Action and scan.yml used to configure the Action.
+A big shoutout to [@jpadams](https://github.com/jpadams) for the initial sample action and scan.yml used to configure the Action.
 
 ## Requirements
-To use the GitHub Action, users will need the following:
-* A Prisma Cloud or Prisma Cloud Compute edition (Twistlock) license with running Console
-* A ciuser role, with username and password, which allows users to run vulnerability and compliance scans as part of their workflows
-* Proper configuration of the scan.yml file included within the workflows folder
+To use this GitHub Action, you will need
+* a functional Prisma Cloud Compute Console
+* credentials for a Compute user ([CI User](https://docs.twistlock.com/docs/compute_edition/authentication/user_roles.html#ci-user) or [Build and Deploy Security](https://docs.twistlock.com/docs/enterprise_edition/authentication/prisma_cloud_user_roles.html#prisma-cloud-roles-to-compute-roles-mapping) role is recommended)
 
-## Editing the scan.yml
-The yaml file provides the instructions for the Action, including authenticating with the Prisma Cloud Console via the API to install twistcli, our command line interface that performs our image scan, and publishing the scan results.
+## Setup
+1. Add the `.github` directory to the root of your repository.
+2. Create the secrets used by the action (`PCC_USER`, `PCC_PASS`, and `PCC_CONSOLE_URL`). See [Github's documentation](https://docs.github.com/en/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository) for instructions.
 
-Users will need to add their TL_Console_URL within the environment variables section of the scan.yml as well as the name of their Container_Image. Additionally, users will need to add their ciuser username and password (TL_USER and TL_PASS) into the Secrets tab within their repository for proper authentication.
+The image will be built, tagged, and scanned using `owner/repository:commit`. This is the image name under which the scan results will be displayed in the Compute Console. You can adjust this with the `IMAGE_NAME` variable in `scan.yml`.
 
-## Running the Action and viewing results
-The sample Action is designed to run on any push or pull request. Image scan results can be viewed by navigating to the Actions tab and clicking on the Scan the image step. 
-
+The image scan policy (including failure thresholds) is managed in the Compute Console at
+* **Defend > Vulnerabilities > Images > CI**
+* **Defend > Compliance > Containers and images > CI**
