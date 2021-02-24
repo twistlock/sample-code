@@ -15,7 +15,7 @@ data_dir = os.path.join(os.environ["SPLUNK_HOME"], "etc", "apps", "twistlock", "
 config_file = os.path.join(data_dir, "config.json")
 forensics_file = os.path.join(data_dir, "forensics_events.txt")
 
-def get_incidents(console_url, auth_token, project_list):
+def get_incidents(console_url, auth_token, project_list, collection="All"):
     endpoint = "/api/v1/audits/incidents"
     headers = {"Authorization": "Bearer " + auth_token, "Accept": "application/json"}
     request_limit = 50
@@ -37,7 +37,7 @@ def get_incidents(console_url, auth_token, project_list):
             last_serialNum_indexed = 0
 
         # Make a call to get count of incidents
-        params = {"project": project, "acknowledged": "false", "limit": 1, "offset": 0}
+        params = {"collections": collection, "project": project, "acknowledged": "false", "limit": 1, "offset": 0}
         params_string = "&".join("%s=%s" % (k,v) for k,v in params.items())
         try:
             response = requests.get(request_url, params=params_string, headers=headers)
@@ -57,7 +57,7 @@ def get_incidents(console_url, auth_token, project_list):
         # offset: 50, limit: 50 = 51-85
         # offset: 100 > 85 = break
         for offset in range(0, total_count, 50):
-            params = {"project": project, "acknowledged": "false", "limit": request_limit, "offset": offset}
+            params = {"collections": collection, "project": project, "acknowledged": "false", "limit": request_limit, "offset": offset}
             params_string = "&".join("%s=%s" % (k,v) for k,v in params.items())
 
             try:
