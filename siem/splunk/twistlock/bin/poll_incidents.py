@@ -9,7 +9,6 @@ import requests
 
 from api_wrappers import get_auth_token, get_projects
 
-
 data_dir = os.path.join(os.environ["SPLUNK_HOME"], "etc", "apps", "twistlock", "bin", "data")
 
 config_file = os.path.join(data_dir, "config.json")
@@ -75,6 +74,7 @@ def get_incidents(console_url, auth_token, project_list):
             highest_serialNum = 0
             for incident in response_json:
                 current_serialNum = incident["serialNum"]
+                incident["console"] = console_url
                 # Print only new incidents for indexing in Splunk
                 if current_serialNum > last_serialNum_indexed:
                     # Add project key for associating in Splunk
@@ -97,7 +97,7 @@ def get_incidents(console_url, auth_token, project_list):
         # Update the checkpoint file
         if highest_serialNum >= last_serialNum_indexed:
             with open(checkpoint_file, "w") as f:
-                f.write(highest_serialNum)
+                f.write(str(highest_serialNum))
 
     # Write the collected info to a file for poll-forensics.py.
     # If forensics file already exists append newly-collected incidents to what
@@ -113,32 +113,32 @@ def get_incidents(console_url, auth_token, project_list):
     else:
         with open(forensics_file, "w") as f:
             json.dump(current_incidents, f)
-            
+
 if __name__ == "__main__":
     config = json.load(open(config_file))
 
-    if not (config["console"]["url"] and config["credentials"]["username"] and config["credentials"]["password"]):
+    if not (config["consoles"][0]["url"] and config["consoles"][0]["credentials"]["username"] and config["consoles"][0]["credentials"]["username"]):
         print("At least one item is missing in config.json", file=sys.stderr)
         sys.exit(1)
+    print(len(config["consoles"]))
+    for console in range(0,len(config["consoles"])):
+        username = config["consoles"][console]["credentials"]["username"]
+        password = config["consoles"][console]["credentials"]["password"]
+        console_url = config["consoles"][console]["url"]
 
-    username = config["credentials"]["username"]
-    password = config["credentials"]["password"]
-    console_url = config["console"]["url"]
-
-    auth_token = get_auth_token(console_url, username, password)
-
-    # Check if supplied Console address is SaaS or not
-    # SaaS does not have projects, so use default value
-    if "cloud.twistlock.com/" in console_url:
-        projects = ["Central Console"]
-    else:
-        # Try to handle user-specified projects
-        if type(config["console"]["projects"]) is list:
-            projects = config["console"]["projects"]
-        elif config["console"]["projects"].lower() == "all":
-            projects = get_projects(console_url, auth_token)
+        auth_token = get_auth_token(console_url, username, password)
+        # Check if supplied Console address is SaaS or not
+        # SaaS does not have projects, so use default value
+        if "cloud.twistlock.com/" in console_url:
+            projects = ["Central Console"]
         else:
-            print("console.projects in config.json is invalid: ", config["console"]["projects"], file=sys.stderr)
-            sys.exit(1)
+            # Try to handle user-specified projects
+            if type(config["consoles"][console]["projects"]) is list:
+                projects = config["consoles"][console]["projects"]
+            elif config["consoles"][console]["projects"].lower() == "all":
+                projects = get_projects(console_url, auth_token)
+            else:
+                print("console.projects in config.json is invalid: ", config["consoles"][console]["projects"], file=sys.stderr)
+                sys.exit(1)
 
-    get_incidents(console_url, auth_token, projects)
+        get_incidents(console_url, auth_token, projects)
