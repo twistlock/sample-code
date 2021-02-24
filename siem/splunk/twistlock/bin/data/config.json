@@ -1,10 +1,14 @@
 {
-  "credentials": {
-    "username": "",
-    "password": ""
-  },
-  "console": {
-    "url": "",
-    "projects": ["Central Console"]
-  }
+  "consoles": 
+  [
+    {
+      "url": "",
+      "credentials": 
+        {
+          "username": "",
+          "password": ""
+        },
+      "projects": ["Central Console"]
+    }
+  ]
 }
