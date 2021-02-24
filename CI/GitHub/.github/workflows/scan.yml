@@ -3,15 +3,13 @@ name: Prisma Cloud Compute Image Scan
 on: [push, pull_request]
 
 env:
-  # The Prisma Cloud Compute user
-  # CI User (or Build and Deploy Security) role is recommended
   PCC_USER: ${{ secrets.PCC_USER }}
   PCC_PASS: ${{ secrets.PCC_PASS }}
-  # The URL for the Prisma Cloud Compute Console (without a trailing /)
   PCC_CONSOLE_URL: ${{ secrets.PCC_CONSOLE_URL }}
   IMAGE_NAME: ${{ github.repository }}:${{ github.sha }}
 
 jobs:
+  # Jobs are ran independently from each other, so build and scan needs to be in a single job.
   build-and-scan:
     name: Build and scan image
     runs-on: ubuntu-latest
