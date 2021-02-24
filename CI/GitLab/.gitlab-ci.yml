@@ -1,0 +1,14 @@
+variables: 
+  IMAGE_NAME: $CI_PROJECT_PATH:$CI_COMMIT_SHA
+
+image: docker:19.03
+services:
+  - docker:19.03-dind
+
+# Jobs are ran independently from each other, so build and scan needs to be in a single job.
+build-and-scan:
+  script:
+    - docker build -t $IMAGE_NAME .
+    - 'wget --header "Authorization: Basic $(echo -n $PCC_USER:$PCC_PASS | base64)" $PCC_CONSOLE_URL/api/v1/util/twistcli'
+    - chmod a+x ./twistcli
+    - ./twistcli images scan --docker-address http://docker:2375 --address $PCC_CONSOLE_URL --user $PCC_USER --password $PCC_PASS --details $IMAGE_NAME
