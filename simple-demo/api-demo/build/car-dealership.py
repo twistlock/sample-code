@@ -24,10 +24,9 @@ def toDictionary(args):
         car_dict[i[0]]=i[1]
     return car_dict
 
-def logEvent(eventType, messages):
+def logEvent(eventType, msg):
     d = datetime.now().strftime("[%Y-%m-%d %H:%M:%S +0000] ")
-    for message in messages:
-        print( d + " " + eventType + " " + message )
+    print( d + " " + eventType + " " + msg )
 
 @app.get("/car")
 async def get_car(request):
@@ -59,8 +58,8 @@ async def get_car(request):
 async def add_new_car(request):
     newcar = request.json
     cars.insert_one(newcar)
-    d = datetime.now().strftime("[%Y-%m-%d %H:%M:%S +0000] [DB] [CREATE]")
-    print( d + " ***** " + newcar['make'] + " " + newcar['model'] + " created ****"  )
+    msg = " ***** " + newcar['make'] + " " + newcar['model'] + " created ****"
+    logEvent( "[DB] [CREATE]", msg )
 
     return response.json(
         {'Result': 'car successfully created'},
@@ -100,8 +99,8 @@ async def get_dealer(request):
 async def add_new_dealer(request):
     newdealer = request.json
     dealers.insert_one(newdealer)
-    d = datetime.now().strftime("[%Y-%m-%d %H:%M:%S +0000] [DB] [CREATE]")
-    print( d + " ***** " + newdealer['_id'] + " " + newdealer['city'] + " created ****"  )
+    msg = " ***** " + newdealer['_id'] + " " + newdealer['city'] + " created ****"
+    logEvent( "[DB] [CREATE]", msg )
 
     return response.json(
         {"Result": "Dealership " + newdealer['_id'] + " successfully created"},
@@ -130,12 +129,10 @@ async def get_inventory(request):
 
     if oneFound:
         foundCars = []
-        messages = []
         for dealer in listOfDealers:
             foundCars = list(cars.find({ "dealership": dealer.get("_id") }))
-            messages.append("***** " + dealer['_id'] + " in " + dealer['city'] + " inventoried ****")
-            messages.append("  +++ " + dealer['_id'] + " has " + str(len(foundCars)) + " cars" )
-            logEvent( "[DB] [INVENTORY]", messages)
+            msg = "***** " + dealer['_id'] + " in " + dealer['city'] + " has " + str(len(foundCars)) + " cars ****"
+            logEvent( "[DB] [INVENTORY]", msg)
 
         cars_json = json.dumps(foundCars)
         return response.json(

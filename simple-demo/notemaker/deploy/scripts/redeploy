@@ -1,5 +1,5 @@
 #!/bin/bash
-[[ $# -lt 2 ]] && echo "You must pass in 1.0 or 2.0 and one or more of car|web|mongo|perf|nginx" && exit 1
+[[ $# -lt 2 ]] && echo "You must pass in 1.0 or 2.0 and one or more of car|web|mongo|nginx" && exit 1
 op=$2
 
 cd $1 

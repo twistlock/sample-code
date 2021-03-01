@@ -5,5 +5,5 @@ LABEL application="notemaker"
 LABEL appVersion==="1.0"
 LABEL tier="database"
 LABEL baseImage="mongo"
-LABEL patch="2.1."
+LABEL patch="1.0.1"
 
