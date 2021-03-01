@@ -13,7 +13,7 @@ from api_wrappers import get_auth_token, get_projects
 data_dir = os.path.join(os.environ["SPLUNK_HOME"], "etc", "apps", "twistlock", "bin", "data")
 
 config_file = os.path.join(data_dir, "config.json")
-forensics_file = os.path.join(data_dir, "forensics_events.txt")
+forensics_file = os.path.join(data_dir, "incidents_list.txt")
 
 def get_incidents(console_url, auth_token, project_list):
     endpoint = "/api/v1/audits/incidents"
