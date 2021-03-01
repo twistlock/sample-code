@@ -13,7 +13,7 @@ from api_wrappers import get_auth_token, get_projects
 data_dir = os.path.join(os.environ["SPLUNK_HOME"], "etc", "apps", "twistlock", "bin", "data")
 
 config_file = os.path.join(data_dir, "config.json")
-forensics_file = os.path.join(data_dir, "forensics_events.txt")
+incidents_file = os.path.join(data_dir, "incidents_list.txt")
 
 def get_incidents(console_url, auth_token, project_list):
     endpoint = "/api/v1/audits/incidents"
@@ -102,16 +102,16 @@ def get_incidents(console_url, auth_token, project_list):
     # Write the collected info to a file for poll-forensics.py.
     # If forensics file already exists append newly-collected incidents to what
     # was previously collected and stick that back in forensics file.
-    if os.path.isfile(forensics_file):
-        previous_incidents = json.load(open(forensics_file))
+    if os.path.isfile(incidents_file):
+        previous_incidents = json.load(open(incidents_file))
         for incident in current_incidents:
             if incident not in previous_incidents:
                 previous_incidents.append(incident)
-        with open(forensics_file, "w") as f:
+        with open(incidents_file, "w") as f:
             # At this point, previous_incidents list will have any new incidents appended
             json.dump(previous_incidents, f)
     else:
-        with open(forensics_file, "w") as f:
+        with open(incidents_file, "w") as f:
             json.dump(current_incidents, f)
             
 if __name__ == "__main__":
