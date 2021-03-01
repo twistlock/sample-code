@@ -10,10 +10,7 @@ from api_wrappers import get_auth_token
 
 
 data_dir = os.path.join(os.environ["SPLUNK_HOME"], "etc", "apps", "twistlock", "bin", "data")
-
-# config_file - stores the Console URL and authentication information
 config_file = os.path.join(data_dir, "config.json")
-
 incidents_file = os.path.join(data_dir, "incidents_list.txt")
 
 def get_forensics(console_url, auth_token):
@@ -34,7 +31,7 @@ def get_forensics(console_url, auth_token):
                 response.raise_for_status()
                 response_json = response.json()
             except (requests.exceptions.RequestException, ValueError) as req_err:
-                print("Failed getting forensics\nincidentID: {}\nprofileID: {}\n{}".format(incident["_id"], incident["profileID"], req_err), file=sys.stderr)
+                print("Failed getting forensics for incidentID {} from profileID {}. Error: {}. Continuing.".format(incident["_id"], incident["profileID"], req_err), file=sys.stderr)
                 continue
 
             if response_json is not None:
@@ -49,16 +46,15 @@ def get_forensics(console_url, auth_token):
             json.dump(incidents, f)
             f.flush()
 
-
     os.remove(incidents_file)
 
-
 if __name__ == "__main__":
+    print("Prisma Cloud Compute poll_forensics script started.", file=sys.stderr)
     if (os.path.isfile(incidents_file)):
         config = json.load(open(config_file))
 
         if not (config["console"]["url"] and config["credentials"]["username"] and config["credentials"]["password"]):
-            print("At least one item is missing in config.json", file=sys.stderr)
+            print("At least one item is missing in config.json. Please see README.md for more information. Exiting.", file=sys.stderr)
             sys.exit(1)
         
         username = config["credentials"]["username"]
@@ -68,4 +64,5 @@ if __name__ == "__main__":
         auth_token = get_auth_token(console_url, username, password)
         get_forensics(console_url, auth_token)
     else:
-        print("Incidents file not found", file=sys.stderr)
+        print("Incidents file not found.", file=sys.stderr)
+    print("Prisma Cloud Compute poll_forensics script ending.", file=sys.stderr)
