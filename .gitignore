@@ -48,3 +48,9 @@ Thumbs.db
 # Allow Twistlock Splunk App to be tracked #
 ############################################
 !pcc-splunk-app-*.tar.gz
+
+# Python
+.python-version
+__pycache__
+
+env
