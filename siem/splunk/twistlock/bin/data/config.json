@@ -1,34 +1,34 @@
 {
   "consoles": [
     {
-      "url": "https://twistlock-prod", [2]
+      "url": "https://", 
       "credentials": {
-        "username": "jdoe", [1]
-        "password": "Password123!" [1]
+        "username": "", 
+        "password": "" 
       },
       "projects": [
-        "Central Console" [3]
+        "Central Console" 
       ]
     },
     {
-      "url": "https://twistlock-test", [2]
+      "url": "https://", 
       "credentials": {
-        "username": "jdoe", [1]
-        "password": "Password123!" [1]
+        "username": "", 
+        "password": "" 
       },
       "projects": [
-        "Central Console" [3]
+        "Central Console" 
       ]
     },
     {
-      "url": "https://twistlock-dev:8083", [2]
+      "url": "https://", 
       "credentials": {
-        "username": "jdoe", [1]
-        "password": "Password123!" [1]
+        "username": "", 
+        "password": "" 
       },
       "projects": [
         "Central Console",
-        "my tenant project" [3]
+        "my tenant project" 
       ]
     }
   ]
