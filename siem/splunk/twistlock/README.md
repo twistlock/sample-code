@@ -22,14 +22,39 @@ _Note: The app version on Splunkbase may fall behind the app version in the GitH
 1. Open `bin/data/config.json` for editing and add the appropriate values for your environment. See the annotated example and field descriptions below for more detail:
     ```
     {
-      "credentials": {
-        "username": "jdoe", [1]
-        "password": "Password123!" [1]
-      },
-      "console": {
-        "url": "https://my.console.url:8083", [2]
-        "projects": ["Central Console", "my tenant project"] [3]
-      }
+      "consoles": [
+        {
+          "url": "https://twistlock-prod", [2]
+          "credentials": {
+            "username": "jdoe", [1]
+            "password": "Password123!" [1]
+          },
+          "projects": [
+            "Central Console" [3]
+          ]
+        },
+        {
+          "url": "https://twistlock-test", [2]
+          "credentials": {
+            "username": "jdoe", [1]
+            "password": "Password123!" [1]
+          },
+          "projects": [
+            "Central Console" [3]
+          ]
+        },
+        {
+          "url": "https://twistlock-dev:8083", [2]
+          "credentials": {
+            "username": "jdoe", [1]
+            "password": "Password123!" [1]
+          },
+          "projects": [
+            "Central Console",
+            "my tenant project" [3]
+          ]
+        }
+      ]
     }
     ```
 
