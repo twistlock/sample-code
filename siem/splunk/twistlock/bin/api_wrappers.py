@@ -69,7 +69,8 @@ def get_projects(console_url, auth_token):
         logger.error("Failed getting projects. Error: {}. Exiting.".format(req_err))
         sys.exit(req_err)
 
-    for item in response_json:
-        projects.append(item["_id"])
+    if response_json is not None:
+        for item in response_json:
+            projects.append(item["_id"])
 
     return projects
