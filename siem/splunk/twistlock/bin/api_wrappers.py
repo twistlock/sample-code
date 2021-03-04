@@ -1,8 +1,13 @@
 from __future__ import print_function
 import base64
 import json
-import requests
 import sys
+try:
+    from urllib.parse import urljoin
+except ImportError:
+    from urlparse import urljoin
+
+import requests
 
 # Wrapper around /api/v1/authenticate
 # Even when using projects, /api/v1/authenticate should still hit against Central Console
@@ -11,7 +16,7 @@ def get_auth_token(console_url, username, password):
     params = {"project": "Central Console"}
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     data = {"username": username, "password": password}
-    request_url = console_url + endpoint
+    request_url = urljoin(console_url, endpoint)
 
     try:
         response = requests.post(request_url, params=params, headers=headers, data=json.dumps(data))
@@ -47,7 +52,7 @@ def get_projects(console_url, auth_token):
     # jwt_payload["permissions"][0]["project"] ensures that the project specified is one the user is permitted to access
     params = {"project":  jwt_payload["permissions"][0]["project"]}
     headers = {"Authorization": "Bearer " + auth_token, "Accept": "application/json"}
-    request_url = console_url + endpoint
+    request_url = urljoin(console_url, endpoint)
 
     try:
         response = requests.get(request_url, params=params, headers=headers)
