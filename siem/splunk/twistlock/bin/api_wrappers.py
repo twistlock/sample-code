@@ -1,6 +1,6 @@
-from __future__ import print_function
 import base64
 import json
+import logging
 import sys
 try:
     from urllib.parse import urljoin
@@ -8,6 +8,13 @@ except ImportError:
     from urlparse import urljoin
 
 import requests
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(levelname)s %(message)s')
+handler = logging.StreamHandler(stream=sys.stderr)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 # Wrapper around /api/v1/authenticate
 # Even when using projects, /api/v1/authenticate should still hit against Central Console
@@ -23,7 +30,7 @@ def get_auth_token(console_url, username, password):
         response.raise_for_status()
         response_json = response.json()
     except (requests.exceptions.RequestException, ValueError) as req_err:
-        print("Failed getting auth token", file=sys.stderr)
+        logger.error("Failed getting auth token. Error: {}. Exiting.".format(req_err))
         sys.exit(req_err)
 
     return response_json['token']
@@ -59,7 +66,7 @@ def get_projects(console_url, auth_token):
         response.raise_for_status()
         response_json = response.json()
     except (requests.exceptions.RequestException, ValueError) as req_err:
-        print("Failed getting projects", file=sys.stderr)
+        logger.error("Failed getting projects. Error: {}. Exiting.".format(req_err))
         sys.exit(req_err)
 
     for item in response_json:

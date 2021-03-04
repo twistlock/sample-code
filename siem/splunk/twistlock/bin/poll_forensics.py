@@ -1,5 +1,5 @@
-from __future__ import print_function
 import json
+import logging
 import os
 import sys
 try:
@@ -11,6 +11,12 @@ import requests
 
 from api_wrappers import get_auth_token
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(levelname)s %(message)s')
+handler = logging.StreamHandler(stream=sys.stderr)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 data_dir = os.path.join(os.environ["SPLUNK_HOME"], "etc", "apps", "twistlock", "bin", "data")
 config_file = os.path.join(data_dir, "config.json")
@@ -23,6 +29,8 @@ def get_forensics(console_url, auth_token):
 
     with open(incidents_file, "r+") as f:
         incidents = json.load(f)
+        if not incidents:
+            logger.info("No new forensic data to ingest.")
         while incidents:
             incident = incidents.pop(0)
             params = {"project": incident["project"], "limit": request_limit, "incidentID": incident["_id"]}
@@ -34,7 +42,7 @@ def get_forensics(console_url, auth_token):
                 response.raise_for_status()
                 response_json = response.json()
             except (requests.exceptions.RequestException, ValueError) as req_err:
-                print("Failed getting forensics for incidentID {} from profileID {}. Error: {}. Continuing.".format(incident["_id"], incident["profileID"], req_err), file=sys.stderr)
+                logger.warning("Failed getting forensics for incidentID {} from profileID {}. Error: {}. Continuing.".format(incident["_id"], incident["profileID"], req_err))
                 continue
 
             if response_json is not None:
@@ -52,12 +60,12 @@ def get_forensics(console_url, auth_token):
     os.remove(incidents_file)
 
 if __name__ == "__main__":
-    print("Prisma Cloud Compute poll_forensics script started.", file=sys.stderr)
+    logger.info("Prisma Cloud Compute poll_forensics script started.")
     if (os.path.isfile(incidents_file)):
         config = json.load(open(config_file))
 
         if not (config["console"]["url"] and config["credentials"]["username"] and config["credentials"]["password"]):
-            print("At least one item is missing in config.json. Please see README.md for more information. Exiting.", file=sys.stderr)
+            logger.error("At least one item is missing in config.json. Please see README.md for more information. Exiting.")
             sys.exit(1)
         
         username = config["credentials"]["username"]
@@ -67,5 +75,5 @@ if __name__ == "__main__":
         auth_token = get_auth_token(console_url, username, password)
         get_forensics(console_url, auth_token)
     else:
-        print("Incidents file not found.", file=sys.stderr)
-    print("Prisma Cloud Compute poll_forensics script ending.", file=sys.stderr)
+        logger.warning("Incidents file not found.")
+    logger.info("Prisma Cloud Compute poll_forensics script ending.")

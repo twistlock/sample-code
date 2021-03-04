@@ -1,5 +1,5 @@
-from __future__ import print_function
 import json
+import logging
 import os
 import re
 import sys
@@ -12,6 +12,12 @@ import requests
 
 from api_wrappers import get_auth_token, get_projects
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(levelname)s %(message)s')
+handler = logging.StreamHandler(stream=sys.stderr)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 data_dir = os.path.join(os.environ["SPLUNK_HOME"], "etc", "apps", "twistlock", "bin", "data")
 config_file = os.path.join(data_dir, "config.json")
@@ -33,7 +39,7 @@ def get_incidents(console_url, auth_token, project_list):
                 try:
                     last_serialNum_indexed = int(f.readline())
                 except Exception as err:
-                    print("Unexpected content in checkpoint file. Exiting.", file=sys.stderr)
+                    logger.error("Unexpected content in checkpoint file. Exiting.")
                     sys.exit(err)
         else:
             last_serialNum_indexed = 0
@@ -46,11 +52,11 @@ def get_incidents(console_url, auth_token, project_list):
             response.raise_for_status()
             total_count = int(response.headers["Total-Count"])
         except (requests.exceptions.RequestException, ValueError) as req_err:
-            print("Failed getting incidents count for {}. Error: {}. Continuing.".format(project, req_err), file=sys.stderr)
+            logger.warning("Failed getting incidents count for {}. Error: {}. Continuing.".format(project, req_err))
             continue
 
         if total_count < 1:
-            print("No unacknowledged incidents found for {}. Continuing.".format(project), file=sys.stderr)
+            logger.warning("No incidents to ingest for {}. Continuing.".format(project))
             continue
 
         # Use that count to create offsets
@@ -67,11 +73,11 @@ def get_incidents(console_url, auth_token, project_list):
                 response.raise_for_status()
                 response_json = response.json()
             except (requests.exceptions.RequestException, ValueError) as req_err:
-                print("Failed getting incidents for {}. Error: {}. Continuing.".format(project, req_err), file=sys.stderr)
+                logger.warning("Failed getting incidents for {}. Error: {}. Continuing.".format(project, req_err))
                 break
 
             if response_json is None:
-                print("Unusually empty response from {} using limit {} and offset {}. Continuing.".format(project, request_limit, request_offset), file=sys.stderr)
+                logger.warning("Unusually empty response from {} using limit {} and offset {}. Continuing.".format(project, request_limit, request_offset))
                 break
 
             highest_serialNum = 0
@@ -97,9 +103,11 @@ def get_incidents(console_url, auth_token, project_list):
                     highest_serialNum = current_serialNum
 
         # Update the checkpoint file
-        if highest_serialNum >= last_serialNum_indexed:
+        if highest_serialNum > last_serialNum_indexed:
             with open(checkpoint_file, "w") as f:
                 f.write(str(highest_serialNum))
+        else:
+            logger.info("No new incidents to ingest for {}. Continuing.".format(project))
 
     # Write the collected info to a file for poll-forensics.py.
     # If incidents file already exists append newly-collected incidents to what
@@ -117,11 +125,11 @@ def get_incidents(console_url, auth_token, project_list):
             json.dump(current_incidents, f)
             
 if __name__ == "__main__":
-    print("Prisma Cloud Compute poll_incidents script started.", file=sys.stderr)
+    logger.info("Prisma Cloud Compute poll_incidents script started.")
     config = json.load(open(config_file))
 
     if not (config["console"]["url"] and config["credentials"]["username"] and config["credentials"]["password"]):
-        print("At least one item is missing in config.json. Please see README.md for more information. Exiting.", file=sys.stderr)
+        logger.error("At least one item is missing in config.json. Please see README.md for more information. Exiting.")
         sys.exit(1)
 
     username = config["credentials"]["username"]
@@ -141,8 +149,8 @@ if __name__ == "__main__":
         elif config["console"]["projects"].lower() == "all":
             projects = get_projects(console_url, auth_token)
         else:
-            print("console.projects in config.json is invalid: {}. Exiting.".format(config["console"]["projects"]), file=sys.stderr)
+            logger.error("console.projects in config.json is invalid: {}. Exiting.".format(config["console"]["projects"]))
             sys.exit(1)
 
     get_incidents(console_url, auth_token, projects)
-    print("Prisma Cloud Compute poll_incidents script ending.", file=sys.stderr)
+    logger.info("Prisma Cloud Compute poll_incidents script ending.")
