@@ -97,7 +97,7 @@ def get_incidents(console_url, auth_token, project_list):
         # Update the checkpoint file
         if highest_serialNum >= last_serialNum_indexed:
             with open(checkpoint_file, "w") as f:
-                f.write(highest_serialNum)
+                f.write(str(highest_serialNum))
 
     # Write the collected info to a file for poll-forensics.py.
     # If forensics file already exists append newly-collected incidents to what
