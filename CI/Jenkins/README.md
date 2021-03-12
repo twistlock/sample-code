@@ -1,5 +1,3 @@
-## jenkinsPipelineExample
-Simply create a "Pipeline script from SCM" project in Jenkins and point to this repository in Repository URL field, no credentials needed.
-Then build the project. 
+We have an official Jenkins plugin for Prisma Cloud Compute. You can find examples of its usage in our [documentation](https://docs.twistlock.com/docs/compute_edition/continuous_integration/jenkins_plugin.html).
 
-DF1, DF2, and DF3 are versions of the Dockerfile, each more secure than the previous.
+If there are any use cases not covered in the documentation that are important to you and you feel should be represented, feel free to open an issue or pull request in either [this repository](https://github.com/twistlock/sample-code) or our [docs repository](https://github.com/twistlock/docs).
