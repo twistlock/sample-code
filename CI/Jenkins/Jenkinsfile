@@ -34,7 +34,7 @@ pipeline {
                     cert: '',
                     dockerAddress: "${env.DOCKER_ADDR}",
                     ignoreImageBuildTime: true,
-                    image: "${params.IMAGE_NAME}:${env.BUILD_NUMBER}",
+                    image: "${env.IMAGE_NAME}:${env.BUILD_NUMBER}",
                     key: '',
                     logLevel: 'debug',
                     podmanPath: '',
