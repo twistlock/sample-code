@@ -1,5 +1,10 @@
 # Prisma Cloud Compute sample code
 
-This repository contains some of the scripts and examples we've done that we think someone out there might be interested in. Please feel free to use and contribute. We'd love your feedback.
+This repository contains some of the scripts and examples we have created that someone out there might be interested in.
+Please feel free to use and contribute.
+We would love your feedback.
 
-All code in this repository is provided without support or warranty from Palo Alto Networks. Review code from this repository prior to use in your environment.
+### Support Policy
+The content (scripts, templates, etc.) in this repository is available "as is," and should be seen as community-supported; however, Palo Alto Networks will continue contributing whenever possible.
+Palo Alto Networks does not provide technical support or help with using or troubleshooting the content through normal support channels.
+We encourage you to open GitHub [issues](https://github.com/twistlock/sample-code/issues) and [pull requests](https://github.com/twistlock/sample-code/pulls) to track bugs and feature requests related to the content provided here.
