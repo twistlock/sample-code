@@ -1,3 +1,0 @@
-curl -k -H "Content-Type: application/json" -d '{"username":"admin", "password":"admin"}' https://localhost:8083/api/v1/authenticate
-
-curl -k -H "Authorization: Bearer BEARER_TOKEN_HERE" -H "Content-Type:application/json" -X PUT https://localhost:8083/api/v1/policies/compliance --data-binary "@policy_pci.txt"

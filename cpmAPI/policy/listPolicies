@@ -1,6 +1,0 @@
-curl -v --request GET \
-  --url $PC_API_URL/policy \
-  --header 'accept: */*' \
-  --header "x-redlock-auth: $PC_API_TOKEN" 
-
-
