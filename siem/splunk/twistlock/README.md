@@ -58,7 +58,7 @@ If incidents and/or forensics are not being ingested into Splunk, please verify 
 - You are able to see the incident's forensic data by clicking on the "Forensic snapshot" button.
 - The values in the `config.json` file are accurate (#3 in instructions). You can test them manually with a `curl` command like this:
     ```bash
-    curl -u <credentials.username>:<credentials.password> <console.url>/api/v1/incidents
+    curl -u <credentials.username>:<credentials.password> <console.url>/api/v1/audits/incidents
     ```
 - The app's scripts are enabled in Splunk (#4 in instructions), and have been ran at least once (#5 in instructions).
 
