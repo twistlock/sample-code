@@ -82,7 +82,7 @@ spec:
         - kind: Secret
           name: ''
           version: v1
-        - Kind: ServiceAccount
+        - kind: ServiceAccount
           name: ''
           version: v1
   displayName: Prisma Cloud Compute (Twistlock) Console Operator
