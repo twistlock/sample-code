@@ -77,6 +77,7 @@ def get_incidents(console_url, auth_token, project_list):
             logger.warning("No incidents to ingest for {}. Continuing.".format(project))
             continue
 
+        highest_serialNum = 0
         # Use that count to create offsets
         # Example: 85 incidents
         # offset: 0, limit: 50 = 1-50
@@ -103,7 +104,6 @@ def get_incidents(console_url, auth_token, project_list):
                 logger.warning("Unusually empty response from {} using limit {} and offset {}. Continuing.".format(project, request_limit, request_offset))
                 break
 
-            highest_serialNum = 0
             for incident in response_json:
                 current_serialNum = incident["serialNum"]
                 # Print only new incidents for indexing in Splunk
