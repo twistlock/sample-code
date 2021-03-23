@@ -26,8 +26,7 @@ incidents_file = os.path.join(data_dir, "incidents_list.txt")
 def get_reverse_list(total_count):
     offset_list = []
     for iterative in range(0,total_count):
-        if iterative % 50 == 0:
-            offset_list.append(iterative)
+        offset_list.append(iterative)
     offset_list.reverse()
     return offset_list
 
