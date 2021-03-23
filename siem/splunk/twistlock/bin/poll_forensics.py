@@ -1,3 +1,10 @@
+"""Collects forensic data from a Prisma Cloud Compute Console.
+
+This script is intended to be used as a Splunk input, so it is not tested
+outside of Splunk. Please see the README.md in the app's root directory for
+setup instructions.
+"""
+
 import json
 import logging
 import os
@@ -24,7 +31,10 @@ incidents_file = os.path.join(data_dir, "incidents_list.txt")
 
 def get_forensics(console_url, auth_token):
     endpoint = "/api/v1/profiles/"
-    headers = {"Authorization": "Bearer " + auth_token, "Accept": "application/json"}
+    headers = {
+        "Authorization": "Bearer " + auth_token,
+        "Accept": "application/json",
+    }
     request_limit = 500
 
     with open(incidents_file, "r+") as f:
@@ -33,8 +43,12 @@ def get_forensics(console_url, auth_token):
             logger.info("No new forensic data to ingest.")
         while incidents:
             incident = incidents.pop(0)
-            params = {"project": incident["project"], "limit": request_limit, "incidentID": incident["_id"]}
-            params_string = "&".join("%s=%s" % (k,v) for k,v in params.items())
+            params = {
+                "project": incident["project"],
+                "limit": request_limit,
+                "incidentID": incident["_id"],
+            }
+            params_string = "&".join("{0}={1}".format(k, v) for k, v in params.items())
             api_path = endpoint + incident["type"] + "/" + incident["profileID"] + "/forensic"
             request_url = urljoin(console_url, api_path)
             try:

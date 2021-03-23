@@ -7,10 +7,19 @@ while [[ $# -gt 0 ]]; do
       build_version=$2
       shift 2
       ;;
+    *)
+      echo "Please provide the build version with -b or --build."
+      exit 1
   esac
 done
 
-# exit if either variable is missing
-[[ -z $build_version ]] && exit 1
+[[ -z $build_version ]] && echo "Please provide the build version with -b or --build." && exit 1
 
 tar -czf pcc-splunk-app-${build_version}.tar.gz --exclude __pycache__ twistlock
+
+# curl 'https://splunkbase.splunk.com/api/v1/app/4555/new_release/' \
+#   -u wgill_panw \
+#   -F "files[]=@pcc-splunk-app-${build_version}.tar.gz" \
+#   -F "filename=pcc-splunk-app-${build_version}.tar.gz" \
+#   -F "splunk_versions=8.1,8.0,7.3,7.2" \
+#   -F "visibility=true"

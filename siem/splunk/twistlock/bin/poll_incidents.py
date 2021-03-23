@@ -1,3 +1,10 @@
+"""Collects incidents from a Prisma Cloud Compute Console.
+
+This script is intended to be used as a Splunk input, so it is not tested
+outside of Splunk. Please see the README.md in the app's root directory for
+setup instructions.
+"""
+
 import json
 import logging
 import os
@@ -12,6 +19,7 @@ import requests
 
 from api_wrappers import get_auth_token, get_projects
 
+# Set up logger for Splunk compatibility
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(levelname)s %(message)s')
@@ -23,15 +31,20 @@ data_dir = os.path.join(os.environ["SPLUNK_HOME"], "etc", "apps", "twistlock", "
 config_file = os.path.join(data_dir, "config.json")
 incidents_file = os.path.join(data_dir, "incidents_list.txt")
 
+
 def get_incidents(console_url, auth_token, project_list):
     endpoint = "/api/v1/audits/incidents"
-    headers = {"Authorization": "Bearer " + auth_token, "Accept": "application/json"}
+    headers = {
+        "Authorization": "Bearer " + auth_token,
+        "Accept": "application/json",
+    }
     request_limit = 50
     request_url = urljoin(console_url, endpoint)
-    current_incidents = [] # Used to store the information needed to pull forensics
+    current_incidents = []
 
     for project in project_list:
-        # checkpoint_file stores the highest incident serialNum ingested to only pull the latest incidents
+        # checkpoint_file stores the highest incident serialNum ingested to
+        # only pull the latest incidents
         checkpoint_file = os.path.join(data_dir, project.replace(" ", "-").lower() + "_serialNum_checkpoint.txt")
         # If the checkpoint file exists, use it. If not, start at 0.
         if os.path.isfile(checkpoint_file):
@@ -45,8 +58,13 @@ def get_incidents(console_url, auth_token, project_list):
             last_serialNum_indexed = 0
 
         # Make a call to get count of incidents
-        params = {"project": project, "acknowledged": "false", "limit": 1, "offset": 0}
-        params_string = "&".join("%s=%s" % (k,v) for k,v in params.items())
+        params = {
+            "project": project,
+            "acknowledged": "false",
+            "limit": 1,
+            "offset": 0,
+        }
+        params_string = "&".join("{0}={1}".format(k, v) for k, v in params.items())
         try:
             response = requests.get(request_url, params=params_string, headers=headers)
             response.raise_for_status()
@@ -59,14 +77,20 @@ def get_incidents(console_url, auth_token, project_list):
             logger.warning("No incidents to ingest for {}. Continuing.".format(project))
             continue
 
+        highest_serialNum = 0
         # Use that count to create offsets
         # Example: 85 incidents
         # offset: 0, limit: 50 = 1-50
         # offset: 50, limit: 50 = 51-85
         # offset: 100 > 85 = break
         for request_offset in range(0, total_count, 50):
-            params = {"project": project, "acknowledged": "false", "limit": request_limit, "offset": request_offset}
-            params_string = "&".join("%s=%s" % (k,v) for k,v in params.items())
+            params = {
+                "project": project,
+                "acknowledged": "false",
+                "limit": request_limit,
+                "offset": request_offset,
+            }
+            params_string = "&".join("{0}={1}".format(k, v) for k, v in params.items())
 
             try:
                 response = requests.get(request_url, params=params_string, headers=headers)
@@ -80,7 +104,6 @@ def get_incidents(console_url, auth_token, project_list):
                 logger.warning("Unusually empty response from {} using limit {} and offset {}. Continuing.".format(project, request_limit, request_offset))
                 break
 
-            highest_serialNum = 0
             for incident in response_json:
                 current_serialNum = incident["serialNum"]
                 # Print only new incidents for indexing in Splunk
@@ -93,9 +116,19 @@ def get_incidents(console_url, auth_token, project_list):
 
                 # Determine whether the incident is from a host or container and add to list of incidents
                 if re.match(r"sha256:[a-f0-9]{64}_*", incident["profileID"]): # if profileID is a SHA256 sum => container
-                    incident_info = {"project": project, "_id": incident["_id"], "profileID": incident["profileID"], "type": "container"}
+                    incident_info = {
+                        "project": project,
+                        "_id": incident["_id"],
+                        "profileID": incident["profileID"],
+                        "type": "container",
+                    }
                 else: # else => host
-                    incident_info = {"project": project, "_id": incident["_id"], "profileID": incident["hostname"], "type": "host"}
+                    incident_info = {
+                        "project": project,
+                        "_id": incident["_id"],
+                        "profileID": incident["hostname"],
+                        "type": "host",
+                    }
                 if incident_info not in current_incidents:
                     current_incidents.append(incident_info)
 
