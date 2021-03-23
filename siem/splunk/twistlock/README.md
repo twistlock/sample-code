@@ -65,6 +65,9 @@ If incidents and/or forensics are not being ingested into Splunk, please verify 
 If data is still not being ingested, check `$SPLUNK_HOME/var/log/splunk/splunkd.log` for messages related to `poll_incidents.py` and `poll_forensics.py`.
 
 ## Change notes
+
+### March 23, 2021 - v3.2.2
+- Fixed issue with highest serial number tracking.
 ### February 19, 2021
 - Improved resilence to unexpected exits ([#94](https://github.com/twistlock/sample-code/issues/94)).
 - Removed requirement for no trailing slash on Console URL. Now it does not matter if one is present.
