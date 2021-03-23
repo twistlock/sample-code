@@ -12,9 +12,21 @@ To use this GitLab pipeline, you will need
 
     If you are using Prisma Cloud Enterprise Edition (SaaS), `PCC_USER` and `PCC_PASS` will be your [access key and secret key](https://docs.twistlock.com/docs/enterprise_edition/authentication/access_keys.html#provisioning-access-keys) pair created with the Build and Deploy Security role. `PCC_CONSOLE_URL` will be the address found at **Compute > Manage > System > Downloads** under the **Path to Console** heading.
 
+    <img src="images/variables.png"/>
+
 2. Add the `.gitlab-ci.yml` file to the root of your repository.
 
+    <img src="images/gitlab-ci.png"/>
+
 The image will be built, tagged, and scanned using `owner/repository:commit`. This is the image name under which the scan results will be displayed in the Compute Console. You can adjust this with the `IMAGE_NAME` variable in `.gitlab-ci.yml`.
+
+Here is a sample of the output in GitLab:
+<img src="images/gitlab-output1.png"/>
+
+<img src="images/gitlab-output2.png"/>
+
+... and the corresponding output in Compute:
+<img src="images/compute-output1.png"/>
 
 The image scan policy (including failure thresholds) is managed in the Compute Console at
 * **Defend > Vulnerabilities > Images > CI**
