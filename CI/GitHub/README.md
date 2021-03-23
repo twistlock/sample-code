@@ -12,9 +12,19 @@ To use this GitHub Action, you will need
 
     If you are using Prisma Cloud Enterprise Edition (SaaS), `PCC_USER` and `PCC_PASS` will be your [access key and secret key](https://docs.twistlock.com/docs/enterprise_edition/authentication/access_keys.html#provisioning-access-keys) pair created with the Build and Deploy Security role. `PCC_CONSOLE_URL` will be the address found at **Compute > Manage > System > Downloads** under the **Path to Console** heading.
 
+    <img src="images/variables.png"/>
+
 2. Add the `.github` directory to the root of your repository.
 
+    <img src="images/scan-yml.png"/>
+
 The image will be built, tagged, and scanned using `owner/repository:commit`. This is the image name under which the scan results will be displayed in the Compute Console. You can adjust this with the `IMAGE_NAME` variable in `scan.yml`.
+
+Here is a sample of the output in GitHub:
+<img src="images/github-output1.png"/>
+
+... and the corresponding output in Compute:
+<img src="images/compute-output1.png"/>
 
 The image scan policy (including failure thresholds) is managed in the Compute Console at
 * **Defend > Vulnerabilities > Images > CI**
