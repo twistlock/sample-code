@@ -7,6 +7,9 @@ while [[ $# -gt 0 ]]; do
       build_version=$2
       shift 2
       ;;
+    *)
+      echo "Please provide the build version with -b or --build."
+      exit 1
   esac
 done
 
