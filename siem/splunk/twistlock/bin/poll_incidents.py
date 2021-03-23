@@ -23,6 +23,14 @@ data_dir = os.path.join(os.environ["SPLUNK_HOME"], "etc", "apps", "twistlock", "
 config_file = os.path.join(data_dir, "config.json")
 incidents_file = os.path.join(data_dir, "incidents_list.txt")
 
+def get_reverse_list(total_count):
+    offset_list = []
+    for iterative in range(0,toatl_count):
+        if iterative % 50 == 0:
+            offset_list.append(iterative)
+    offset_list.reverse()
+    return offset_list
+
 def get_incidents(console_url, auth_token, project_list):
     endpoint = "/api/v1/audits/incidents"
     headers = {"Authorization": "Bearer " + auth_token, "Accept": "application/json"}
@@ -51,6 +59,7 @@ def get_incidents(console_url, auth_token, project_list):
             response = requests.get(request_url, params=params_string, headers=headers)
             response.raise_for_status()
             total_count = int(response.headers["Total-Count"])
+            offset_list = get_reverse_list(total_count)
         except (requests.exceptions.RequestException, ValueError) as req_err:
             logger.warning("Failed getting incidents count for {}. Error: {}. Continuing.".format(project, req_err))
             continue
@@ -64,7 +73,7 @@ def get_incidents(console_url, auth_token, project_list):
         # offset: 0, limit: 50 = 1-50
         # offset: 50, limit: 50 = 51-85
         # offset: 100 > 85 = break
-        for request_offset in range(0, total_count, 50):
+        for request_offset in offset_list:
             params = {"project": project, "acknowledged": "false", "limit": request_limit, "offset": request_offset}
             params_string = "&".join("%s=%s" % (k,v) for k,v in params.items())
 
