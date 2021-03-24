@@ -1,0 +1,14 @@
+language: minimal
+
+services:
+  - docker
+
+env:
+  global:
+    - IMAGE_NAME: "$TRAVIS_REPO_SLUG:$TRAVIS_COMMIT"
+
+script:
+  - curl --user $PCC_USER:$PCC_PASS --output ./twistcli $PCC_CONSOLE_URL/api/v1/util/twistcli
+  - chmod a+x ./twistcli
+  - docker build -t $IMAGE_NAME .
+  - ./twistcli images scan --address $PCC_CONSOLE_URL --user $PCC_USER --password $PCC_PASS --details $IMAGE_NAME
