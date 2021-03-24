@@ -20,13 +20,13 @@ jobs:
         # Defaults are sufficient generally
         # https://github.com/actions/checkout#usage
 
-      - name: Build the image
-        run: docker build -t $IMAGE_NAME .
-
       - name: Download twistcli from the Prisma Cloud Compute Console
         run: |
           curl --user $PCC_USER:$PCC_PASS --output ./twistcli $PCC_CONSOLE_URL/api/v1/util/twistcli
           chmod a+x ./twistcli
+
+      - name: Build the image
+        run: docker build -t $IMAGE_NAME .
 
       - name: Scan the image
         run: ./twistcli images scan --address $PCC_CONSOLE_URL --user $PCC_USER --password $PCC_PASS --details $IMAGE_NAME
