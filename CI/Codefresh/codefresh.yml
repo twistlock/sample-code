@@ -1,0 +1,35 @@
+version: "1.0"
+
+steps:
+  main_clone:
+    title: Cloning repository
+    type: git-clone
+    repo: ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}
+    revision: ${{CF_REVISION}}
+    git: github
+
+  # Dedicated twistcli step to ensure twistcli can be pulled (in case target image doesn't have wget).
+  # Pulls twistcli to shared volume (the current work directory) which is automatically mounted in target image.
+  get_twistcli:
+    title: Pulling twistcli from Console
+    image: alpine
+    commands:
+      - |
+        wget --header "Authorization: Basic $(echo -n $PCC_USER:$PCC_PASS | base64 | tr -d '\n')" "$PCC_CONSOLE_URL/api/v1/util/twistcli"
+        chmod a+x ./twistcli
+
+  build_image:
+    title: Building image
+    type: build
+    working_directory: .
+    dockerfile: Dockerfile
+    image_name: ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}
+    tag: ${{CF_REVISION}}
+    
+  scan_image:
+    title: Scanning image with Prisma Cloud Compute
+    image: ${{build_image}}
+    commands:
+      # --containerized is used because Codefresh SaaS runtime environment doesn't allow access to the Docker socket
+      # https://support.codefresh.io/hc/en-us/articles/360017901040-How-to-Access-the-Docker-Daemon-in-a-Codefresh-build
+      - ./twistcli images scan --address $PCC_CONSOLE_URL --user $PCC_USER --password $PCC_PASS --containerized --details ${{steps.build_image.imageName}}:${{CF_REVISION}}
