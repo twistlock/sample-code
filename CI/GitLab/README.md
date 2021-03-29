@@ -43,4 +43,4 @@ The image scan policy (including failure thresholds) is managed in the Compute C
 If you are using a self-signed certificate on the Compute Console, you may have to add `--no-check-certificate` to the `wget` command.
 For example:
 
-```'wget --header "Authorization: Basic $(echo -n $PCC_USER:$PCC_PASS | base64)" --no-check-certificate $PCC_CONSOLE_URL/api/v1/util/twistcli'```
+```'wget --header "Authorization: Basic $(echo -n $PCC_USER:$PCC_PASS | base64 | tr -d '\n')" --no-check-certificate $PCC_CONSOLE_URL/api/v1/util/twistcli'```
