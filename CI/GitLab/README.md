@@ -1,7 +1,7 @@
-This directory contains an example of a basic [GitLab CI/CD pipeline](https://docs.gitlab.com/ee/ci/pipelines/pipeline_architectures.html#basic-pipelines) that integrates container image scanning for vulnerabilities and compliance issues directly into GitLab.
+This directory contains an example of a basic [GitLab pipeline](https://docs.gitlab.com/ee/ci/pipelines/pipeline_architectures.html#basic-pipelines) that integrates container image scanning for vulnerabilities and compliance issues directly into GitLab.
 
 This example only builds an image using the Dockerfile at the repository's root and scans the resultant image.
-The intent is to demonstrate how `twistcli` may fit into your Travis CI build config.
+The intent is to demonstrate how `twistcli` may fit into your GitLab pipeline.
 
 ## Requirements
 To use this GitLab pipeline, you will need

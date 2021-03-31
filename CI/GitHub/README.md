@@ -1,7 +1,7 @@
 This directory contains an example of a basic [GitHub Action](https://docs.github.com/en/actions) that integrates container image scanning for vulnerabilities and compliance issues directly into GitHub.
 
 This example only builds an image using the Dockerfile at the repository's root and scans the resultant image.
-The intent is to demonstrate how `twistcli` may fit into your Travis CI build config.
+The intent is to demonstrate how `twistcli` may fit into your GitHub Action.
 
 ## Requirements
 To use this GitHub Action, you will need
