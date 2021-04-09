@@ -18,7 +18,7 @@ from api_wrappers import get_auth_token, get_projects, slash_join
 # Set up logger for Splunk compatibility
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(levelname)s %(message)s')
+formatter = logging.Formatter("%(levelname)s %(message)s")
 handler = logging.StreamHandler(stream=sys.stderr)
 handler.setFormatter(formatter)
 logger.addHandler(handler)

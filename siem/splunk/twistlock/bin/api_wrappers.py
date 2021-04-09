@@ -7,7 +7,7 @@ import requests
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(levelname)s %(message)s')
+formatter = logging.Formatter("%(levelname)s %(message)s")
 handler = logging.StreamHandler(stream=sys.stderr)
 handler.setFormatter(formatter)
 logger.addHandler(handler)
@@ -15,7 +15,7 @@ logger.addHandler(handler)
 # Necessary to handle SaaS Console addresses that already have paths.
 # urljoin may clobber the existing path when adding endpoint.
 def slash_join(*args):
-    return '/'.join(arg.strip('/') for arg in args)
+    return "/".join(arg.strip("/") for arg in args)
 
 # Wrapper around /api/v1/authenticate
 # Even when using projects, /api/v1/authenticate should still hit against Central Console
@@ -34,7 +34,7 @@ def get_auth_token(console_url, username, password):
         logger.error("Failed getting auth token. Error: {}. Exiting.".format(req_err))
         sys.exit(req_err)
 
-    return response_json['token']
+    return response_json["token"]
 
 # Wrapper around /api/v1/current/projects
 # Sample output:
@@ -49,7 +49,7 @@ def get_projects(console_url, auth_token):
     # A user's permitted projects are listed in the JWT payload
     # Load the decoded JWT payload to get available projects
     # https://stackoverflow.com/a/49459036
-    jwt_payload = json.loads(base64.b64decode(auth_token.split('.')[1] + "==="))
+    jwt_payload = json.loads(base64.b64decode(auth_token.split(".")[1] + "==="))
 
     # Address case in which user has permission to all projects
     # Otherwise Central Console would not be added to projects list
