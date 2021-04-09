@@ -10,19 +10,15 @@ import logging
 import os
 import re
 import sys
-try:
-    from urllib.parse import urljoin
-except ImportError:
-    from urlparse import urljoin
 
 import requests
 
-from api_wrappers import get_auth_token, get_projects
+from api_wrappers import get_auth_token, get_projects, slash_join
 
 # Set up logger for Splunk compatibility
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(levelname)s %(message)s')
+formatter = logging.Formatter("%(levelname)s %(message)s")
 handler = logging.StreamHandler(stream=sys.stderr)
 handler.setFormatter(formatter)
 logger.addHandler(handler)
@@ -39,7 +35,7 @@ def get_incidents(console_url, auth_token, project_list):
         "Accept": "application/json",
     }
     request_limit = 50
-    request_url = urljoin(console_url, endpoint)
+    request_url = slash_join(console_url, endpoint)
     current_incidents = []
 
     for project in project_list:
