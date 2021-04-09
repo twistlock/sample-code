@@ -9,14 +9,10 @@ import json
 import logging
 import os
 import sys
-try:
-    from urllib.parse import urljoin
-except ImportError:
-    from urlparse import urljoin
 
 import requests
 
-from api_wrappers import get_auth_token
+from api_wrappers import get_auth_token, slash_join
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -49,8 +45,7 @@ def get_forensics(console_url, auth_token):
                 "incidentID": incident["_id"],
             }
             params_string = "&".join("{0}={1}".format(k, v) for k, v in params.items())
-            api_path = endpoint + incident["type"] + "/" + incident["profileID"] + "/forensic"
-            request_url = urljoin(console_url, api_path)
+            request_url = slash_join(console_url, endpoint, incident["type"], incident["profileID"], "forensic")
             try:
                 response = requests.get(request_url, params=params_string, headers=headers)
                 response.raise_for_status()
