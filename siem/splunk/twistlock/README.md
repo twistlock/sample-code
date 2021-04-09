@@ -66,6 +66,9 @@ If data is still not being ingested, check `$SPLUNK_HOME/var/log/splunk/splunkd.
 
 ## Change notes
 
+### April 9, 2021 - v3.2.3
+- Fixed issue with SaaS Console URL paths getting stripped.
+
 ### March 23, 2021 - v3.2.2
 - Fixed issue with highest serial number tracking.
 
