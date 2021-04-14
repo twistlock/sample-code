@@ -30,7 +30,7 @@ metadata:
             "SCAP_ENABLED": "",
             "SELINUX_LABEL": "disable",
             "SYSTEMD_ENABLED": "",
-            "consoleImageName": "registry-auth.twistlock.com/tw_<REPLACE_TWISTLOCK_TOKEN>/twistlock/console:console_<VERSION>",
+            "consoleImageName": "registry-auth.twistlock.com/tw_twistlock_token/twistlock/console:console_<VERSION>",
             "namespace": "twistlock",
             "openshift": true,
             "persistentVolumeDataFolder": "var/lib/twistlock",
@@ -252,22 +252,33 @@ spec:
     
     by applying the included Custom Resource Definition (CRD). Then deploy the operator
     container into the cluster and let it do its thing.
-    Let's get down to it. All we need from you is the Twistlock registry/docs token that came 
-    
-    with your license. All of the yaml files you need to deploy are listed below.
+    Let's get down to it. All we need from you is the Twistlock registry/docs token that came with your license. 
+    All of the yaml files you need to deploy are listed below.
+
     Pre requisite - Create a configmap named 'twistlock-token' in the namespace ("twistlock") where the operator has to be installed.
                     Provide the 'token' value in data section and update the version for the console with the latest version available in docs.twistlock.com 
     ```
     apiVersion: v1
     kind: ConfigMap
     data:
-      token: <REPLACE_TWISTLOCK_TOKEN>
-      version: <Update with latest version from docs.twistlock.com. example: 20_09_345>
+      token: "<REPLACE_TWISTLOCK_TOKEN>""
+      version: "<Update with latest version from docs.twistlock.com. example: 20_09_345>""
     metadata:
       name: twistlock-token
       namespace: twistlock
       
     ```
+
+    Save the configmap YAML file and apply it using the following `kubectl` command:
+    ```
+    kubectl apply -f <configmap-filename>.yaml
+    ```
+    
+    Or using `oc` commandline:
+    ```
+    oc apply -f <configmap-filename>.yaml
+    ```
+
     ##  Here's the plan:
     ```sh
     # Let the cluster know about our new custom resource, TwistlockConsole
