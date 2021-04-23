@@ -1,0 +1,37 @@
+<div class="cover-page-main">
+    <div class="cover-page-image"></div>
+    <div class="cover-page-meta">
+        <div class="cover-page-logo"></div>
+        <br/><br/>
+        <span class="cover-title">
+            Prisma Cloud Compute Report<br/>
+        </span>
+        <span class="cover-info">Generated On: {{ timestamp }}<br/></span>
+        <span class="cover-info">Compute Console: {{ console_address }}<br/><br/></span>
+        <span class="cover-info">Scan Type:<br/></span>
+        <span class="cover-info">
+            {% if image_type == "deployed" %}
+            Deployed
+            {% elif image_type == "registry" %}
+            Registry
+            {% elif image_type == "ci" %}
+            CI
+            {% endif %}
+        <br/><br/></span>
+        <span class="cover-info">Report Type:<br/></span>
+        <span class="cover-info">
+        {% if not comp_only %}
+            Vulnerability, 
+            {% endif %}
+            {% if not vuln_only %}
+            Compliance, 
+            {% endif %}
+            {% if not summary %}
+            Full Report
+            {% else %}
+            Summary
+            {% endif %}
+        </span>
+    </div>
+    <div class="new-page-after"></div>
+</div>

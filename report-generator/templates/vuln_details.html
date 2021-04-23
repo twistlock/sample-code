@@ -1,0 +1,89 @@
+<div class="section-title" id="vuln_details">Vulnerabilities</div>
+
+{% for cve, vulnerability in vulnerabilities.items() %}
+<br/>
+<div id="{{ vulnerability.get('cve') }}">
+    <table class="table">
+        <tr>
+            <td class="{{ vulnerability.get("severity") }}">&nbsp;</td>
+            <td class="td-data" colspan=2><span class="details-title">{{ vulnerability.get('cve') }}</span></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="td-details-cell">
+                Discovered: {{ vulnerability.get('discovered') }}
+            </td>
+            <td class="td-details-cell">
+                External Link: <a href="{{ vulnerability.get('link') }}">More Info</a>
+            </td>
+        <tr>
+
+        </tr>
+            <td></td>
+            <td class="td-details-cell">
+                Status: {{ vulnerability.get('status') }}
+            </td>
+            <td class="td-details-cell">
+                FixDate: {{ vulnerability.get('fixDate') }}
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="td-details-cell" colspan=2>
+                Risk Factors:
+                {% for risk, null in vulnerability.get('riskFactors').items() %}
+                {{ risk }}&nbsp;&nbsp;
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="td-details-cell" colspan="2">
+                <br/>
+                <span class="bold">Description</span><br/>
+                <span>{{ vulnerability.get('description')|e}}</span>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="2">
+                <br/>
+                <span class="bold">Failing Resources ({{ vulnerability.get('failed_resources')|length }})</span>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="2">
+                <table class="table">
+                    <thead>
+                        <tr class="tr-heading">
+                            <td class="thead">Host</td>
+                            <td class="thead">Image</td>
+                            <td class="thead">Registry</td>
+                            <td class="thead">Repo</td>
+                            <td class="thead">Tag</td>
+                            <td class="thead">Modified</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for instance in vulnerability.get('failed_resources') %}
+                        <tr class="{{ loop.cycle('tr-odd', 'tr-even') }}">
+                            <td class="td-data">{{ instance.get('host') }}</td>
+                            <td class="td-data">{{ instance.get('image') }}</td>
+                            <td class="td-data">{{ instance.get('registry') }}</td>
+                            <td class="td-data">{{ instance.get('repo') }}</td>
+                            <td class="td-data">{{ instance.get('tag') }}</td>
+                            <td class="td-data">{{ instance.get('modified') }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+</div>
+    <br/><br/>
+<hr>
+{% endfor %}
+<div class="new-page-after"></div>
