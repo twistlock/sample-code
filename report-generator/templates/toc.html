@@ -1,0 +1,33 @@
+<div class="section-title" id="toc">Table of Contents</div>
+
+<br/<br/>
+<a href="#exec_summary" class="toc">Executive Summary</a>
+<br/>
+<hr>
+{% if not comp_only %}
+<br/<br/>
+<a href="#vuln_summary" class="toc">Vulnerability Summary</a>
+<br/>
+{% endif %}
+{% if not vuln_only %}
+<hr>
+<br/<br/>
+<a href="#comp_summary" class="toc">Compliance Summary</a>
+<br/>
+<hr>
+{% endif %}
+{% if not summary %}
+    {% if not comp_only %}
+    <br/<br/>
+    <a href="#vuln_details" class="toc">Vulnerabilities</a>
+    <br/>
+    <hr>
+    {% endif %}
+    {% if not vuln_only %}
+    <br/<br/>
+    <a href="#comp_details" class="toc">Compliance Issues</a>
+    <br/>
+    <hr>
+    {% endif %}
+{% endif %}
+<div class="new-page-after"></div>

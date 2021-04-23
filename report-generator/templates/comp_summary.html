@@ -1,0 +1,25 @@
+
+<table class="table">
+    <thead>
+        <tr>
+            <td colspan=4><div class="section-title" id="comp_summary">Compliance Summary</div></td>
+        </tr>
+        <tr class="tr-heading">
+            <td class="thead td-severity"></td>
+            <td class="thead td-data">Title</td>
+            <td class="thead td-data">Failing Resources</td>
+            <td class="thead td-data">Percentage</td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for compliance_issue in compliance_list %}
+    <tr class="{{ loop.cycle('tr-odd', 'tr-even') }}">
+        <td class="{{ compliance_issue.get("severity") }}">&nbsp;</td>
+        <td class="td-data"><a href="#{{ compliance_issue.get("title")|e }}">{{ compliance_issue.get("title")|e }}</a></td>
+        <td class="td-data">{{ compliance_issue.get('failed_resources')|length }}</td>
+        <td class="td-data">{{ compliance_issue.get('percentage_failed') }}%</td>
+    </tr> 
+    {% endfor %}
+    </tbody>
+</table>
+<div class="new-page-after"></div>

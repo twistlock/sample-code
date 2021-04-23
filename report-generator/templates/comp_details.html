@@ -1,0 +1,60 @@
+<div class="section-title" id="comp_details">Compliance Issues</div>
+
+{% for id, compliance_issue in compliance_issues.items() %}
+<br/>
+<div id="{{ compliance_issue.get('title')|e }}">
+    <table class="table">
+        <tr>
+            <td class="{{ compliance_issue.get('severity') }}">&nbsp;</td>
+            <td class="td-data" colspan=2><span class="details-title">{{ compliance_issue.get('title')|e }}</span></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="td-details-cell" colspan="2">
+                <span class="bold">Description</span><br/>
+                <span>{{ compliance_issue.get('description')|e }}</span>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="2">
+                <br/>
+                <span class="bold">Failing Resources ({{ compliance_issue.get('failed_resources')|length }})</span>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="2">
+                <table class="table">
+                    <thead>
+                        <tr class="tr-heading">
+                            <td class="thead">Host</td>
+                            <td class="thead">Image</td>
+                            <td class="thead">Registry</td>
+                            <td class="thead">Repo</td>
+                            <td class="thead">Tag</td>
+                            <td class="thead">Modified</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for instance in compliance_issue.get('failed_resources') %}
+                        <tr class="{{ loop.cycle('tr-odd', 'tr-even') }}">
+                            <td class="td-data">{{ instance.get('host') }}</td>
+                            <td class="td-data">{{ instance.get('image') }}</td>
+                            <td class="td-data">{{ instance.get('registry') }}</td>
+                            <td class="td-data">{{ instance.get('repo') }}</td>
+                            <td class="td-data">{{ instance.get('tag') }}</td>
+                            <td class="td-data">{{ instance.get('modified') }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+</div>
+    <br/><br/>
+<hr>
+{% endfor %}
+<div class="new-page-after"></div>

@@ -1,0 +1,24 @@
+<table class="table">
+    <thead>
+        <tr>
+            <td colspan="4"><div class="section-title" id="vuln_summary">Vulnerability Summary</div></td>
+        </tr>
+        <tr class="tr-heading">
+            <td class="thead td-severity"></td>
+            <td class="thead td-data">CVE</td>
+            <td class="thead td-data">Failing Resources</td>
+            <td class="thead td-data">Percentage</td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for vulnerability in vulnerability_list %}
+    <tr class="{{ loop.cycle('tr-odd', 'tr-even') }}">
+        <td class="{{ vulnerability.get("severity") }}">&nbsp;</td>
+        <td class="td-data"><a href="#{{ vulnerability.get('cve') }}">{{ vulnerability.get("cve") }}</a></td>
+        <td class="td-data">{{ vulnerability.get('failed_resources')|length }}</td>
+        <td class="td-data">{{ vulnerability.get('percentage_failed') }}%</td>
+    </tr> 
+    {% endfor %}
+    </tbody>
+</table>
+<div class="new-page-after"></div>

@@ -1,0 +1,36 @@
+<div class="section-title" id="exec_summary">Executive Summary</div>
+<br/><br/>
+<table class="table">
+    <tbody>
+    <tr>
+    <td class="td-exec-summary"><span class="summary-title">Resources Monitored</span><br/>{{ resource_count }}</td>
+    {% if not comp_only %}
+    <td class="td-exec-summary"><span class="summary-title">Vulnerability Count</span><br/>{{ vulnerability_count }}</td>
+    {% endif %}
+    {% if not vuln_only %}
+    <td class="td-exec-summary"><span class="summary-title">Compliance Issue Count</span><br/>{{ compliance_issue_count }}</td>
+    {% endif %}
+    </tr>
+    </tbody>
+</table>
+<br/>
+<table class="table">
+    <tbody>
+        <tr>
+            {% if not comp_only %}
+            <td class="td-exec-summary">
+                <strong>Vulnerability Distribution</strong><br/>
+                <img src="{{ templates_dir }}/{{ vuln_dist_chart }}">
+            </td>
+            {% endif %}
+            {% if not vuln_only %}
+            <td class="td-exec-summary">
+                <strong>Compliance Issue Distribution</strong><br/>
+                <img src="{{ templates_dir }}/{{ comp_dist_chart }}">
+            </td>
+            {% endif %}
+        </tr>
+    </tbody>
+</table>
+<br/>
+<br/>

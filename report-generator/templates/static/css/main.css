@@ -1,0 +1,188 @@
+body {
+    display: block;
+    margin: 0px;
+}
+
+.main {
+    width: 1500px;
+    margin: auto;
+}
+
+.cover-page-main {
+    background-color: #33393f;
+    margin: 0px;
+}
+.cover-page-image {
+    background-image: url("../images/cover.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding:0;
+    height: 1000px;
+    width: 100%;
+    max-width:100%;
+    max-height:100%;
+}
+
+.cover-page-meta {
+    background-color: #33393f;
+    padding: 30px;
+}
+
+.cover-page-logo {
+    background-image: url("../images/cloud_panw.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin:0;
+    padding:0;
+    height: 202px;
+    width: 767px;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.full-size {
+  height:100%;
+  width:100%;
+  overflow:hidden; /* or overflow:auto; if you want scrollbars */
+}
+
+.cover-title {
+    color: #ffffff;
+    font-size: 50px;
+}
+
+.cover-info {
+    color: #ffffff;
+    font-size: 35px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+.section-title {
+    color: #ffffff;
+    background-color: #33393f;
+    font-size: 25px;
+    padding: 5px;
+}
+
+.summary-title {
+    font-weight: bold;
+    font-size: medium;
+    color: #000000;
+}
+
+.new-page-before {
+    page-break-before: always;
+}
+
+.new-page-after {
+    page-break-after: always;
+}
+
+.details-title {
+    font-weight: bold;
+    font-size: medium;
+}
+
+.td-details-cell {
+    color: #33393f;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.table {
+    width: 100%;
+    vertical-align: top;
+    border-collapse:collapse;
+}
+
+.td-exec-summary {
+    width: 33%;
+    text-align: center;
+    padding: 10px;
+    height: 100px;
+    border: 1px solid black;
+}
+
+.thead {
+    background-color: #ededed;
+    font-weight: bold;
+}
+
+.tr-heading {
+    padding: 5px;
+}
+
+.td-severity {
+    width: 5px;
+}
+
+.td-data {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.tr-even {
+    background-color: #ffffff;
+}
+
+.tr-odd {
+    background-color: #f7f7f7;
+}
+
+.critical {
+    width: 5px;
+    background-color: #90251c;
+}
+
+.important {
+    width: 5px;
+    background-color: #90251c;
+}
+
+.high {
+    width: 5px;
+    background-color: #dd3d2d;
+}
+
+.medium {
+    width: 5px;
+    background-color: #ea9a33;
+}
+
+.moderate {
+    width: 5px;
+    background-color: #ea9a33;
+}
+
+.low {
+    width: 5px;
+    background-color: #e6dd37;
+}
+
+.toc {
+    font-size: large;
+    padding: 10px;
+}
+
+a:link {
+  color: #000000;
+}
+
+a:visited {
+  color: #000000;
+}
+
+a:hover {
+  color: #000000;
+}
+
+a:active {
+  color: #000000;
+}
+
+hr {
+    border-top: 1px solid black;
+}
