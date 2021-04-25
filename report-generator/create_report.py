@@ -70,10 +70,23 @@ def compute_login():
     login_response = make_api_call('POST', f'{COMPUTE_CONSOLE_ADDRESS}/api/{API_VERSION}/authenticate', login_creds)
     logging.debug(f'login_response: {login_response}')
     response = json.loads(login_response)
-    return response.get('token')
+    if response.get('token'):
+        HEADERS['Authorization'] = f'Bearer {response.get("token")}'
+        return True
+    else:
+        return False
 
 
-def get_images(token, image_type):
+def list_collections():
+    logging.debug(f'Fetching /collections')
+    collections_response = make_api_call('GET', f'{COMPUTE_CONSOLE_ADDRESS}/api/{API_VERSION}/collections')
+    logging.debug(f'collections_response: {collections_response}')
+    collections = json.loads(collections_response)
+    print("Collections:")
+    for collection in collections:
+        print(collection.get('name'))
+
+def get_images(image_type, collections=None):
     if image_type == "deployed":
         endpoint = "images"
     elif image_type == "registry":
@@ -81,7 +94,6 @@ def get_images(token, image_type):
     elif image_type == "ci":
         endpoint = "scans"
 
-    HEADERS['Authorization'] = f'Bearer {token}'
     all_images = []
     for page in range(MAX_PAGES):
         logging.debug(f'Fetching /images page {page}')
@@ -92,16 +104,23 @@ def get_images(token, image_type):
         }
         if image_type == "ci":
             params['type'] = "ciImage"
+        if collections:
+            params['collections'] = collections
 
         images_response = make_api_call('GET', f'{COMPUTE_CONSOLE_ADDRESS}/api/{API_VERSION}/{endpoint}', params=params)
-        # logging.debug(f'images_response: {images_response}')
+        logging.debug(f'images_response: {images_response}')
         try:
             images = json.loads(images_response)
-            logging.debug(f'Found {len(images)} images')
-            all_images += images
         except ValueError:
             logging.error(f'images_response is not valid json: {images_response}')
             sys.exit(1)
+
+        if not images:
+            logging.debug('No images found.')
+            return all_images
+
+        logging.debug(f'Found {len(images)} images')
+        all_images += images
         if len(images) < PAGE_LIMIT:
             logging.debug('Last Page, exiting loop')
             break
@@ -261,7 +280,9 @@ def generate_html(
     compliance_issues,
     summary,
     vulnerabilities_only,
-    compliance_only):
+    compliance_only,
+    collections):
+    logging.debug(f'Collections: {collections}')
     timestamp = time.strftime("%Y-%m-%d at %H:%M:%S", time.localtime())
     template = env.get_template("base.html")
     vuln_severity_count, vuln_list = generate_vuln_summary(images, vulnerabilities)
@@ -284,7 +305,8 @@ def generate_html(
         compliance_issues=compliance_issues,
         summary=summary,
         vuln_only=vulnerabilities_only,
-        comp_only=compliance_only
+        comp_only=compliance_only,
+        collections=collections
         )
     return html
 
@@ -318,9 +340,11 @@ def cleanup():
             logging.error(f"Error: {f} : {e.strerror}")
 
 
-def main(image_type, file_format, summary, vulnerabilities_only, compliance_only):
-    token = compute_login()
-    images = get_images(token, image_type)
+def main(image_type, file_format, summary, vulnerabilities_only, compliance_only, collections):
+    images = get_images(image_type, collections)
+    if len(images) == 0:
+        logging.error('No images found.')
+        sys.exit(1)
     logging.info(f"Images found: {len(images)}")
     vulnerability_count, vulnerabilities = get_vulnerabilities(images)
     compliance_issue_count, compliance_issues = get_compliance_issues(images)
@@ -338,7 +362,8 @@ def main(image_type, file_format, summary, vulnerabilities_only, compliance_only
         compliance_issues,
         summary,
         vulnerabilities_only,
-        compliance_only
+        compliance_only,
+        collections
     )
 
     if file_format == "html":
@@ -351,33 +376,38 @@ def main(image_type, file_format, summary, vulnerabilities_only, compliance_only
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Create Compute Reports",
-        formatter_class=lambda prog: argparse.HelpFormatter(prog,max_help_position=80)
+        formatter_class=lambda prog: argparse.HelpFormatter(prog,max_help_position=120)
+    )
+    parser.add_argument(
+        "-d", "--debug", action='store_true',
+        help="Prints debug output during report creation"
     )
     parser.add_argument(
         "-t", "--type", type=str, default="deployed", choices=['deployed', 'registry', 'ci'],
-        help="Used to select the type of report to run.")
+        help="Used to select the type of report to run. DEFAULT: deployed")
     parser.add_argument(
         "-f", "--format", type=str, default="pdf", choices=['pdf', 'html'],
-        help="Selects the file format of the generated report.")
+        help="Selects the file format of the generated report. DEFAULT: pdf")
     parser.add_argument(
-        "-d", "--debug", action='store_true',
-        help="Prints debug output during report creation")
-
+        "-c", "--collections", type=str, nargs='+',
+        help="Restrict report to the provided collection(s)."
+    )
     parser.add_argument(
         "-s", "--summary", action='store_true',
         help="Summary only, do not include vulnerability or compliance details"
     )
-
     parser.add_argument(
         "-vo", "--vulnerabilities-only", action='store_true',
         help="Exclude Compliance data from report"
     )
-
     parser.add_argument(
         "-co", "--compliance-only", action='store_true',
         help="Exclude Vulnerabilities data from report"
     )
-
+    parser.add_argument(
+        "-lc", "--list-collections", action="store_true",
+        help="Lists all collections"
+    )
     args = parser.parse_args()
 
     if args.debug:
@@ -385,5 +415,14 @@ if __name__ == "__main__":
     else:
         logging.basicConfig(level=logging.INFO)
 
+    login_success = compute_login()
+    
+    if not login_success:
+        sys.exit(2)
+
+    if args.list_collections:
+        list_collections()
+        sys.exit(0)
+
     # main(image_type, outfile, file_format)
-    main(args.type, args.format, args.summary, args.vulnerabilities_only, args.compliance_only)
+    main(args.type, args.format, args.summary, args.vulnerabilities_only, args.compliance_only, args.collections)
