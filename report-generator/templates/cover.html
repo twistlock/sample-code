@@ -22,15 +22,24 @@
         <span class="cover-info">
         {% if not comp_only %}
             Vulnerability, 
-            {% endif %}
-            {% if not vuln_only %}
+        {% endif %}
+        {% if not vuln_only %}
             Compliance, 
-            {% endif %}
-            {% if not summary %}
-            Full Report
-            {% else %}
+        {% endif %}
+        {% if not summary %}
+            Detailed Report
+        {% else %}
             Summary
-            {% endif %}
+        {% endif %}
+        {% if collections %}
+        <br/><br/></span>
+        <span class="cover-info">Collections:<br/></span>
+        <span class="cover-info">
+        {% for collection in collections %}
+        {{ collection }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+        </span>
+        {% endif %}
         </span>
     </div>
     <div class="new-page-after"></div>
