@@ -1,27 +1,23 @@
-# Even policy enforcement at all stages of the app lifecycle
+# Rego policy examples
 
-As you think about how to apply Prisma Cloud to secure your apps, you'll want to ensure that policies are evenly enforced across the app lifecycle.
-Prisma Cloud offers controls that can be deployed at different points: the developer's IDE, the CI/CD pipeline, the entry point to production, and the runtime environment.
+With [Prisma Cloud's admission controller](https://docs.paloaltonetworks.com/prisma/prisma-cloud/prisma-cloud-admin-compute/access_control/open_policy_agent.html), you can define and enforce policy for 
+interacting with cluster resources.
+You can take action on resource creation, sources and tags of images used in pods, external IPs used by services, and even specific users or groups that do these things.
 
-Currently, the Prisma Cloud DevOps plugin policies are written in JSON.
-JSON policies target the developer's IDE and the CI/CD pipeline.
 The admission controller policies are written in Rego.
-Admission controller policies are evaluated at the moment apps are put in production.
+This directory is a library of _example_ policies, so not all of them may be suitable for use as they are provided.
 
-Here we show examples of policies written in JSON, and the equivalent policies written in Rego.
-They're designed to do the same thing, just at different stages of the app lifecycle.
+If you've written a rule and would like to share it with the Prisma Cloud community, please submit your work as a pull request.
 
-The policies are:
+### Notes
+#### Operations
+Most examples only target the `CREATE` operation, but are structured to allow adding other operations easily.
+To add other operations, insert it into the set.
+```
+operations := {"CREATE", "UPDATE"}
+operations[input.request.operation]
+```
 
-* Deny specific container images.
-* Deny containers from exposing specific ports (for example, deny all apps that open port 80 for unsecured HTTP traffic).
-* Deny privileged pods.
-* Deny namespaces from being created.
-
-This repository is meant to be a library of rules.
-If you've written a rule, and you'd like to share it with the Prisma Cloud community, please submit your work as a pull request.
-
-For more information about the Prisma Cloud DevOps plugin policies, see https://docs.paloaltonetworks.com/prisma/prisma-cloud/prisma-cloud-policy-reference/configuration-policies/configuration-policies-build-phase/kubernetes-configuration-policies.html
-
-For more information about the Prisma Cloud admission controller, based on the Open Policy Agent, see https://docs.paloaltonetworks.com/prisma/prisma-cloud/prisma-cloud-admin-compute/access_control/open_policy_agent.html
-
+#### Users and groups
+The `user-group.rego` and `user-name.rego` examples aren't particularly useful by themselves, but you can combine them with other policies to narrow their scopes.
+An example is alerting when a member of a particular group runs a command in or attaches to a container.
