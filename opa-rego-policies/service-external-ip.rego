@@ -1,5 +1,7 @@
+# Matches when a service uses an externalIP outside of the specified IP range
+
 match[{"msg": msg}] {
-    operations := {"CREATE", "UPDATE"}
+    operations := {"CREATE"}
     operations[input.request.operation]
     input.request.kind.kind == "Service"
 

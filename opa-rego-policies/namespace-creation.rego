@@ -1,3 +1,5 @@
+# Matches namespace creation events
+
 match[{"msg": msg}] {
     input.request.operation == "CREATE"
     input.request.kind.kind == "Namespace"

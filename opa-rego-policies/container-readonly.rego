@@ -1,11 +1,13 @@
+# Matches when a container in a pod does not have a read-only root filesystem
+# Could be adjusted to narrow scope to certain containers or check for other attributes
+
 match[{"msg": msg}] {
-    operations := {"CREATE", "UPDATE"}
+    operations := {"CREATE"}
     operations[input.request.operation]
     input.request.kind.kind == "Pod"
 
-    container_name := input.request.object.spec.containers[_].name
-    security_context := input.request.object.spec.containers[_].securityContext
+    containers := input.request.object.spec.containers[_]
 
-    not security_context.readOnlyRootFilesystem
-    msg := sprintf("container '%v' does not have a read only root filesystem", [container_name])
+    not containers.securityContext.readOnlyRootFilesystem
+    msg := sprintf("container '%v' does not have a read only root filesystem", [containers.name])
 }

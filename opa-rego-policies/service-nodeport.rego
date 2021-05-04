@@ -1,3 +1,5 @@
+# Matches when a service is of type NodePort
+
 match[{"msg": msg}] {
     operations := {"CREATE", "UPDATE"}
     operations[input.request.operation]
