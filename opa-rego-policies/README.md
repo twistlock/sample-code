@@ -21,3 +21,10 @@ operations[input.request.operation]
 #### Users and groups
 The `user-group.rego` and `user-name.rego` examples aren't particularly useful by themselves, but you can combine them with other policies to narrow their scopes.
 An example is alerting when a member of a particular group runs a command in or attaches to a container.
+
+#### Multiple `match` rule definitions
+A rule may be defined multiple times with the same name.
+This is referred to as an incremental definition because each definition is additive.
+An incrementally-defined rule can be understood as `<rule-1> OR <rule-2> OR ... OR <rule-N>`.
+
+An example of this can be found in `image-tag.rego` in which the rules will match on the tag `latest` and no tag (which defaults to `latest`).
