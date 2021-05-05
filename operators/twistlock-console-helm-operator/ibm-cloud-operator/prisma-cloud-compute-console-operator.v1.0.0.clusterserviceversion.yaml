@@ -278,25 +278,7 @@ spec:
     ```
     oc apply -f <configmap-filename>.yaml
     ```
-
-    ##  Here's the plan:
-    ```sh
-    # Let the cluster know about our new custom resource, TwistlockConsole
-    kubectl apply -f deploy/0_8_crds/0_charts_v1alpha1_twistlockconsole_crd.yaml
-    # Create the 'twistlock' namespace
-    kubectl apply -f deploy/1_namespace.yaml
-    # Create necessary user and permissions to make things happen
-    kubectl apply -f deploy/2_service_account.yaml 
-    kubectl apply -f deploy/3_role.yaml
-    kubectl apply -f deploy/4_role_binding.yaml
-    kubectl apply -f deploy/5_clusterrole.yaml
-    kubectl apply -f deploy/6_clusterrole_binding.yaml
-    # Deploy the operator container as a pod
-    kubectl apply -f deploy/7_operator.yaml
-    # Add your token and apply. For more detail, before you apply the CR, read
-    the note below
-    kubectl apply -f deploy/0_8_crds/8_charts_v1alpha1_twistlockconsole_cr.yaml
-    ``` 
+    
     ### Understanding the Twistlock Customer Resource (CR) spec
     Helm uses a concept called [values](https://helm.sh/docs/chart_template_guide/values_files/) to provide customizations
     to a Helm chart's defaults, which are defined in the Helm chart's
