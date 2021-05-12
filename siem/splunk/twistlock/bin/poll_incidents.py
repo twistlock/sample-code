@@ -117,6 +117,8 @@ def get_incidents(console_url, auth_token, project_list):
                         "_id": incident["_id"],
                         "profileID": incident["profileID"],
                         "type": "container",
+                        "attempted": False,
+                        "poll_attempts": 0,
                     }
                 else: # else => host
                     incident_info = {
@@ -124,6 +126,8 @@ def get_incidents(console_url, auth_token, project_list):
                         "_id": incident["_id"],
                         "profileID": incident["hostname"],
                         "type": "host",
+                        "attempted": False,
+                        "poll_attempts": 0,
                     }
                 if incident_info not in current_incidents:
                     current_incidents.append(incident_info)
@@ -144,7 +148,7 @@ def get_incidents(console_url, auth_token, project_list):
     if os.path.isfile(incidents_file):
         previous_incidents = json.load(open(incidents_file))
         for incident in current_incidents:
-            if incident not in previous_incidents:
+            if not any(previous_incident["_id"] == incident["_id"] for previous_incident in previous_incidents):
                 previous_incidents.append(incident)
         with open(incidents_file, "w") as f:
             # At this point, previous_incidents list will have any new incidents appended

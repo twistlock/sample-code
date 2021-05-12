@@ -37,8 +37,17 @@ def get_forensics(console_url, auth_token):
         incidents = json.load(f)
         if not incidents:
             logger.info("No new forensic data to ingest.")
+
+        for incident in incidents: incident["attempted"] = False
         while incidents:
             incident = incidents.pop(0)
+            # If an incident has already been attempted, then we're back at the beginning of the list
+            if incident["attempted"]:
+                break
+
+            incident["attempted"] = True
+            incident["poll_attempts"] += 1
+            logger.debug("Processing incidentID {}. Attempt #{}.".format(incident["_id"], incident["poll_attempts"]))
             params = {
                 "project": incident["project"],
                 "limit": request_limit,
@@ -50,23 +59,26 @@ def get_forensics(console_url, auth_token):
                 response = requests.get(request_url, params=params_string, headers=headers)
                 response.raise_for_status()
                 response_json = response.json()
+                if response_json is not None:
+                    logger.debug("Successfully processed incidentID {}.".format(incident["_id"]))
+                    # Add incident ID to forensic data
+                    for forensic in response_json:
+                        forensic["incidentID"] = incident["_id"]
+                        print(json.dumps(forensic))
             except (requests.exceptions.RequestException, ValueError) as req_err:
                 logger.warning("Failed getting forensics for incidentID {} from profileID {}. Error: {}. Continuing.".format(incident["_id"], incident["profileID"], req_err))
-                continue
-
-            if response_json is not None:
-                # Add incident ID to forensic data
-                for forensic in response_json:
-                    forensic["incidentID"] = incident["_id"]
-                    print(json.dumps(forensic))
+                # Save for next time and keep going
+                incidents.append(incident)
+            except Exception as e:
+                logger.error("Unexpected error: {}.".format(e))
+                # Save for next time and keep going
+                incidents.append(incident)
 
             # Keep file up-to-date with unprocessed incidents
             f.truncate(0)
             f.seek(0)
             json.dump(incidents, f)
             f.flush()
-
-    os.remove(incidents_file)
 
 if __name__ == "__main__":
     logger.info("Prisma Cloud Compute poll_forensics script started.")
