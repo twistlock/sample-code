@@ -1,5 +1,0 @@
-Prisma Cloud can secure different architectures with the Defenders.
-These  utilities automate deployment of the defenders across your environments like Cloud Virtual Machines.
-
-Technical reference:
-https://docs.prismacloudcompute.com/docs/compute_edition_21_04/install/defender_types.html
