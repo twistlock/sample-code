@@ -1,0 +1,44 @@
+---
+
+- hosts: all 
+  become: true
+
+  tasks:
+    - name: Create Installation Directory
+      file: dest=/var/tmp/.twistlock state=directory
+
+    - name: get token
+      uri:
+        url: https://{{CONSOLE_ADDR}}/{{ACCOUNT_ID}}/api/v1/authenticate # mostly CONSOLE_ADDR = us-east1.cloud.twistlock.com
+        body_format: json
+        body:
+          "username": "{{ USERNAME }}"  #   create account  accesskey  with proper permission   
+          "password": "{{ PASS }}"
+        method: POST
+        status_code: 200
+        headers:
+           Content-Type: application/json
+           #Accept: application/json
+        return_content: yes
+      register: output
+      run_once: true
+
+    - debug:
+        msg: "{{ output.json.token }}"
+    #- local_action: copy content={{ output }} dest=/tmp/file
+
+    - name: "download file"
+      uri:
+        url: "https://{{CONSOLE_ADDR}}/{{ACCOUNT_ID}}/api/v1/scripts/defender.sh"   
+        method: POST
+        headers:
+           "authorization": Bearer {{ output.json.token }}
+        dest: /var/tmp/.twistlock/defender.sh
+        return_content: yes
+        validate_certs: false
+
+    - name: make that executable
+      file: dest=/var/tmp/.twistlock/defender.sh mode=0755 state=file
+
+    - name: run the script
+      command: /var/tmp/.twistlock/defender.sh -d "none" --install-host  -c "{{CONSOLE_ADDR}}"
