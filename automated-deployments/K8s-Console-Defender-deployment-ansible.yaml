@@ -1,0 +1,129 @@
+- hosts: localhost
+
+  vars:
+    twistlock_registry_token: <license_token>
+    twistlock_license: <license>
+    twistlock_install_version: "21_04_421" # https://docs.prismacloudcompute.com/docs/releases/release-information/latest.html
+    user: <first_admin_username>
+    password: <first_admin_password>
+    storage_class: <k8s_storage_class_for_dynamic_persistent_volume>
+    namespace: <namespace>
+
+  tasks:
+    # Pull Console image from Twistlock registry
+    - name: Create twistlock_data container to extract twistcli
+      shell: "docker create --name twistlock_data -ti  --entrypoint=/bin/sh registry-auth.twistlock.com/tw_{{ twistlock_registry_token | lower }}/twistlock/console:console_{{ twistlock_install_version }}"
+
+    # Prepare filesystem location for deployment tools
+    - name: Create a place for the twistcli
+      file: dest="{{ ansible_user_dir }}/twistlock/linux" owner=root group=root mode=0755 state=directory
+      ignore_errors: true
+
+    # Unzip is required
+    - name: Ensure unzip is present
+      apt: name=unzip state=latest
+      retries: 10
+
+    # Extract the linux deployment tools from the Console image
+    - name: Extract twistcli from twistlock_data
+      shell: "docker cp twistlock_data:/prisma-static-data/linux/twistcli-linux.zip /root/twistlock/linux/twistcli-linux.zip"
+      ignore_errors: true
+
+    # Unzip
+    - name: Extract twistcli-linux.zip
+      unarchive:
+        src: /root/twistlock/linux/twistcli-linux.zip
+        dest: /root/twistlock/linux/
+        remote_src: yes
+      ignore_errors: true
+
+    # twistlock.cfg is required for Console deployment yaml creation
+    # If your deployment has unique configuration requirements update this configuration file
+    - name: Extract twistlock.cfg from twistlock_data
+      shell: "docker cp twistlock_data:/var/lib/twistlock/scripts/twistlock.cfg /root/twistlock/twistlock.cfg"
+
+    # Destroy twistlock_data container
+    - name: Destroy twistlock_data container
+      shell: "docker rm twistlock_data"
+
+    # Create the Console's deployment yaml
+    - name: Create console yaml
+      command: "linux/twistcli console export kubernetes --service-type ClusterIP --storage-class {{ storage_class }} --registry-token {{ twistlock_registry_token }} --namespace {{ namespace }}"
+      args:
+        chdir: /root/twistlock
+    - name: Apply console yaml
+      command: kubectl apply -f /root/twistlock/twistlock_console.yaml
+
+    # Grab the clusterIP of the twistlock-console service
+    - name: Get twistlock-console service clusterIP
+      shell: "kubectl get service twistlock-console -n twistlock -o json| jq -r '.spec.clusterIP'"
+      register: twistlock_console
+
+    # Wait for the Console deployment to complete, assuming we can route to the twistlock-console service's clusterIP and management-port-https 8083
+    - name: Wait for Console start up
+      uri:
+        url: "https://{{ twistlock_console.stdout }}:8083/api/v1/_ping"
+        method: GET
+        validate_certs: no
+        body_format: json
+        status_code: 200
+      register: result
+      until: result.status == 200 and ('status' in result)
+      retries: 20
+      delay: 10
+
+    # Create the first administrator account from the supplied variables
+    - name: Create admin user
+      uri:
+        url: "https://{{ twistlock_console.stdout }}:8083/api/v1/signup"
+        method: POST
+        body: {"username": "{{ user }}", "password": "{{ password }}"}
+        force_basic_auth: no
+        body_format: json
+        validate_certs: no
+        status_code: 200,400 # We are ignoring errors here in case this task is being run again & user already exists
+
+    # License the Console
+    - name: License the Console
+      uri:
+        url: "https://{{ twistlock_console.stdout }}:8083/api/v1/settings/license"
+        method: POST
+        user: "{{ user }}"
+        password: "{{ password }}"
+        body: { "key": "{{ twistlock_license }}"}
+        force_basic_auth: yes
+        body_format: json
+        validate_certs: no
+        status_code: 200,400
+
+    # Generate Defenders daemonSet for K8s cluster
+    - name: Defenders - Deploy - DaemonSet - Get Defender yaml
+      uri:
+        url: "https://{{ twistlock_console.stdout }}:8083/api/v1/defenders/daemonset.yaml"
+        method: POST
+        body: {
+               "consoleAddr": "twistlock-console",
+               "namespace": "twistlock",
+               "orchestration": "kubernetes",
+               "image": "" ,
+               "privileged": false,
+               "serviceAccounts": false,
+               "istio": false,
+               "collectPodLabels": true
+               }
+        user: "{{ user }}"
+        password: "{{ password }}"
+        dest: /root/twistlock/defender-ds.yaml
+        mode: 0755
+        force_basic_auth: yes
+        validate_certs: no
+        body_format: json
+        status_code: 200
+      register: result
+      until: result.status == 200
+      retries: 10
+      delay: 10
+
+    # Deploy Defenders
+    - name: Install Defender daemonset YAML
+      shell: 'kubectl apply -f /root/twistlock/defender-ds.yaml'
