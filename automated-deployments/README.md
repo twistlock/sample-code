@@ -8,7 +8,7 @@ The [K8s-Console-Defender-deployment-ansible.yaml](K8s-Console-Defender-deployme
 The [defender.yaml](defender.yaml) Ansible playbook demonstrates the deployment of the Defenders from an existing Console using a shell script.
 
 ## Deploy Defenders on instance creation
-The [host-defender-userdata.sh](host-defender-userdata.sh) script demonstrates how to deploy a host Defender. When used as an instance startup script, you can ensure that a host Defender is installed on each newly-created instance automatically.
+The [host-defender-userdata.sh](host-defender-userdata.sh) script demonstrates how to deploy a host Defender. When used as an instance startup script, you can ensure that a host Defender is installed on each newly-created instance automatically via the user data field.
 
 ### Important links
 - [Running Ansible playbooks using EC2 Systems Manager](https://aws.amazon.com/blogs/mt/running-ansible-playbooks-using-ec2-systems-manager-run-command-and-state-manager/)
