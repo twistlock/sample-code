@@ -1,4 +1,5 @@
 <nav search_view="search">
-  <view name="pcc_incidents" default='true' />
+  <view name="incidents" default='true' />
+  <view name="setup" />
   <view name="search" />
 </nav>
