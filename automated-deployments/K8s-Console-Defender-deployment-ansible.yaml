@@ -56,7 +56,7 @@
 
     # Grab the clusterIP of the twistlock-console service
     - name: Get twistlock-console service clusterIP
-      shell: "kubectl get service twistlock-console -n twistlock -o json| jq -r '.spec.clusterIP'"
+      shell: "kubectl get service twistlock-console -n {{ namespace }} -o=jsonpath='{.spec.clusterIP}'"
       register: twistlock_console
 
     # Wait for the Console deployment to complete, assuming we can route to the twistlock-console service's clusterIP and management-port-https 8083
@@ -103,7 +103,7 @@
         method: POST
         body: {
                "consoleAddr": "twistlock-console",
-               "namespace": "twistlock",
+               "namespace": "{{ namespace }}",
                "orchestration": "kubernetes",
                "image": "" ,
                "privileged": false,
