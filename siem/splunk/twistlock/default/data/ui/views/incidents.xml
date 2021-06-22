@@ -1,6 +1,19 @@
 <form>
   <label>Prisma Cloud Compute Incidents and Forensics</label>
   <fieldset submitButton="false">
+    <input type="multiselect" token="console_selector">
+      <label>Console</label>
+      <prefix>console="</prefix>
+      <suffix>"</suffix>
+      <delimiter>" OR console="</delimiter>
+      <fieldForLabel>Console</fieldForLabel>
+      <fieldForValue>console</fieldForValue>
+      <search>
+        <query>index=main sourcetype=pcc:incident | dedup console | sort console</query>
+      </search>
+      <choice value="*">Show all</choice>
+      <default>*</default>
+    </input>
     <input type="multiselect" token="project_selector">
       <label>Project</label>
       <prefix>project="</prefix>
@@ -20,7 +33,7 @@
       <title>Total Incidents in the last 7 days</title>
       <single>
         <search>
-          <query>index=main sourcetype=pcc:incident $project_selector$
+          <query>index=main sourcetype=pcc:incident $console_selector$ $project_selector$
           | stats count</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
@@ -32,7 +45,7 @@
       <title>Total Incidents in the last 30 days</title>
       <single>
         <search>
-          <query>index=main sourcetype=pcc:incident $project_selector$
+          <query>index=main sourcetype=pcc:incident $console_selector$ $project_selector$
           | stats count</query>
           <earliest>-30d@d</earliest>
           <latest>now</latest>
@@ -47,7 +60,7 @@
       <table>
         <title>Count of incidents by image</title>
         <search>
-          <query>index=main sourcetype=pcc:incident $project_selector$
+          <query>index=main sourcetype=pcc:incident $console_selector$ $project_selector$
           | stats count as Incidents by imageName
           | sort 5 -count
           | rename imageName as Image</query>
@@ -61,7 +74,7 @@
       <table>
         <title>Count of incidents by host</title>
         <search>
-          <query>index=main sourcetype=pcc:incident $project_selector$
+          <query>index=main sourcetype=pcc:incident $console_selector$ $project_selector$
           | stats count as Incidents by hostname
           | sort 5 -Incidents
           | rename hostname as Host</query>
@@ -84,22 +97,24 @@
         <fieldForLabel>Container</fieldForLabel>
         <fieldForValue>containerName</fieldForValue>
         <search>
-          <query>index=main sourcetype=pcc:incident containerName=* $project_selector$ | dedup containerName</query>
+          <query>index=main sourcetype=pcc:incident containerName=* $console_selector$ $project_selector$ | dedup containerName</query>
         </search>
         <choice value="*">Show all</choice>
         <default>*</default>
       </input>
       <table>
         <search>
-          <query>index=main sourcetype=pcc:incident $container_selector$ $project_selector$
-          | table time, category, hostname, imageName, containerName, t_id, project
+          <query>index=main sourcetype=pcc:incident $container_selector$ $console_selector$ $project_selector$
+          | table time, category, hostname, imageName, containerName, t_id, console, project
           | sort time
-          | rename time as Time, category as Category, hostname as Host, imageName as Image, containerName as Container, t_id as ID, project as Project</query>
+          | rename time as Time, category as Category, hostname as Host, imageName as Image, containerName as Container, t_id as ID, console as Console, project as Project</query>
         </search>
         <option name="count">10</option>
         <option name="drilldown">row</option>
         <drilldown>
           <set token="container_incident_id">$row.ID$</set>
+          <set token="container_incident_console">$row.Console$</set>
+          <set token="container_incident_project">$row.Project$</set>
           <set token="show_container_forensics">true</set>
         </drilldown>
       </table>
@@ -118,7 +133,7 @@
       </input>
       <table>
         <search>
-          <query>index=main sourcetype=pcc:forensicdata incidentID=$container_incident_id$
+          <query>index=main sourcetype=pcc:forensicdata incidentID=$container_incident_id$ console=$container_incident_console$ project=$container_incident_project$
           | table timestamp, type, ppid, pid, path, command
           | sort timestamp
           | rename timestamp as Time, type as Type, ppid as "Parent PID", pid as PID, path as Path, command as Command</query>
@@ -139,17 +154,17 @@
         <fieldForLabel>hostname</fieldForLabel>
         <fieldForValue>hostname</fieldForValue>
         <search>
-          <query>index=main sourcetype=pcc:incident NOT containerName=* $project_selector$ | dedup hostname</query>
+          <query>index=main sourcetype=pcc:incident NOT containerName=* $console_selector$ $project_selector$ | dedup hostname</query>
         </search>
         <choice value="*">Show all</choice>
         <default>*</default>
       </input>
       <table>
         <search>
-          <query>index=main sourcetype=pcc:incident NOT containerID=* $hostname_selector$ $project_selector$
-          | table time, category, hostname, profileID, "audits{}.type", "audits{}.user", t_id, project
+          <query>index=main sourcetype=pcc:incident NOT containerID=* $hostname_selector$ $console_selector$ $project_selector$
+          | table time, category, hostname, profileID, "audits{}.type", "audits{}.user", t_id, console, project
           | sort time
-          | rename time as Time, category as Category, hostname as Host, profileID as Application, "audits{}.type" as Type, "audits{}.user" as User, t_id as ID, project as Project</query>
+          | rename time as Time, category as Category, hostname as Host, profileID as Application, "audits{}.type" as Type, "audits{}.user" as User, t_id as ID, console as Console, project as Project</query>
           <earliest>$earliest$</earliest>
           <latest>$latest$</latest>
         </search>
@@ -157,6 +172,8 @@
         <option name="drilldown">row</option>
         <drilldown>
           <set token="host_incident_id">$row.ID$</set>
+          <set token="host_incident_console">$row.Console$</set>
+          <set token="host_incident_project">$row.Project$</set>
           <set token="show_host_forensics">true</set>
         </drilldown>
       </table>
@@ -175,7 +192,7 @@
       </input>
       <table>
         <search>
-          <query>index=main sourcetype=pcc:forensicdata incidentID=$host_incident_id$
+          <query>index=main sourcetype=pcc:forensicdata incidentID=$host_incident_id$ console=$host_incident_console$ project=$host_incident_project$
           | table timestamp, type, ppid, ppath, pid, path, command
           | sort timestamp
           | rename timestamp as Time, type as Type, ppid as "Parent PID", ppath as "Parent Path", pid as PID, path as Path, command as Command</query>

@@ -7,64 +7,52 @@ The Prisma Cloud Compute Splunk App allows high priority security incidents from
 The app adds two main components to your Splunk deployment: scripted data inputs that make use of your Prisma Cloud Compute API to pull incidents and forensics and a sample Splunk dashboard that presents that data.
 
 ## Getting the app
-### GitHub (Recommended)
+### GitHub
 Download the latest app tarball (`pcc-splunk-app-*.tar.gz`) from the [twistlock/sample-code repository](https://github.com/twistlock/sample-code/tree/master/siem/splunk).
 
 ### Splunkbase
-_Note: The app version on Splunkbase may fall behind the app version in the GitHub repository._
-
 Download the latest app tarball from [Splunkbase](https://splunkbase.splunk.com/app/4555).
 
+### Splunk Apps Browser
+In the Splunk UI, click on the Apps dropdown, click "Find More Apps", then search for Prisma Cloud Compute.
+
 ## Installation and setup
-
-1. Install the app in Splunk.
-2. Restart Splunk.
-3. Open `$SPLUNK_HOME/etc/apps/twistlock/bin/data/config.json` for editing and add the appropriate values for your environment. See the annotated example and field descriptions below for more detail:
-    ```
-    {
-      "credentials": {
-        "username": "jdoe", [1]
-        "password": "Password123!" [1]
-      },
-      "console": {
-        "url": "https://my.console.url:8083", [2]
-        "projects": ["Central Console", "my tenant project"] [3]
-      }
-    }
-    ```
-
-    **[1] Prisma Cloud Compute Console API credentials:**
-    
-    If you are using Prisma Cloud Compute Edition (self-hosted), this will likely just be your normal username and password. A user with the [DevSecOps role](https://docs.twistlock.com/docs/compute_edition/authentication/user_roles.html#devsecops-user) is required.
-    
-    If you are using Prisma Cloud Enterprise Edition (SaaS), this will be your [access key and secret key](https://docs.twistlock.com/docs/enterprise_edition/authentication/access_keys.html#provisioning-access-keys). A user with the [Account Group Read Only role](https://docs.twistlock.com/docs/enterprise_edition/authentication/prisma_cloud_user_roles.html#prisma-cloud-roles-to-compute-roles-mapping) is required.
-
-    **[2] Prisma Cloud Compute Console URL:**
-    
-    This URL must be reachable by the app. If you are using Prisma Cloud Enterprise Edition (SaaS), this will be the address found at **Compute > Manage > System > Downloads** under the **Path to Console** heading.
-
-    **[3] List of projects:**
-    
-    This is only applicable to users with [projects](https://docs.twistlock.com/docs/compute_edition/deployment_patterns/projects.html) configured in Prisma Cloud Compute Edition. **If you do not use projects (this includes all SaaS users), you can safely leave the default value.** The field accepts two types of values: a list of projects (example above) and the string `"all"` (be sure to include quotes). Using the list, you can specify a set of projects you would like queried. With the string `"all"`, the script will automatically pull data from all projects accessible by the user specified.
-
+1. Install the app by either uploading the tarball or following the Splunkbase prompts.
+2. Navigate to the setup page if you aren't guided there.
+3. Fill out the setup form and click "Complete setup."
+Field descriptions are on the setup page.
 4. Enable `poll_incidents.py` and `poll_forensics.py` at **Settings > Data inputs > Scripts** in Splunk.
+5. (Optional) Adjust the schedule as needed. By default, the `poll_forensics.py` script runs 2 minutes after `poll_incidents.py` and both scripts will run every 5 minutes.
 
-5. Adjust the schedule as needed. The `poll_forensics.py` script uses a file created by `poll_incidents.py` to only pull relevant forensics information. A 5-minute window between `poll_incidents.py` and `poll_forensics.py` is recommended.
+## FAQs
+### What user role is required?
+Any user role that is able to view incidents and forensic data. This is a user with at least the [DevSecOps role](https://docs.twistlock.com/docs/compute_edition/authentication/user_roles.html#devsecops-user) (self-hosted Compute) or [Account Group Read Only role](https://docs.twistlock.com/docs/enterprise_edition/authentication/prisma_cloud_user_roles.html#prisma-cloud-roles-to-compute-roles-mapping) (SaaS Compute).
+
+### What is my SaaS Compute Console address?
+You can find it at **Compute > Manage > System > Utilities** under the **Path to Console** heading.
+
+### Where is the configuration stored?
+Whenever you complete the setup, `local/twistlock.conf` and `local/passwords.conf` are created.
+The passwords are stored and accessed using [Splunk's encrypted password storage APIs](https://www.splunk.com/en_us/blog/security/storing-encrypted-credentials.html).
 
 ## Troubleshooting
 If incidents and/or forensics are not being ingested into Splunk, please verify the following:
 
 - You have at least one incident at **Monitor > Runtime > Incident Explorer** under the "Active" tab.
 - You are able to see the incident's forensic data by clicking on the "Forensic snapshot" button.
-- The values in the `config.json` file are accurate (#3 in instructions). You can test them manually with a `curl` command like this:
-    ```bash
-    curl -u <credentials.username>:<credentials.password> <console.url>/api/v1/audits/incidents
-    ```
+- The values in `local/twistlock.conf` are correct.
+If any are not correct, use the setup page with the same Console configuration name to update them.
 - The app's scripts are enabled in Splunk (#4 in instructions), and have been ran at least once (#5 in instructions).
 
-If data is still not being ingested, check `$SPLUNK_HOME/var/log/splunk/splunkd.log` for messages related to `poll_incidents.py` and `poll_forensics.py`.
+If data is still not being ingested, check `$SPLUNK_HOME/var/log/splunk/splunkd.log` for messages related to `poll_incidents.py` and `poll_forensics.py`:
+```
+index="_internal" source="/opt/splunk/var/log/splunk/splunkd.log" ("poll_incidents.py" OR "poll_forensics.py")
+```
 
 ## Change notes
+
+### June 16, 2021 - v4.0.0
+- Added an app setup page
 
 ### April 9, 2021 - v3.2.3
 - Fixed issue with SaaS Console URL paths getting stripped.

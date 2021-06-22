@@ -1,0 +1,28 @@
+.setup {
+    display: flex;
+}
+
+.setup .column.left {
+    flex: 2 1;
+}
+
+.setup .column.right {
+    flex: 1 1;
+}
+
+.setup .field {
+    margin-bottom: 18px;
+}
+
+.setup .help_text h2 {
+    margin: 25px 0 5px 0;
+    font-weight: bold;
+}
+
+.setup .help_text h2:first-child {
+    margin-top: 0;
+}
+
+.setup .underline {
+    border-bottom: 1px solid;
+}

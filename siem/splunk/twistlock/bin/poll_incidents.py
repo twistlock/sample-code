@@ -13,7 +13,8 @@ import sys
 
 import requests
 
-from api_wrappers import get_auth_token, get_projects, slash_join
+from utils.compute import get_auth_token, get_projects, slash_join
+from utils.splunk import generate_configs
 
 # Set up logger for Splunk compatibility
 logger = logging.getLogger(__name__)
@@ -23,12 +24,17 @@ handler = logging.StreamHandler(stream=sys.stderr)
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-data_dir = os.path.join(os.environ["SPLUNK_HOME"], "etc", "apps", "twistlock", "bin", "data")
-config_file = os.path.join(data_dir, "config.json")
+data_dir = os.path.join(os.path.dirname(__file__), "data")
 incidents_file = os.path.join(data_dir, "incidents_list.txt")
 
+try:
+    os.mkdir(data_dir)
+except OSError:
+    if not os.path.isdir(data_dir):
+        raise
 
-def get_incidents(console_url, auth_token, project_list):
+
+def get_incidents(console_name, console_url, project_list, auth_token):
     endpoint = "/api/v1/audits/incidents"
     headers = {
         "Authorization": "Bearer " + auth_token,
@@ -41,7 +47,12 @@ def get_incidents(console_url, auth_token, project_list):
     for project in project_list:
         # checkpoint_file stores the highest incident serialNum ingested to
         # only pull the latest incidents
-        checkpoint_file = os.path.join(data_dir, project.replace(" ", "-").lower() + "_serialNum_checkpoint.txt")
+        # `my-console_my-project_serialNum_checkpoint.txt`
+        checkpoint_file = os.path.join(
+            data_dir,
+            console_name.replace(" ", "-").lower()
+            + project.replace(" ", "-").lower()
+            + "_serialNum_checkpoint.txt")
         # If the checkpoint file exists, use it. If not, start at 0.
         if os.path.isfile(checkpoint_file):
             with open(checkpoint_file) as f:
@@ -60,17 +71,19 @@ def get_incidents(console_url, auth_token, project_list):
             "limit": 1,
             "offset": 0,
         }
-        params_string = "&".join("{0}={1}".format(k, v) for k, v in params.items())
+        joined_params = "&".join("{0}={1}".format(k, v) for k, v in params.items())
         try:
-            response = requests.get(request_url, params=params_string, headers=headers)
+            response = requests.get(request_url, params=joined_params, headers=headers)
             response.raise_for_status()
             total_count = int(response.headers["Total-Count"])
         except (requests.exceptions.RequestException, ValueError) as req_err:
-            logger.warning("Failed getting incidents count for {}. Error: {}. Continuing.".format(project, req_err))
+            logger.warning(
+                "Failed getting incident count from Console: %s, project: %s. "
+                "Error: %r. Continuing.", console_name, project, req_err)
             continue
 
         if total_count < 1:
-            logger.warning("No incidents to ingest for {}. Continuing.".format(project))
+            logger.warning("No incidents to ingest for %s. Continuing.", project)
             continue
 
         highest_serialNum = 0
@@ -86,33 +99,43 @@ def get_incidents(console_url, auth_token, project_list):
                 "limit": request_limit,
                 "offset": request_offset,
             }
-            params_string = "&".join("{0}={1}".format(k, v) for k, v in params.items())
+            joined_params = "&".join("{0}={1}".format(k, v) for k, v in params.items())
 
             try:
-                response = requests.get(request_url, params=params_string, headers=headers)
+                response = requests.get(
+                    request_url, params=joined_params, headers=headers)
                 response.raise_for_status()
                 response_json = response.json()
             except (requests.exceptions.RequestException, ValueError) as req_err:
-                logger.warning("Failed getting incidents for {}. Error: {}. Continuing.".format(project, req_err))
+                logger.warning(
+                    "Failed getting incidents from Console: %s, project: %s. "
+                    "Error: %r. Continuing.", console_name, project, req_err)
                 break
 
             if response_json is None:
-                logger.warning("Unusually empty response from {} using limit {} and offset {}. Continuing.".format(project, request_limit, request_offset))
+                logger.warning(
+                    "Empty response from Console: %s, project: %s "
+                    "using limit %s and offset %s. Continuing.",
+                    console_name, project, request_limit, request_offset)
                 break
 
             for incident in response_json:
                 current_serialNum = incident["serialNum"]
                 # Print only new incidents for indexing in Splunk
                 if current_serialNum > last_serialNum_indexed:
-                    # Add project key for associating in Splunk
+                    # Add console and project keys for associating in Splunk
+                    incident["console"] = console_name
                     incident["project"] = project
                     print(json.dumps(incident))
                 else:
                     continue
 
-                # Determine whether the incident is from a host or container and add to list of incidents
-                if re.match(r"sha256:[a-f0-9]{64}_*", incident["profileID"]): # if profileID is a SHA256 sum => container
+                # Determine whether the incident is from a host or container
+                # and add to list of incidents
+                # if profileID is a SHA256 sum => container
+                if re.match(r"sha256:[a-f0-9]{64}_*", incident["profileID"]):
                     incident_info = {
+                        "console": console_name,
                         "project": project,
                         "_id": incident["_id"],
                         "profileID": incident["profileID"],
@@ -120,8 +143,10 @@ def get_incidents(console_url, auth_token, project_list):
                         "attempted": False,
                         "poll_attempts": 0,
                     }
-                else: # else => host
+                # else => host
+                else:
                     incident_info = {
+                        "console": console_name,
                         "project": project,
                         "_id": incident["_id"],
                         "profileID": incident["hostname"],
@@ -140,50 +165,65 @@ def get_incidents(console_url, auth_token, project_list):
             with open(checkpoint_file, "w") as f:
                 f.write(str(highest_serialNum))
         else:
-            logger.info("No new incidents to ingest for {}. Continuing.".format(project))
+            logger.info(
+                "No new incidents to ingest from Console: %s, project: %s. "
+                "Continuing.", console_name, project)
 
     # Write the collected info to a file for poll-forensics.py.
     # If incidents file already exists append newly-collected incidents to what
     # was previously collected and stick that back in incidents file.
     if os.path.isfile(incidents_file):
-        previous_incidents = json.load(open(incidents_file))
+        past_incidents = json.load(open(incidents_file))
         for incident in current_incidents:
-            if not any(previous_incident["_id"] == incident["_id"] for previous_incident in previous_incidents):
-                previous_incidents.append(incident)
+            if not any(
+                    past_incident["_id"] == incident["_id"]
+                    for past_incident
+                    in past_incidents):
+                past_incidents.append(incident)
         with open(incidents_file, "w") as f:
-            # At this point, previous_incidents list will have any new incidents appended
-            json.dump(previous_incidents, f)
+            # At this point, past_incidents list will have any new incidents appended
+            json.dump(past_incidents, f)
     else:
         with open(incidents_file, "w") as f:
             json.dump(current_incidents, f)
-            
-if __name__ == "__main__":
+
+
+def main():
     logger.info("Prisma Cloud Compute poll_incidents script started.")
-    config = json.load(open(config_file))
+    session_key = sys.stdin.readline().strip()
+    configs = generate_configs(session_key)
 
-    if not (config["console"]["url"] and config["credentials"]["username"] and config["credentials"]["password"]):
-        logger.error("At least one item is missing in config.json. Please see README.md for more information. Exiting.")
-        sys.exit(1)
-
-    username = config["credentials"]["username"]
-    password = config["credentials"]["password"]
-    console_url = config["console"]["url"]
-
-    auth_token = get_auth_token(console_url, username, password)
-
-    # Check if supplied Console address is SaaS or not
-    # SaaS does not have projects, so use default value
-    if "cloud.twistlock.com/" in console_url:
-        projects = ["Central Console"]
-    else:
-        # Try to handle user-specified projects
-        if type(config["console"]["projects"]) is list:
-            projects = config["console"]["projects"]
-        elif config["console"]["projects"].lower() == "all":
-            projects = get_projects(console_url, auth_token)
-        else:
-            logger.error("console.projects in config.json is invalid: {}. Exiting.".format(config["console"]["projects"]))
+    for config in configs:
+        if not (config["console_addr"] and config["username"] and config["password"]):
+            logger.error(
+                "At least one configuration item is missing. "
+                "Please see README.md for more information. Exiting.")
             sys.exit(1)
 
-    get_incidents(console_url, auth_token, projects)
+        console_name = config["realm"]
+        console_url = config["console_addr"]
+        username = config["username"]
+        password = config["password"]
+
+        auth_token = get_auth_token(console_url, username, password)
+
+        # Check if supplied Console address is SaaS or not
+        # SaaS does not have projects, so use default value
+        if "cloud.twistlock.com/" in console_url:
+            projects = ["Central Console"]
+        else:
+            # Try to handle user-specified projects
+            if type(config["projects"]) is list:
+                projects = config["projects"]
+            elif config["projects"].lower() == "all":
+                projects = get_projects(console_url, auth_token)
+            else:
+                logger.error("Bad projects value: %s. Exiting.", config["projects"])
+                sys.exit(1)
+
+        get_incidents(console_name, console_url, projects, auth_token)
     logger.info("Prisma Cloud Compute poll_incidents script ending.")
+
+
+if __name__ == "__main__":
+    main()
