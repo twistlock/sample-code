@@ -18,6 +18,11 @@ $console = "https://example.cloud.twistlock.com/ex-1-123456789";
 $user = "username_or_accesskey";
 $pass = "password_or_secretkey";
 
+
+# Set Proxy if needed for internet access 
+Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings' -name ProxyServer -Value "http://hostname:port" # http://proxy.xxxx.xxxx:port
+Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings' -name ProxyEnable -Value 1 # Enable or disable
+
 # The hostname (or address) that the Windows Host Defender will use to connect to the Console.
 #
 # For Prisma Cloud SaaS, specify the hostname from the '$console' variable defined above.
@@ -39,6 +44,8 @@ $parameters = @{
   Uri     = "$console/api/v1/scripts/defender.ps1";
   Method  = "Post";
   Header  = @{ Authorization = "Basic {0}" -f [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $user,$pass))) };
+  # Proxy info below if needed
+  Body    = '{"proxy":{"httpProxy":"http://host:port,"ca":"","user":"","password":"","noProxy":"169.254.169.254"}}';
   OutFile = "defender.ps1";
 };
 
@@ -60,3 +67,8 @@ if ($PSEdition -eq 'Desktop') {
 .\defender.ps1 -type serverWindows -consoleCN $consoleCN -install 
 
 # Note that the downloaded PowerShell Installation Script contains parameters specific to this deployment.
+
+
+# UnSet Proxy if set above
+Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings' -name ProxyServer -Value "" # http://proxy.xxxx.xxxx:port
+Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings' -name ProxyEnable -Value 0 # Enable or disable
