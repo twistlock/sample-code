@@ -1,4 +1,0 @@
-apiVersion: v1
-description: Prisma Cloud Compute (Twistlock) Console Helm Chart
-name: twistlock-console
-version: 20.04.163
