@@ -1,2 +1,0 @@
-gar=$(kubectl get pods -n api-demo | grep car | awk '{print$1}')
-kubectl logs $gar -n api-demo

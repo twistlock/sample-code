@@ -1,6 +1,0 @@
-cd 1.0
-scanIaC performance-meter.yaml
-scanIaC web-service.yaml
-scanIaC cl*.json
-cd ..
-

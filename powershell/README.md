@@ -49,7 +49,7 @@ Pull requests are welcomed.
     * Outputs an CSV file (_yyyyMMdd-HHmmss-<ruleName>-compliance-check.csv_).
     * Generates a CSV that can be used to generate charts within excel, for example:
 
-    ![Compliance Status Image](../images/compliance_status.png?raw=true "compliance status results")
+    ![Compliance Status Image](../_images/compliance_status.png?raw=true "compliance status results")
 
   * Execute:
     * Provide the name of the compliance policy rules. For example _800-190-images_ and _800-190-hosts_
@@ -65,7 +65,7 @@ Pull requests are welcomed.
     * Outputs an CSV file (_yyyyMMdd-HHmmss-<imageName>-ato.csv_).
     * Generates a CSV that can be used to generate charts within excel, for example:
 
-        ![ATO report](../images/ato_report.png?raw=true "ato report")
+        ![ATO report](../_images/ato_report.png?raw=true "ato report")
 
   * Execute:
     * Provide the name of the image. For example _openebs/jiva:0.6.0_

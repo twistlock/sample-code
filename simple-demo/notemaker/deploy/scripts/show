@@ -1,2 +1,0 @@
-kubectl get $1 -n notemaker $2 
-
