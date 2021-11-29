@@ -1,0 +1,184 @@
+<!DOCTYPE HTML>
+<HEAD>
+<TITLE>Twistlock Images Report</TITLE>
+<STYLE>
+main {
+  max-width: 120ch;
+  padding: 2ch;
+  margin: auto;
+}
+h1 {
+  text-align: center;
+}
+table, th, td {
+  border: 1px solid black;
+  padding: 0;
+}
+table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+}
+td {
+  vertical-align: top;
+}
+td, th {
+  padding: 5px;
+}
+thead th:nth-child(1) {
+  width: 15%;
+}
+thead th:nth-child(2) {
+  width: 65%;
+}
+thead th:nth-child(3) {
+  width: 10%;
+}
+thead th:nth-child(4) {
+  width: 10%;
+} 
+</STYLE>
+</HEAD>
+<FONT FACE="Arial" COLOR="Black">
+<BODY>
+  <MAIN>
+    <H1>Twistlock Images Report</H1> 
+    
+      <H2>image: twistlock/private:defender_21_11_815</H2>
+      <TABLE>
+        <THEAD>
+          <TR>
+            <TH>CVE</TH>
+            <TH>Description</TH>
+            <TH>Severity</TH>
+            <TH>Status</TH>
+          </TR>
+        </THEAD>
+
+        <TBODY>
+        
+          <TR>
+            <TD>CVE-2021-3634</TD>
+            <TD>A flaw has been found in libssh in versions prior to 0.9.6. The SSH protocol keeps track of two shared secrets during the lifetime of the session. One of them is called secret_hash and the other session_id. Initially, both of them are the same, but after key re-exchange, previous session_id is kept and used as an input to new secret_hash. Historically, both of these buffers had shared length variable, which worked as long as these buffers were same. But the key re-exchange operation can also change the key exchange method, which can be based on hash of different size, eventually creating \"secret_hash\" of different size than the session_id has. This becomes an issue when the session_id memory is zeroed or when it is used again during second key re-exchange.</TD>
+            <TD>low</TD>
+            <TD>affected</TD>
+          </TR>
+        
+          <TR>
+            <TD>CVE-2021-40528</TD>
+            <TD>The ElGamal implementation in Libgcrypt before 1.9.4 allows plaintext recovery because, during interaction between two cryptographic libraries, a certain dangerous combination of the prime defined by the receiver\'s public key, the generator defined by the receiver\'s public key, and the sender\'s ephemeral exponents can lead to a cross-configuration attack against OpenPGP.</TD>
+            <TD>moderate</TD>
+            <TD>affected</TD>
+          </TR>
+        
+          <TR>
+            <TD>CVE-2021-3712</TD>
+            <TD>ASN.1 strings are represented internally within OpenSSL as an ASN1_STRING structure which contains a buffer holding the string data and a field holding the buffer length. This contrasts with normal C strings which are repesented as a buffer for the string data which is terminated with a NUL (0) byte. Although not a strict requirement, ASN.1 strings that are parsed using OpenSSL\'s own \"d2i\" functions (and other similar parsing functions) as well as any string whose value has been set with the ASN1_STRING_set() function will additionally NUL terminate the byte array in the ASN1_STRING structure. However, it is possible for applications to directly construct valid ASN1_STRING structures which do not NUL terminate the byte array by directly setting the \"data\" and \"length\" fields in the ASN1_STRING array. This can also happen by using the ASN1_STRING_set0() function. Numerous OpenSSL functions that print ASN.1 data have been found to assume that the ASN1_STRING byte array will be NUL terminated, even though this is not guaranteed for strings that have been directly constructed. Where an application requests an ASN.1 structure to be printed, and where that ASN.1 structure contains ASN1_STRINGs that have been directly constructed by the application without NUL terminating the \"data\" field, then a read buffer overrun can occur. The same thing can also occur during name constraints proc</TD>
+            <TD>moderate</TD>
+            <TD>affected</TD>
+          </TR>
+        
+          <TR>
+            <TD>CVE-2021-3712</TD>
+            <TD>ASN.1 strings are represented internally within OpenSSL as an ASN1_STRING structure which contains a buffer holding the string data and a field holding the buffer length. This contrasts with normal C strings which are repesented as a buffer for the string data which is terminated with a NUL (0) byte. Although not a strict requirement, ASN.1 strings that are parsed using OpenSSL\'s own \"d2i\" functions (and other similar parsing functions) as well as any string whose value has been set with the ASN1_STRING_set() function will additionally NUL terminate the byte array in the ASN1_STRING structure. However, it is possible for applications to directly construct valid ASN1_STRING structures which do not NUL terminate the byte array by directly setting the \"data\" and \"length\" fields in the ASN1_STRING array. This can also happen by using the ASN1_STRING_set0() function. Numerous OpenSSL functions that print ASN.1 data have been found to assume that the ASN1_STRING byte array will be NUL terminated, even though this is not guaranteed for strings that have been directly constructed. Where an application requests an ASN.1 structure to be printed, and where that ASN.1 structure contains ASN1_STRINGs that have been directly constructed by the application without NUL terminating the \"data\" field, then a read buffer overrun can occur. The same thing can also occur during name constraints proc</TD>
+            <TD>moderate</TD>
+            <TD>affected</TD>
+          </TR>
+        
+          <TR>
+            <TD>CVE-2021-3634</TD>
+            <TD>A flaw has been found in libssh in versions prior to 0.9.6. The SSH protocol keeps track of two shared secrets during the lifetime of the session. One of them is called secret_hash and the other session_id. Initially, both of them are the same, but after key re-exchange, previous session_id is kept and used as an input to new secret_hash. Historically, both of these buffers had shared length variable, which worked as long as these buffers were same. But the key re-exchange operation can also change the key exchange method, which can be based on hash of different size, eventually creating \"secret_hash\" of different size than the session_id has. This becomes an issue when the session_id memory is zeroed or when it is used again during second key re-exchange.</TD>
+            <TD>low</TD>
+            <TD>affected</TD>
+          </TR>
+        
+          <TR>
+            <TD>CVE-2020-16135</TD>
+            <TD>libssh 0.9.4 has a NULL pointer dereference in tftpserver.c if ssh_buffer_new returns NULL.</TD>
+            <TD>low</TD>
+            <TD>open</TD>
+          </TR>
+        
+          <TR>
+            <TD>CVE-2021-35939</TD>
+            <TD>DOCUMENTATION: It was found that the fix for CVE-2017-7500 and CVE-2017-7501 was incomplete: the check was only implemented for the parent directory of the file to be created. A local unprivileged user who owns another ancestor directory could potentially use this flaw to gain root privileges. The highest threat from this vulnerability is to data confidentiality and integrity as well as system availability.             STATEMENT: System and service accounts may have the required permissions to exploit this flaw. Conversely, regular user accounts should not be allowed to manipulate RPM artifacts during installation, thus reducing the attack surface and hence the impact of this flaw considerably.             MITIGATION: Mitigation for this issue is either not available or the currently available options do not meet the Red Hat Product Security criteria comprising ease of use and deployment, applicability to widespread installation base or stability.</TD>
+            <TD>moderate</TD>
+            <TD>affected</TD>
+          </TR>
+        
+          <TR>
+            <TD>CVE-2021-35938</TD>
+            <TD>DOCUMENTATION: A symbolic link issue was found in rpm. It occurs when rpm sets the desired permissions and credentials after installing a file. A local unprivileged user could use this flaw to exchange the original file with a symbolic link to a security-critical file and escalate their privileges on the system. The highest threat from this vulnerability is to data confidentiality and integrity as well as system availability.             STATEMENT: System and service accounts may have the required permissions to exploit this flaw. Conversely, regular user accounts should not be allowed to manipulate RPM artifacts during installation, thus reducing the attack surface and hence the impact of this flaw considerably.             MITIGATION: Mitigation for this issue is either not available or the currently available options do not meet the Red Hat Product Security criteria comprising ease of use and deployment, applicability to widespread installation base or stability.</TD>
+            <TD>moderate</TD>
+            <TD>affected</TD>
+          </TR>
+        
+          <TR>
+            <TD>CVE-2021-35937</TD>
+            <TD>DOCUMENTATION: A race condition vulnerability was found in rpm. A local unprivileged user could use this flaw to bypass the checks that were introduced in response to CVE-2017-7500 and CVE-2017-7501, potentially gaining root privileges. The highest threat from this vulnerability is to data confidentiality and integrity as well as system availability.             STATEMENT: System and service accounts may have the required permissions to exploit this flaw. Conversely, regular user accounts should not be allowed to manipulate RPM artifacts during installation, thus reducing the attack surface and hence the impact of this flaw considerably.             MITIGATION: Mitigation for this issue is either not available or the currently available options do not meet the Red Hat Product Security criteria comprising ease of use and deployment, applicability to widespread installation base or stability.</TD>
+            <TD>moderate</TD>
+            <TD>affected</TD>
+          </TR>
+        
+          <TR>
+            <TD>CVE-2021-3521</TD>
+            <TD>DOCUMENTATION: There is a flaw in RPM\'s signature functionality. OpenPGP subkeys are associated with a primary key via a \"binding signature.\"[1] RPM does not check the binding signature of subkeys prior to importing them. If an attacker is able to add or socially engineer another party to add a malicious subkey to a legitimate public key, RPM could wrongly trust a malicious signature. The greatest impact of this flaw is to data integrity.  1. https://tools.ietf.org/html/rfc4880#section-5.2.1             STATEMENT: To exploit this flaw, an attacker must either compromise an RPM repository or convince an administrator to install an untrusted RPM or public key.  It is strongly recommended to only use RPMs and public keys from trusted sources.</TD>
+            <TD>moderate</TD>
+            <TD>affected</TD>
+          </TR>
+        
+          <TR>
+            <TD>CVE-2017-14501</TD>
+            <TD>An out-of-bounds read flaw exists in parse_file_info in archive_read_support_format_iso9660.c in libarchive 3.3.2 when extracting a specially crafted iso9660 iso file, related to archive_read_format_iso9660_read_header.</TD>
+            <TD>low</TD>
+            <TD>affected</TD>
+          </TR>
+        
+          <TR>
+            <TD>CVE-2017-14166</TD>
+            <TD>libarchive 3.3.2 allows remote attackers to cause a denial of service (xml_data heap-based buffer over-read and application crash) via a crafted xar archive, related to the mishandling of empty strings in the atol8 function in archive_read_support_format_xar.c.</TD>
+            <TD>low</TD>
+            <TD>affected</TD>
+          </TR>
+        
+          <TR>
+            <TD>CVE-2021-35939</TD>
+            <TD>DOCUMENTATION: It was found that the fix for CVE-2017-7500 and CVE-2017-7501 was incomplete: the check was only implemented for the parent directory of the file to be created. A local unprivileged user who owns another ancestor directory could potentially use this flaw to gain root privileges. The highest threat from this vulnerability is to data confidentiality and integrity as well as system availability.             STATEMENT: System and service accounts may have the required permissions to exploit this flaw. Conversely, regular user accounts should not be allowed to manipulate RPM artifacts during installation, thus reducing the attack surface and hence the impact of this flaw considerably.             MITIGATION: Mitigation for this issue is either not available or the currently available options do not meet the Red Hat Product Security criteria comprising ease of use and deployment, applicability to widespread installation base or stability.</TD>
+            <TD>moderate</TD>
+            <TD>affected</TD>
+          </TR>
+        
+          <TR>
+            <TD>CVE-2021-35938</TD>
+            <TD>DOCUMENTATION: A symbolic link issue was found in rpm. It occurs when rpm sets the desired permissions and credentials after installing a file. A local unprivileged user could use this flaw to exchange the original file with a symbolic link to a security-critical file and escalate their privileges on the system. The highest threat from this vulnerability is to data confidentiality and integrity as well as system availability.             STATEMENT: System and service accounts may have the required permissions to exploit this flaw. Conversely, regular user accounts should not be allowed to manipulate RPM artifacts during installation, thus reducing the attack surface and hence the impact of this flaw considerably.             MITIGATION: Mitigation for this issue is either not available or the currently available options do not meet the Red Hat Product Security criteria comprising ease of use and deployment, applicability to widespread installation base or stability.</TD>
+            <TD>moderate</TD>
+            <TD>affected</TD>
+          </TR>
+        
+          <TR>
+            <TD>CVE-2021-35937</TD>
+            <TD>DOCUMENTATION: A race condition vulnerability was found in rpm. A local unprivileged user could use this flaw to bypass the checks that were introduced in response to CVE-2017-7500 and CVE-2017-7501, potentially gaining root privileges. The highest threat from this vulnerability is to data confidentiality and integrity as well as system availability.             STATEMENT: System and service accounts may have the required permissions to exploit this flaw. Conversely, regular user accounts should not be allowed to manipulate RPM artifacts during installation, thus reducing the attack surface and hence the impact of this flaw considerably.             MITIGATION: Mitigation for this issue is either not available or the currently available options do not meet the Red Hat Product Security criteria comprising ease of use and deployment, applicability to widespread installation base or stability.</TD>
+            <TD>moderate</TD>
+            <TD>affected</TD>
+          </TR>
+        
+          <TR>
+            <TD>CVE-2021-3521</TD>
+            <TD>DOCUMENTATION: There is a flaw in RPM\'s signature functionality. OpenPGP subkeys are associated with a primary key via a \"binding signature.\"[1] RPM does not check the binding signature of subkeys prior to importing them. If an attacker is able to add or socially engineer another party to add a malicious subkey to a legitimate public key, RPM could wrongly trust a malicious signature. The greatest impact of this flaw is to data integrity.  1. https://tools.ietf.org/html/rfc4880#section-5.2.1             STATEMENT: To exploit this flaw, an attacker must either compromise an RPM repository or convince an administrator to install an untrusted RPM or public key.  It is strongly recommended to only use RPMs and public keys from trusted sources.</TD>
+            <TD>moderate</TD>
+            <TD>affected</TD>
+          </TR>
+        
+          <TR>
+            <TD>CVE-2021-3580</TD>
+            <TD>A flaw was found in the way nettle\'s RSA decryption functions handled specially crafted ciphertext. An attacker could use this flaw to provide a manipulated ciphertext leading to application crash and denial of service.</TD>
+            <TD>moderate</TD>
+            <TD>affected</TD>
+          </TR>
+        
+        </TBODY>
+      </TABLE>
+      
+  </MAIN> 
+</BODY>
+</HTML>
