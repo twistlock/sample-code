@@ -29,7 +29,8 @@ def parse_args():
     p = argparse.ArgumentParser(description=desc,epilog=epilog)
     p.add_argument('-c','--console',metavar='TL_CONSOLE', help='query the API of this Console')
     p.add_argument('-u','--user',metavar='TL_USER',help='Console username')
-    
+    p.add_argument('-p','--password',metavar='TL_USER_PW',help='Console Password')
+
     args = p.parse_args()
 
     # Populate args by env vars if they're set
@@ -44,6 +45,8 @@ def parse_args():
         arg_errs.append('console (-c,--console)')
     if getattr(args,'user',None) is None:
         arg_errs.append('user (-u,--user)')
+    if getattr(args,'password',None) is None:
+        arg_errs.append('user (-p,--password)')
 
     if len(arg_errs) > 0:
         err_msg = 'Missing argument(s): {}'.format(', '.join(arg_errs))
@@ -56,18 +59,18 @@ def parse_args():
 
 def generate_html(images_json):
     "This converts the images API output to HTML"
-    report_body_template = open("report_body_ci.html.j2").read()
+    report_body_template = open("report_body.html.j2").read()
     template = Template(report_body_template)
     output_html = template.render(images=images_json)
     return output_html
 
 def get_images_json(console,user,password):
-    api_endpt = '/api/v1/scans?type=ciImage&jobNameHello-Node&limit=1&offset=0'
+    api_endpt = '/api/v1/images?search=twistlock/private:defender_21_11_815'
     request_url = console + api_endpt
     image_req = requests.get(request_url, verify=False, auth=HTTPBasicAuth(user,password))
     if image_req.status_code != 200:
         # This means something went wrong.
-        raise imgRequestError('GET /api/v1/scans {} {}'.format(image_req.status_code,image_req.reason))
+        raise imgRequestError('GET /api/v1/images {} {}'.format(image_req.status_code,image_req.reason))
     return image_req.json()
 
 def main():
@@ -80,11 +83,6 @@ def main():
     except imgRequestError as e:
         print("Error querying API: {}".format(e))
         return 3
-
-    
-    
-    
-    #print(images_json)
 
     output_html = generate_html(images_json)
     print(output_html, file=open("report.html", "w"))

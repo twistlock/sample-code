@@ -11,13 +11,13 @@ git https://github.com/twistlock/sample-code.git
 It is recommended you create a virtual environment to keep installed python packages isolated from the rest of your system:
 
 ```
-cd sample-code/report-generator
-python3 -m venv venv
+cd sample-code/Reporting-v2
+python3 -m venv env
 ```
 Activate it:
 
 ```
-source venv/bin/activate
+source env/bin/activate
 ```
 
 Next you will need to install the required python packages:
@@ -27,6 +27,10 @@ pip install -r requirements.txt
 ```
 
 Finally, you will need to install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html) for your platform.
+
+```
+homebrew: brew install --cask wkhtmltopdf
+```
 
 ## Environment Variables
 To fun reports with this script you will need 3 environment variables:
