@@ -1,3 +1,0 @@
-kubectl get pods -n notemaker | grep monitor
-
-

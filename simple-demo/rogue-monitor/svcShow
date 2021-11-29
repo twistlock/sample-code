@@ -1,2 +1,0 @@
-kubectl get svc -n notemaker | grep monitor
-
