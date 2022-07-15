@@ -7,6 +7,6 @@ match[{"msg": msg}] {
     denied_groups := {"group1", "group2"}
     present_groups := input.request.userInfo.groups[_]
 
-    count(denied_users & present_groups) > 0
+    count(denied_groups & present_groups) > 0
     msg := sprintf("a member of one of the following groups created resource: %v", [concat(", ", denied_groups)])
 }
